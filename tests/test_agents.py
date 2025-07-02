@@ -15,11 +15,24 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_no_transition_below_threshold(self):
+        agent = Agent("A", tension=0.5, emotion=0.4)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
+    def test_emotion_driven_transition(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6, "fear")
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        # ensure emotional tags appear in responses
+        self.assertTrue(any("[" in line for line in lines))
 
 
 if __name__ == '__main__':
