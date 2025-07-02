@@ -15,6 +15,11 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def adjust_emotion(self, delta: float) -> None:
+        """Increment emotion by ``delta`` and reflect it in tension."""
+        self.emotion += delta
+        self.tension += delta
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
@@ -36,3 +41,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return response influenced by current emotion."""
+        base = self.respond(question)
+        if self.emotion > 0.5:
+            return f"{base} (izrazita čustva)"
+        return base
