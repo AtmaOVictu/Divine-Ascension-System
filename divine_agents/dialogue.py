@@ -1,4 +1,5 @@
 from typing import List
+
 from .agent import Agent
 
 
@@ -17,3 +18,22 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def philosophical_debate(agent1: Agent, agent2: Agent, rounds: int = 2) -> List[str]:
+    """Run a multi-round philosophical debate between two agents.
+
+    During each round the agents express their view of truth, their emotions
+    escalate slightly and they may transition to a new ontological state.
+    """
+    log: List[str] = []
+    for _ in range(rounds):
+        log.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        log.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+        agent1.update_emotion(agent1.emotion + 0.3)
+        log.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+        agent2.update_emotion(agent2.emotion + 0.3)
+        log.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    return log
