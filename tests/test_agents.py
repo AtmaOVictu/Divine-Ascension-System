@@ -10,8 +10,13 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+        agent.update_emotion("fear", 0.6)
+        new_state = agent.transition()
+        self.assertEqual(new_state, "Enotnost")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion("joy", 0.2)
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
