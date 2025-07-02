@@ -36,3 +36,20 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+class AgentWithBin(Agent):
+    """Agent extended with a trash bin for discarded information."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0) -> None:
+        super().__init__(name, state, tension, emotion)
+        from .trash_bin import TrashBin
+        self.trash_bin = TrashBin(f"{name}_bin")
+
+    def discard(self, item: str) -> None:
+        """Place an item into the agent's trash bin."""
+        self.trash_bin.add_item(item)
+
+    def restore(self, item: str) -> bool:
+        """Attempt to remove an item from the trash bin."""
+        return self.trash_bin.remove_item(item)
