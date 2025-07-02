@@ -27,7 +27,7 @@ class Box:
             if "absolutna resnica" in text:
                 beliefs.append("Resnica je absolutna in neodvisna od drugih.")
             elif "relativna resnica" in text:
-                beliefs.append("Resnica je relativna, oblikovana z nasimi odnosi.")
+                beliefs.append("Resnica je relativna, oblikovana z našimi odnosi.")
             elif "enotna resnica" in text:
                 beliefs.append("Vse resnice so eno, medsebojno povezane.")
         return beliefs
