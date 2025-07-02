@@ -22,5 +22,17 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+
+class TestTrashBin(unittest.TestCase):
+    def test_bin_add_remove(self):
+        from divine_agents import AgentWithBin
+        agent = AgentWithBin("B")
+        agent.discard("note")
+        self.assertIn("note", agent.trash_bin.view())
+        removed = agent.restore("note")
+        self.assertTrue(removed)
+        self.assertNotIn("note", agent.trash_bin.view())
+
+
+if __name__ == "__main__":
     unittest.main()
