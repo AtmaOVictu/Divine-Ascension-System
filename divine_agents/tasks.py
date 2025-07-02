@@ -19,10 +19,10 @@ class TaskAgent:
     def execute_tasks(self) -> str:
         for task in self.tasks:
             if task.urgency > 0.8:
-                self.agent.update_emotion(1.0)
+                self.agent.update_emotion(1.0, "stress")
                 self.agent.tension += 0.5
             else:
-                self.agent.update_emotion(0.5)
+                self.agent.update_emotion(0.5, "focus")
                 self.agent.tension += 0.2
         self.tasks.clear()
         return self.agent.transition()
@@ -38,11 +38,11 @@ class SystemErrorAgent(TaskAgent):
     def check_system(self) -> str:
         if self.system_error:
             self.agent.state = "Jaz"
-            self.agent.update_emotion(1.0)
+            self.agent.update_emotion(1.0, "panic")
             self.agent.tension += 0.7
         else:
             self.agent.state = "Ego"
-            self.agent.update_emotion(0.5)
+            self.agent.update_emotion(0.5, "calm")
             self.agent.tension += 0.3
         self.agent.history.append(self.agent.state)
         return self.agent.state
@@ -59,7 +59,7 @@ class UrgentDecisionAgent(SystemErrorAgent):
         if not self.decision_made:
             self.decision_made = True
             self.agent.state = "Enotnost"
-            self.agent.update_emotion(1.0)
+            self.agent.update_emotion(1.0, "resolution")
             self.agent.tension += 0.8
             self.agent.history.append(self.agent.state)
         return self.agent.state
