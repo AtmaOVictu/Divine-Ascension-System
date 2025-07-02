@@ -1,4 +1,9 @@
 import unittest
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -19,7 +24,13 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("prehaja v stanje" in line for line in lines))
+
+    def test_feel_method(self):
+        agent = Agent("A")
+        agent.feel("fear")
+        self.assertAlmostEqual(agent.emotion, Agent.EMOTION_MAP["fear"])
+        self.assertGreater(agent.tension, 0.5)
 
 
 if __name__ == '__main__':
