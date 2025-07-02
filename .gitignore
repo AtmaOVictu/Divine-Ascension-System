@@ -1,0 +1,23 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Virtual environment directory
+.venv/
+venv/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.eggs/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
