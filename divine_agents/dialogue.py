@@ -3,7 +3,16 @@ from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Simulate a short dialogue and apply emotion driven transitions.
+
+    The conversation begins with each agent responding to ``"Kaj je resnica?"``
+    from the standpoint of its current ontological state.  Afterwards the
+    function raises the emotion of ``agent1`` and ``agent2`` which in turn
+    increases their tension.  Elevated tension may trigger a state transition
+    when :py:meth:`Agent.transition` is invoked.  Finally the agents reply once
+    more, possibly from a new state.  All dialogue lines are returned in the
+    order they occur so that callers can present or further process them.
+    """
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
