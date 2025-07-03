@@ -1,3 +1,11 @@
+"""
+Divine-Ascension-System
+
+Licensed under the MIT License. See LICENSE for details.
+This module defines agents that transition between philosophical states
+(Ego, Jaz, Enotnost) based on emotional intensity and internal tension.
+The software is provided "AS IS", without warranty of any kind.
+"""
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
