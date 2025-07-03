@@ -1,2 +1,8 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Simple ontological agent framework with emotion-driven state transitions.
+
+Run the tests with:
+
+```
+python -m pytest -q
+```
