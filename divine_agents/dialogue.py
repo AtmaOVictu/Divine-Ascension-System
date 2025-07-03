@@ -1,4 +1,5 @@
 from typing import List
+import random
 from .agent import Agent
 
 
@@ -17,3 +18,16 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def philosophical_debate(agent1: Agent, agent2: Agent, rounds: int = 1) -> List[str]:
+    """Run multiple dialogue rounds with emotional influence and transitions."""
+    dialogue = []
+    for i in range(rounds):
+        dialogue.extend(philosophical_dialogue(agent1, agent2))
+        for ag in (agent1, agent2):
+            label = random.choice(["strah", "veselje", "jeza"])
+            ag.feel(label, random.uniform(0.3, 0.9))
+            ag.transition()
+        dialogue.append(f"--- Krog {i + 1} zaključen ---")
+    return dialogue
