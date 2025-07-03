@@ -1,19 +1,23 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent with emotional and tension states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
+        """Update emotion intensity and optionally its type."""
         self.emotion = value
         self.tension += value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +34,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion and state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type and self.emotion > 0.0:
+            if self.emotion > 0.5:
+                base += f" Moje \u010dutenje {self.emotion_type} je intenzivno."
+            else:
+                base += f" \u010cutim {self.emotion_type}."
+
+        return base
