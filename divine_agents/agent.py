@@ -1,3 +1,7 @@
+from typing import List
+from .ego_jaz import EgoComponent, JazComponent
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,12 +12,23 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history: List[str] = [state]
+        self.ego_component = EgoComponent()
+        self.jaz_component = JazComponent()
+        self.tasks: List[str] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def accept_task(self, task: str, urgency: int) -> None:
+        """Store a task and trigger Ego/Jaz reactions."""
+        self.tasks.append(task)
+        self.ego_component.react(urgency)
+        self.jaz_component.react(urgency)
+        # Oscillation result is ignored here but could be logged or returned
+        self.jaz_component.oscillate()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
