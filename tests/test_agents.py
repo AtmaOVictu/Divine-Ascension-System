@@ -1,12 +1,12 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, TENSION_THRESHOLD
 from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        agent.update_tension(TENSION_THRESHOLD + 0.1)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
