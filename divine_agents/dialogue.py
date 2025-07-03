@@ -4,16 +4,39 @@ from .agent import Agent
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
-    lines = []
+    lines: List[str] = []
+
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
-    agent1.update_emotion(0.8)
+    agent1.update_emotion(0.8, 'jeza')
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
 
-    agent2.update_emotion(0.6)
+    agent2.update_emotion(0.6, 'veselje')
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def emotional_debate(agent1: Agent, agent2: Agent) -> List[str]:
+    """Run a more dynamic debate where emotions influence transitions."""
+    transcript: List[str] = []
+
+    transcript.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    transcript.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    agent1.update_emotion(0.6, 'strah')
+    transcript.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+    agent2.update_emotion(0.4, 'radovednost')
+    transcript.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    agent2.update_emotion(0.7, 'navdušenje')
+    transcript.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    transcript.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    transcript.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    return transcript
