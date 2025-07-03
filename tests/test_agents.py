@@ -20,6 +20,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertNotEqual(a1.nomen, a2.nomen)
+
+    def test_nomen_updates(self):
+        agent = Agent("B")
+        original = agent.nomen
+        agent.update_tension(1.0)
+        agent.transition()
+        self.assertNotEqual(original, agent.nomen)
+        self.assertIn(agent.state, agent.nomen)
 
 
 if __name__ == '__main__':
