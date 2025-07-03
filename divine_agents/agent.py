@@ -1,3 +1,7 @@
+from .ego import Ego
+from .ontoznano import Ontoznano
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +13,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.ego = Ego()
+        self.ontoznano = Ontoznano()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
