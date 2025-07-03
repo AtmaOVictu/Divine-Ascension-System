@@ -36,3 +36,25 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class SelfDeceptionAgent(Agent):
+    """Agent that resists transitions by rationalizing comfort in the current state."""
+
+    def rationalize(self) -> str:
+        """Return a rationalization to avoid state change."""
+        return (
+            "Ostajam, kjer sem, ker mi to zagotavlja stabilnost in varnost, "
+            "kljub napetostim, ki jih čutim."
+        )
+
+    def transition(self) -> str:
+        """Attempt a transition but often remain in the same state due to self-deception."""
+        if self.tension > 1.0 or self.emotion > 0.8:
+            # overwhelming tension or emotion forces a genuine transition
+            return super().transition()
+        if self.tension > 0.7 or self.emotion > 0.5:
+            # rationalize staying in the current state
+            self.history.append(self.state)
+            return self.state
+        return super().transition()
