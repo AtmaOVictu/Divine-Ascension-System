@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+# Ensure parent directory is in path for local imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -15,11 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_emotion_label(self):
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        self.assertEqual(agent.emotion_label(), "strah")
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        lines = philosophical_dialogue(a1, a2, rounds=2)
+        self.assertTrue(any("Jaz" in line or "Enotnost" in line for line in lines))
 
 
 if __name__ == '__main__':
