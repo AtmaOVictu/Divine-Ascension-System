@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of state transitions and oppositions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -10,6 +10,14 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def _opposite_state(self) -> str:
+        """Return the ontological opposite of the current state."""
+        if self.state == "Ego":
+            return "Enotnost"
+        if self.state == "Enotnost":
+            return "Ego"
+        return "Jaz"
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
@@ -19,6 +27,15 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def synergize(self, other: "Agent") -> bool:
+        """Combine two stable agents to trigger activation (0 + 0 = 1)."""
+        if self.state == "Ego" and other.state == "Ego":
+            self.state = other.state = "Jaz"
+            self.history.append(self.state)
+            other.history.append(other.state)
+            return True
+        return False
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -27,6 +44,8 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        # Record ontological opposite for balance
+        self.history.append(self._opposite_state())
         return self.state
 
     def respond(self, question: str) -> str:
