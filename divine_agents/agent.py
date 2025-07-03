@@ -21,12 +21,17 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        original_state = self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+
+        # Record only actual transitions to keep history concise
+        if self.state != original_state:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
