@@ -5,6 +5,8 @@ class Agent:
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
+        if state not in self.STATES:
+            raise ValueError(f"Invalid state: {state}")
         self.state = state
         self.tension = tension
         self.emotion = emotion
