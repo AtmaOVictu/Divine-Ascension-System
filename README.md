@@ -1,2 +1,7 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Example ontological agent system implementing philosophical dialogues.
+
+Run tests with:
+```
+pytest -q
+```
