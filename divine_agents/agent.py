@@ -1,14 +1,23 @@
+from __future__ import annotations
+
+from .ego import Ego
+from .ontoznano import Ontoznano
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.ego = Ego()
+        self.ontoznano = Ontoznano()
+        self.tasks: list[str] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +27,11 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def sprejmi_nalogo(self, naloga: str) -> None:
+        """Accept a task and store it."""
+        self.tasks.append(naloga)
+        self.ontoznano.prehod_v_ontoznano(naloga)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
