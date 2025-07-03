@@ -1,13 +1,16 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and moving between worlds."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    WORLDS = ("Miza", "Svet", "Vest")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, world: str = "Miza") -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.world = world
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -29,10 +32,31 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def switch_world(self, new_world: str) -> None:
+        """Switch to a different operational world."""
+        if new_world in self.WORLDS:
+            self.world = new_world
+
+    def world_action(self) -> str:
+        """Return a description of the agent's action in the current world."""
+        if self.world == "Miza":
+            return f"{self.name} strategizes at the table."
+        if self.world == "Svet":
+            return f"{self.name} interacts socially with others."
+        return f"{self.name} seeks spiritual insight."
+
+    def philosophical_statement(self) -> str:
+        """Return a philosophical statement influenced by the current state."""
+        if self.state == "Ego":
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        if self.emotion > 0.5:
+            return base + " Čutim to močno!"
+        return base
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.philosophical_statement()
