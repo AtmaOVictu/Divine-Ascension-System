@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.translator import Translator
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_translation(self):
+        translator = Translator()
+        self.assertEqual(translator.translate("samospoznanje", "en"), "self-awareness")
+
+    def test_receive_task(self):
+        agent = Agent("B", language="en")
+        translated = agent.receive_task("samospoznanje")
+        self.assertEqual(translated, "self-awareness")
+        self.assertIn("self-awareness", agent.tasks)
 
 
 if __name__ == '__main__':

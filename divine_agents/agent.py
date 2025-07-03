@@ -1,14 +1,20 @@
+from .translator import Translator
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, language: str = "sl"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language = language
         self.history = [state]
+        self.tasks = []
+        self.translator = Translator()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +24,12 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def receive_task(self, task: str) -> str:
+        """Translate and store a task for the agent."""
+        translated = self.translator.translate(task, self.language)
+        self.tasks.append(translated)
+        return translated
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
