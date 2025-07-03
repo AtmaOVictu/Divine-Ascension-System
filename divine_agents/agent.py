@@ -1,14 +1,20 @@
+"""Ontological agents able to shift between philosophical states."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    STATES = ("Ego", "Jaz", "Enotnost")
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -29,10 +35,14 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
+    def respond(self, question: str = "") -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, topic: str) -> str:
+        """Return a statement reflecting current state and emotion."""
+        return f"{self.name} ({self.state}): {self.respond(topic)}"
