@@ -30,9 +30,33 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer that incorporates the provided question."""
+        q = question.lower()
+
+        if "resnica" in q or "truth" in q:
+            if self.state == "Ego":
+                return "Resnica je absolutna in neodvisna od drugih."
+            if self.state == "Jaz":
+                return "Resnica je relativna, oblikovana z našimi odnosi."
+            return "Vse resnice so eno, medsebojno povezane."
+
+        if "smisel" in q or "meaning" in q or "purpose" in q:
+            if self.state == "Ego":
+                return "Smisel življenja je v osebni izpolnitvi."
+            if self.state == "Jaz":
+                return "Smisel življenja se razkriva v naših odnosih."
+            return "Smisel življenja je v enosti vseh stvari."
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                f"V stanju Ego razmišljam, da je odgovor na '{question}' "
+                "povezan z mojo lastno perspektivo."
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"V stanju Jaz menim, da '{question}' oblikujejo naše "
+                "medsebojne povezave."
+            )
+        return (
+            f"V stanju Enotnost vidim '{question}' kot del enotne resnice."
+        )
