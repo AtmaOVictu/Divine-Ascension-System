@@ -1,3 +1,21 @@
+"""Core logic for ontological agents.
+
+Agents transition between philosophical states depending on their
+current ``emotion`` and ``tension``.  A transition occurs when either
+``tension`` exceeds ``0.7`` or ``emotion`` exceeds ``0.5``.  Each
+state represents a different view on truth:
+
+``Ego``
+    Truth is absolute and independent of others.
+
+``Jaz``
+    Truth is relative and shaped through relationships.
+
+``Enotnost``
+    All truths are one and interconnected.
+"""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -29,10 +47,16 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by the current emotion."""
+        base = self.PHILOSOPHY.get(self.state, "")
+        # Strong emotions make the answer more emphatic
+        if self.emotion > 0.7:
+            return f"{base}!"
+        return base
