@@ -9,15 +9,22 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.nomen = self._generate_nomen()
+
+    def _generate_nomen(self) -> str:
+        """Return a unique ontological value for this agent."""
+        return f"{self.name}-{self.state}-{self.tension:.2f}-{self.emotion:.2f}"
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.nomen = self._generate_nomen()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.nomen = self._generate_nomen()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,12 +34,18 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.nomen = self._generate_nomen()
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            base += " Čutim to zelo močno!"
+        return base
