@@ -1,9 +1,32 @@
+"""Ontological agents and their state transitions."""
+
+from __future__ import annotations
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Create a new agent.
+
+        Parameters
+        ----------
+        name: str
+            Agent identifier.
+        state: str, optional
+            Starting ontological state.
+        tension: float, optional
+            Initial tension level.
+        emotion: float, optional
+            Initial emotion intensity.
+        """
         self.name = name
         self.state = state
         self.tension = tension
@@ -13,7 +36,7 @@ class Agent:
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
-        self.tension += value
+        self.tension = min(1.0, self.tension + value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -31,8 +54,4 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.PHILOSOPHY.get(self.state, "")
