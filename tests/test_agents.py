@@ -1,4 +1,11 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure the repository root is on sys.path so that ``divine_agents`` can be imported
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
