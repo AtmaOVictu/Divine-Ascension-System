@@ -1,17 +1,44 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Identifier of the agent.
+    state:
+        Ontological state (``Ego``, ``Jaz``, or ``Enotnost``).
+    tension:
+        Current tension level. Values greater than 0.7 may trigger a
+        state transition.
+    emotion:
+        Intensity of the current emotion. Values greater than 0.5 may
+        trigger a state transition.
+    emotion_label:
+        Name of the current emotion (e.g. ``fear``, ``joy``).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_label: str = ""):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, label: str, value: float) -> None:
+        """Update emotion and adjust tension accordingly.
+
+        Parameters
+        ----------
+        label:
+            Name of the emotion (e.g. ``fear``).
+        value:
+            Intensity of the emotion which is also added to tension.
+        """
+        self.emotion_label = label
         self.emotion = value
         self.tension += value
 
@@ -30,9 +57,14 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_label:
+            base += f" Čutim {self.emotion_label}."
+        return base
