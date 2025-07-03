@@ -1,9 +1,22 @@
+"""Divine Ascension agent model.
+
+Licensed under the MIT License. PROGRAM SE PREDAVA "TAKŠEN, KOT JE", BREZ
+KAKRŠNEKOLI JAMSTVE, IZRECNEGA ALI IMPLICIRANEGA. AVTORJI NE ODGOVARJAJO ZA
+NOBENO ŠKODO.
+
+Agents transition between ontological states based on emotion and tension
+thresholds.
+"""
+
+from __future__ import annotations
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -11,7 +24,7 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and raise tension accordingly."""
         self.emotion = value
         self.tension += value
 
