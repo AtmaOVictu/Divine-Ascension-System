@@ -1,19 +1,28 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of philosophical transitions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    PRINCIPLES = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label: str | None = None
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, label: str | None = None) -> None:
+        """Update emotion intensity, label, and adjust tension."""
         self.emotion = value
         self.tension += value
+        if label:
+            self.emotion_label = label
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +39,11 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by state and emotion."""
+        base = self.PRINCIPLES.get(self.state, "")
+        parts = [base]
+        if self.emotion_label:
+            parts.append(f"I feel {self.emotion_label}.")
+        if self.emotion > 0.5:
+            parts.append("My feelings influence my view.")
+        return " ".join(parts)
