@@ -1,13 +1,27 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Display name of the agent.
+    state:
+        Ontological state of the agent. One of ``Ego``, ``Jaz`` or ``Enotnost``.
+    tension:
+        Current tension level which can trigger a state transition.
+    emotion:
+        Current emotion intensity in the range ``0.0`` - ``1.0``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_name: str | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,12 +29,25 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def set_emotion(self, name: str, value: float) -> None:
+        """Assign an emotion with intensity and adjust tension.
+
+        Parameters
+        ----------
+        name:
+            Descriptive emotion label, e.g. ``fear`` or ``joy``.
+        value:
+            Emotion intensity between ``0`` and ``1``.
+        """
+        self.emotion_name = name
+        self.update_emotion(value)
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotion or tension exceed thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -29,10 +56,14 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def __repr__(self) -> str:  # pragma: no cover - debugging helper
+        return f"Agent(name={self.name!r}, state={self.state!r}, tension={self.tension:.2f}, emotion={self.emotion:.2f})"
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = f"[{self.emotion_name}] " if self.emotion_name else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "Resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "Vse resnice so eno, medsebojno povezane."
