@@ -29,6 +29,10 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def get_history(self) -> list:
+        """Return a copy of the transition history."""
+        return list(self.history)
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
