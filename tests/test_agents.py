@@ -22,5 +22,11 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestRepoMetrics(unittest.TestCase):
+    def test_python_line_count(self):
+        from divine_agents.utils import count_python_lines
+        self.assertGreaterEqual(count_python_lines(), 50)
+
+
 if __name__ == '__main__':
     unittest.main()
