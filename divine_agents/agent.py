@@ -1,27 +1,40 @@
+from dataclasses import dataclass, field
+from typing import Dict, List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotions: Dict[str, float] = field(default_factory=dict)
+    history: List[str] = field(default_factory=list)
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotions(self, new_emotions: Dict[str, float]) -> None:
+        """Update emotions and recompute tension."""
+        self.emotions.update(new_emotions)
+        if self.emotions:
+            self.tension = sum(self.emotions.values()) / len(self.emotions)
+        else:
+            self.tension = 0.0
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+    def dominant_emotion(self) -> str:
+        if not self.emotions:
+            return "neutralno"
+        emotion, value = max(self.emotions.items(), key=lambda x: x[1])
+        return emotion if value > 0.5 else "mirno"
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Transition state based on tension or dominant emotion."""
+        max_emotion = max(self.emotions.values(), default=0.0)
+        if self.tension > 0.7 or max_emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -30,9 +43,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Provide answer reflecting current state and emotion."""
+        mood = self.dominant_emotion()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"({mood}) Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"({mood}) Resnica je relativna, oblikovana z našimi odnosi."
+        return f"({mood}) Vse resnice so eno, medsebojno povezane."
