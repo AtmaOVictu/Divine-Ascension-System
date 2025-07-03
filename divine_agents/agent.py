@@ -1,9 +1,14 @@
+"""Core domain logic for ontological agents."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -36,3 +41,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Generate a dialogue line including the agent's emotional state."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}, e={self.emotion:.2f}): {answer}"
