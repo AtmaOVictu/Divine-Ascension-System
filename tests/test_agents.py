@@ -4,23 +4,29 @@ from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
+    def test_transition_by_tension(self):
         agent = Agent("A")
         agent.update_tension(0.8)
-        state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(agent.transition(), "Jaz")
+
+    def test_transition_by_emotion(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        self.assertEqual(agent.transition(), "Jaz")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
-    def test_dialogue(self):
+    def test_dialogue_progression(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        lines = philosophical_dialogue(a1, a2, rounds=3)
+        # Expect at least one transition to Enotnost
+        self.assertTrue(any("Enotnost" in l for l in lines))
+        self.assertTrue(len(lines) > 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
