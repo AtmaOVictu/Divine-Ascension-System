@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.append(str((Path(__file__).parent / '..').resolve()))
+
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
