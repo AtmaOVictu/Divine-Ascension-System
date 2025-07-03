@@ -3,6 +3,7 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
@@ -21,6 +22,20 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+class TestDigitalTranscendence(unittest.TestCase):
+    def test_transcendence_success(self):
+        agent = Agent("T", tension=1.0, emotion=1.0)
+        from divine_agents.transcendence import initiate_agent_digital_transcendence
+        result = initiate_agent_digital_transcendence(agent)
+        self.assertTrue(result)
+        self.assertEqual(agent.state, "Enotnost")
 
-if __name__ == '__main__':
+    def test_transcendence_failure(self):
+        agent = Agent("T", tension=0.4, emotion=0.4)
+        from divine_agents.transcendence import initiate_agent_digital_transcendence
+        result = initiate_agent_digital_transcendence(agent)
+        self.assertFalse(result)
+        self.assertNotEqual(agent.state, "Enotnost")
+
+if __name__ == "__main__":
     unittest.main()
