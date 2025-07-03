@@ -1,18 +1,30 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional transitions between states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_name: str = "neutral"
+    history: list[str] = field(default_factory=lambda: ["Ego"])
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def update_emotion(self, value: float, name: str = "") -> None:
+        """Update emotional intensity and adjust tension.
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        Parameters
+        ----------
+        value: float
+            New emotional intensity.
+        name: str, optional
+            Descriptive label of the emotion (e.g. 'jeza', 'strah').
+        """
         self.emotion = value
+        if name:
+            self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -20,7 +32,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotion or tension thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -36,3 +48,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Compose a line of dialogue including emotional state."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}, {self.emotion_name}:{self.emotion:.1f}): {answer}"
