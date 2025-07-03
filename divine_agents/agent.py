@@ -1,5 +1,8 @@
+from .ego_jaz import Ego, Jaz
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and handling tasks."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +12,9 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.ego = Ego()
+        self.jaz = Jaz()
+        self.tasks = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +24,13 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def accept_task(self, task: str, necessity: int) -> None:
+        """Accept a task and trigger Ego/Jaz reactions."""
+        self.tasks.append(task)
+        self.ego.react_to_necessity(necessity)
+        self.jaz.react(necessity)
+        self.jaz.oscillate()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
