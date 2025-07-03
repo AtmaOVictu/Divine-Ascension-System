@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, emotion_driven_dialogue
+from divine_agents.emotion_utils import emotion_cycle
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +20,20 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestEmotionCycle(unittest.TestCase):
+    def test_cycle_basic(self):
+        self.assertAlmostEqual(emotion_cycle(0), 0.0)
+        self.assertAlmostEqual(emotion_cycle(0.25, frequency=1), 1.0, places=5)
+
+
+class TestEmotionDrivenDialogue(unittest.TestCase):
+    def test_emotion_driven_dialogue_transition(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = emotion_driven_dialogue(a1, a2, steps=10)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
