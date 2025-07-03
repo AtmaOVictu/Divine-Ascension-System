@@ -1,18 +1,27 @@
+from typing import Optional
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTION_TONES = ("neutral", "fearful", "joyful", "angry")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_tone: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_tone = emotion_tone
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, tone: Optional[str] = None) -> None:
+        """Update emotion intensity and optionally set emotion tone."""
         self.emotion = value
+        if tone is not None:
+            if tone not in self.EMOTION_TONES:
+                raise ValueError(f"Unsupported emotion tone: {tone}")
+            self.emotion_tone = tone
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +39,21 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        prefix_map = {
+            "fearful": "V strahu",
+            "joyful": "Z veseljem",
+            "angry": "Z jezo",
+            "neutral": ""
+        }
+        prefix = prefix_map.get(self.emotion_tone, "").strip()
+        if prefix:
+            return f"{prefix} {base.lower()}"
+        return base
