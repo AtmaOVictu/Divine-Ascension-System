@@ -1,6 +1,6 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.agent import Agent, MultiDimensionalMoralAgent
+from divine_agents.dialogue import philosophical_dialogue, moral_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +20,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_moral_decision(self):
+        agent = MultiDimensionalMoralAgent("A", ethics="virtue")
+        decision = agent.moral_decision()
+        self.assertIn("virtues", decision)
+
+    def test_moral_dialogue(self):
+        a1 = MultiDimensionalMoralAgent("A1", ethics="utilitarianism")
+        a2 = MultiDimensionalMoralAgent("A2", ethics="justice")
+        lines = moral_dialogue(a1, a2)
+        self.assertTrue(any("moral" in line for line in lines))
 
 
 if __name__ == '__main__':
