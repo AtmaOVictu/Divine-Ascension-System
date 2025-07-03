@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.expressions = {}
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +37,13 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def learn_expression(self, name: str, expression: str) -> None:
+        """Remember a symbolic expression for later use."""
+        self.expressions[name] = expression
+
+    def describe_expression(self, name: str) -> str:
+        """Return the stored expression if history is long enough."""
+        if len(self.history) > 2 and name in self.expressions:
+            return self.expressions[name]
+        return ""

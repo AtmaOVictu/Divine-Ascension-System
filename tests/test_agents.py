@@ -21,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_expression_memory(self):
+        agent = Agent("B")
+        agent.learn_expression("f", "x^2")
+        self.assertEqual(agent.describe_expression("f"), "")
+        agent.update_tension(0.8)
+        agent.transition()
+        agent.update_tension(0.8)
+        agent.transition()
+        self.assertEqual(agent.describe_expression("f"), "x^2")
+
 
 if __name__ == '__main__':
     unittest.main()
