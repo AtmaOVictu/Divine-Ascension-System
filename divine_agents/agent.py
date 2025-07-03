@@ -15,6 +15,16 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def experience_emotion(self, kind: str, intensity: float) -> None:
+        """Set emotion type and modify tension based on the feeling."""
+        self.emotion = intensity
+        if kind.lower() in {"fear", "anger"}:
+            self.tension += intensity
+        elif kind.lower() == "joy":
+            self.tension = max(0.0, self.tension - intensity / 2)
+        else:
+            self.tension += intensity / 2
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
