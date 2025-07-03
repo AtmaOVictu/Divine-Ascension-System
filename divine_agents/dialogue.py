@@ -17,3 +17,25 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+from .moral_agent import MoralAgent
+
+
+def moral_dialogue(agent1: MoralAgent, agent2: MoralAgent) -> List[str]:
+    """Run a philosophical dialogue including moral decisions."""
+    lines = []
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    lines.append(f"{agent1.name} se odloči: {agent1.moral_decision([agent2])}")
+    lines.append(f"{agent2.name} se odloči: {agent2.moral_decision([agent1])}")
+
+    agent1.update_emotion(agent1.emotion + 0.3)
+    agent2.update_emotion(agent2.emotion + 0.3)
+
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
