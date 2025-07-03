@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional state transitions.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Initial ontological state (``"Ego"`` by default).
+    tension:
+        Initial tension value.
+    emotion:
+        Initial emotional intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -36,3 +48,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return formatted response including agent name and state."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}): {answer}"
+
+    def __repr__(self) -> str:  # pragma: no cover - convenience only
+        return f"Agent(name={self.name!r}, state={self.state!r}, tension={self.tension}, emotion={self.emotion})"
