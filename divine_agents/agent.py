@@ -20,12 +20,29 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform a state transition if thresholds are exceeded.
+
+        If ``tension`` exceeds ``0.7`` or ``emotion`` exceeds ``0.5`` the agent
+        moves from ``Ego`` to ``Jaz`` or from ``Jaz`` to ``Enotnost``. After a
+        successful transition, both ``tension`` and ``emotion`` are reset to
+        ``0.0``. Agents already in ``Enotnost`` or those with an unknown state
+        remain unchanged.
+        """
+
+        # Do not transition from final or unknown states
+        if self.state not in self.STATES or self.state == "Enotnost":
+            self.history.append(self.state)
+            return self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            # reset internal levels after a successful transition
+            self.tension = 0.0
+            self.emotion = 0.0
+
         self.history.append(self.state)
         return self.state
 
