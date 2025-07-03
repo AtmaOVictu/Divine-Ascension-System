@@ -21,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_synergy(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        a1.synergize(a2)
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Jaz")
+
+    def test_opposite_recorded(self):
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        agent.transition()
+        self.assertIn("Jaz", agent.history)
+
 
 if __name__ == '__main__':
     unittest.main()
