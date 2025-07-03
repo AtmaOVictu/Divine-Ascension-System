@@ -1,5 +1,19 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent and its state evolution.
+
+    Each agent exists in one of three states: ``"Ego"``, ``"Jaz"`` or
+    ``"Enotnost"``.  The current state is affected by two continuous values,
+    ``emotion`` and ``tension``.  When :py:meth:`update_emotion` is called the
+    supplied emotion level is stored and also *added* to the agent's tension to
+    model how strong feelings raise internal pressure.  Tension may also be
+    directly manipulated via :py:meth:`update_tension`.
+
+    State transitions are evaluated in :py:meth:`transition`.  If the agent's
+    tension rises above ``0.7`` or its emotion level surpasses ``0.5``, the
+    agent progresses to the next state in the order ``Ego → Jaz → Enotnost``.
+    Every transition is recorded in ``history`` so that simulations can track
+    the agent's philosophical journey.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
