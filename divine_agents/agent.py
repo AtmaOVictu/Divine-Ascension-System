@@ -1,13 +1,18 @@
+from .translator import Translator
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and responding in a chosen language."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, language: str = "sl", translator: Translator | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language = language
+        self.translator = translator or Translator()
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -32,7 +37,13 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        return self.translator.translate(answer, self.language)
+
+    def translate_question(self, question: str) -> str:
+        """Translate input question to this agent's language."""
+        return self.translator.translate(question, self.language)

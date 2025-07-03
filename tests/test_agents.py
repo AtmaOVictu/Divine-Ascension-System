@@ -1,4 +1,12 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure project root is on sys.path so imports work when tests run in isolation
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -14,6 +22,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_translation(self):
+        agent = Agent("B", language="en")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("Truth", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
