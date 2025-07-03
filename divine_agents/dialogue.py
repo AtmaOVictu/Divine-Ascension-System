@@ -17,3 +17,29 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def dynamic_debate(agent1: Agent, agent2: Agent, em1: float, em2: float) -> List[str]:
+    """Run a debate where emotions influence transitions and responses."""
+    lines = []
+
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+
+    agent1.update_emotion(em1)
+    agent2.update_emotion(em2)
+
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+    return lines
