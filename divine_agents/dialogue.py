@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .emotion_cycle import EmotionCycleAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,15 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def emotional_dialogue(agent1: EmotionCycleAgent, agent2: EmotionCycleAgent, steps: int = 3) -> List[str]:
+    """Run an emotional dialogue over several steps."""
+    lines = []
+    for _ in range(steps):
+        lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+        agent1.step()
+        agent2.step()
     return lines
