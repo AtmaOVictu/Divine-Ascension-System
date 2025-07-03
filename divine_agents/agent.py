@@ -9,15 +9,21 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Track emotional and tension history for later interpolation
+        self.emotion_history = [emotion]
+        self.tension_history = [tension]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.emotion_history.append(self.emotion)
+        self.tension_history.append(self.tension)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.tension_history.append(self.tension)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
