@@ -36,3 +36,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def get_history(self) -> list:
+        """Return a copy of the state or action history."""
+        return list(self.history)
