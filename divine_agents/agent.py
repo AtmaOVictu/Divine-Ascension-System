@@ -36,3 +36,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def oscillate(self) -> str:
+        """Describe the current oscillation based on the agent's state."""
+        if self.state == "Ego":
+            return "Oscilacija: Ego išče nadzor."
+        if self.state == "Jaz":
+            return "Oscilacija: Jaz išče povezavo."
+        return "Oscilacija se umirja v Enotnosti."
