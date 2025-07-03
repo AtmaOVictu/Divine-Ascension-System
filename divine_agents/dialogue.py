@@ -1,4 +1,9 @@
+"""
+Utility functions for dialogues between agents.
+Licensed under the MIT License. See LICENSE for details.
+"""
 from typing import List
+
 from .agent import Agent
 
 
