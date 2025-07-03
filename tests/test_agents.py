@@ -3,6 +3,19 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+class TestAgentTranslations(unittest.TestCase):
+    def test_task_translation(self):
+        agent = Agent("T", language="en")
+        translated = agent.accept_task("samospoznanje")
+        self.assertEqual(translated, "self-awareness")
+        self.assertIn("self-awareness", agent.tasks)
+
+    def test_response_translation(self):
+        agent = Agent("B", state="Ego", language="en")
+        reply = agent.respond("What is truth?")
+        self.assertIn("Truth is absolute", reply)
+
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
