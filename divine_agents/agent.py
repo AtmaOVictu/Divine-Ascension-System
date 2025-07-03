@@ -1,3 +1,8 @@
+"""Ontological agents capable of philosophical state transitions."""
+
+import hashlib
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +14,12 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.nomen = self.generate_nomen()
+
+    def generate_nomen(self) -> str:
+        """Return a stable ontological value based on name and state."""
+        digest = hashlib.md5(f"{self.name}-{self.state}".encode()).hexdigest()[:6]
+        return f"{self.name}-{self.state}-{digest}"
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,6 +38,7 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.nomen = self.generate_nomen()
         return self.state
 
     def respond(self, question: str) -> str:
