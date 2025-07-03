@@ -1,3 +1,5 @@
+"""Define the ontological agent and its state transitions."""
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
