@@ -3,11 +3,12 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +19,11 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def feel(self, emotion_name: str, intensity: float) -> None:
+        """Set emotion and adjust tension."""
+        self.emotion_name = emotion_name
+        self.update_emotion(intensity)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -30,9 +36,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on current state and emotion."""
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane."
+        }[self.state]
+        emotion_add = {
+            "fear": " Ob tem me je strah.",
+            "joy": " Ob tem čutim veselje.",
+            "anger": " Ob tem me preveva jeza."
+        }.get(self.emotion_name, "")
+        return base + emotion_add
