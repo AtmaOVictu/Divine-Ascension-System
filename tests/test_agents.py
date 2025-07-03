@@ -1,7 +1,12 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure parent directory is on sys.path for module imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
-
 
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
