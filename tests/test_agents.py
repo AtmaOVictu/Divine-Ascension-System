@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure the package is importable when running tests via `pytest`
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -11,14 +17,16 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):
-        agent = Agent("A", state="Enotnost")
+        agent = Agent("A")
+        agent.update_emotion(0.6)
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("\u010custveno", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, turns=3)
+        # At least one agent should reach "Enotnost" after the dialogue
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
