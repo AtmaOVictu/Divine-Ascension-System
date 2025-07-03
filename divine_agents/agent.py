@@ -1,3 +1,10 @@
+"""
+Divine-Ascension-System agent module.
+
+This project is distributed under the MIT license.
+Use at your own risk; see the LICENSE file for details.
+"""
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
