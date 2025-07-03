@@ -13,7 +13,8 @@ class Agent:
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
-        self.tension += value
+        # Emotions influence tension but do not drastically spike it
+        self.tension += value * 0.5
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
