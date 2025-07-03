@@ -11,12 +11,38 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            New emotion value in the range [0, 1].
+
+        Raises
+        ------
+        ValueError
+            If ``value`` is not within the allowed range.
+        """
+        if not 0 <= value <= 1:
+            raise ValueError("Emotion value must be between 0 and 1.")
         self.emotion = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Directly set tension level.
+
+        Parameters
+        ----------
+        value: float
+            New tension value in the range [0, 1].
+
+        Raises
+        ------
+        ValueError
+            If ``value`` is not within the allowed range.
+        """
+        if not 0 <= value <= 1:
+            raise ValueError("Tension value must be between 0 and 1.")
         self.tension = value
 
     def transition(self) -> str:
