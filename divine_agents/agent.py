@@ -29,10 +29,46 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+    def respond(self, question: str, emotion: str) -> str:
+        """Return a philosophical answer influenced by state and emotion.
+
+        Parameters
+        ----------
+        question : str
+            Ignored for now but kept for future expansion.
+        emotion : str
+            Current emotional context (e.g., ``"fear"``, ``"joy"``, ``"anger"``).
+
+        Returns
+        -------
+        str
+            Philosophical statement adjusted for the agent's state and emotion.
+        """
+
+        emotion = emotion.lower()
+        responses = {
+            "Ego": {
+                "fear": "\u010cutim strah, a verjamem, da je resnica \u0161e vedno absolutna.",
+                "joy": "Z veseljem zagovarjam absoluten pogled na resnico.",
+                "anger": "Z jezo branim svoje prepri\u010danje o absolutni resnici.",
+            },
+            "Jaz": {
+                "fear": "\u010ceprav me je strah, razumem, da je resnica relativna.",
+                "joy": "Z veseljem priznavam relativnost resnice.",
+                "anger": "Z jezo opozarjam, da se resnica oblikuje skozi odnose.",
+            },
+            "Enotnost": {
+                "fear": "\u010cetudi obstaja strah, spoznavam, da so vse resnice ena.",
+                "joy": "Z radostjo sprejemam, da so vse resnice medsebojno povezane.",
+                "anger": "Tudi v jezi vidim, da je vse povezano v enotni resnici.",
+            },
+        }
+
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z na\u0161imi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        modifier = responses.get(self.state, {}).get(emotion, "")
+        return f"{base} {modifier}".strip()
