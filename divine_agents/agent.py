@@ -19,9 +19,33 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+    def transition(
+        self,
+        *,
+        tension: float | None = None,
+        emotion: float | None = None,
+        tension_threshold: float = 0.7,
+        emotion_threshold: float = 0.5,
+    ) -> str:
+        """Perform state transition if thresholds are exceeded.
+
+        Parameters
+        ----------
+        tension:
+            Optional tension value to set before evaluating the transition.
+        emotion:
+            Optional emotion value to set before evaluating the transition.
+        tension_threshold:
+            Threshold for tension required to trigger a transition.
+        emotion_threshold:
+            Threshold for emotion required to trigger a transition.
+        """
+        if tension is not None:
+            self.update_tension(tension)
+        if emotion is not None:
+            self.update_emotion(emotion)
+
+        if self.tension > tension_threshold or self.emotion > emotion_threshold:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
