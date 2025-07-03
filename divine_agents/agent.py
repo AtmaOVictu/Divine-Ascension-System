@@ -4,6 +4,7 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Initialize a new agent with its ontological state and emotions."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -20,7 +21,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotion or tension cross thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -36,3 +37,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def copy(self) -> "Agent":
+        """Return a deep copy of this agent including its history."""
+        new_agent = Agent(self.name, self.state, self.tension, self.emotion)
+        new_agent.history = self.history.copy()
+        return new_agent
