@@ -1,19 +1,54 @@
+"""Agent module implementing ontological state transitions and dialogue."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Current ontological state (Ego, Jaz, Enotnost).
+    tension:
+        Current tension level in range ``[0, 1]``.
+    emotion:
+        Emotion intensity in range ``[0, 1]``.
+    emotion_label:
+        Optional label describing the active emotion (fear, joy, ...).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_label: str | None = None
+    history: List[str] = field(default_factory=list)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
+
+    def update_emotion(self, value: float, label: str | None = None) -> None:
+        """Update emotion intensity and adjust tension.
+
+        Parameters
+        ----------
+        value:
+            New emotion intensity in ``[0, 1]``.
+        label:
+            Optional emotion description.
+        """
+
         self.emotion = value
-        self.tension += value
+        self.tension = min(1.0, self.tension + value)
+        if label:
+            self.emotion_label = label
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +65,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
+        emotion_note = f" (občutek: {self.emotion_label})" if self.emotion_label else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
