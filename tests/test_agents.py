@@ -1,4 +1,11 @@
 import unittest
+import os
+import sys
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +27,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_emotion_based_transition(self):
+        agent = Agent("B")
+        agent.set_emotion("strah", 0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_dialogue_emotional_output(self):
+        a1 = Agent("C1")
+        a2 = Agent("C2")
+        lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("jeza" in line or "veselje" in line for line in lines))
 
 
 if __name__ == '__main__':
