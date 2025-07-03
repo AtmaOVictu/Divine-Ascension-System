@@ -36,3 +36,31 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class SelfDeceptionAgent(Agent):
+    """Agent that can rationalize to avoid state transitions."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, deception_threshold: float = 0.9):
+        super().__init__(name, state, tension, emotion)
+        self.deception_threshold = deception_threshold
+        self.rationalizations = []
+
+    def rationalize(self) -> str:
+        """Create a rationalization to maintain the current state."""
+        message = "Ni potrebe po spremembi, ker je tako varneje."
+        self.rationalizations.append(message)
+        return message
+
+    def transition(self) -> str:
+        """Override transition to allow self-deception to halt progress."""
+        if (self.tension > 0.7 or self.emotion > 0.5) and (
+            self.tension < self.deception_threshold and
+            self.emotion < self.deception_threshold
+        ):
+            # Create rationalization and remain in current state
+            self.rationalize()
+            self.history.append(self.state)
+            return self.state
+        return super().transition()

@@ -1,5 +1,5 @@
 from typing import List
-from .agent import Agent
+from .agent import Agent, SelfDeceptionAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -9,10 +9,18 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
     agent1.update_emotion(0.8)
+    before = len(getattr(agent1, "rationalizations", []))
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    after = len(getattr(agent1, "rationalizations", []))
+    if after > before:
+        lines.append(f"{agent1.name} racionalizira: {agent1.rationalizations[-1]}")
 
     agent2.update_emotion(0.6)
+    before = len(getattr(agent2, "rationalizations", []))
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    after = len(getattr(agent2, "rationalizations", []))
+    if after > before:
+        lines.append(f"{agent2.name} racionalizira: {agent2.rationalizations[-1]}")
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
