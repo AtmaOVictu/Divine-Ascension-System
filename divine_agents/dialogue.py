@@ -1,3 +1,5 @@
+"""Utility helpers to orchestrate philosophical dialogue between agents."""
+
 from typing import List
 from .agent import Agent
 
