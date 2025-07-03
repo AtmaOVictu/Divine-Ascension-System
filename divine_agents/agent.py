@@ -1,19 +1,48 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name : str
+        Name of the agent.
+    state : str
+        Initial ontological state (``"Ego"``, ``"Jaz"`` or ``"Enotnost"``).
+    tension : float
+        Initial tension value.
+    emotion : float
+        Initial emotion intensity.
+    emotion_name : str
+        Descriptive label for the current emotion (e.g. ``"fear"``).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_name: str = ""):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set a named emotion and update tension.
+
+        Parameters
+        ----------
+        name : str
+            Name of the emotion (e.g. ``"fear"``, ``"joy"``).
+        intensity : float
+            Intensity level of the emotion, added to tension and stored as
+            ``emotion``.
+        """
+        self.emotion_name = name
+        self.update_emotion(intensity)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -31,8 +60,19 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = ""
+        if self.emotion_name:
+            prefixes = {
+                "fear": "V strahu",
+                "anger": "Z jezo",
+                "joy": "Z radostjo",
+            }
+            prefix = prefixes.get(self.emotion_name, "")
+            if prefix:
+                prefix += ", "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"{prefix}Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"{prefix}Resnica je relativna, oblikovana z našimi odnosi."
+        return f"{prefix}Vse resnice so eno, medsebojno povezane."
