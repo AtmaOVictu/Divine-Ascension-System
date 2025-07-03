@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.reached_enotnost = state == "Enotnost"
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,12 +22,20 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        if self.reached_enotnost:
+            return self.state
+
+        new_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
-                self.state = "Jaz"
+                new_state = "Jaz"
             elif self.state == "Jaz":
-                self.state = "Enotnost"
-        self.history.append(self.state)
+                new_state = "Enotnost"
+                self.reached_enotnost = True
+
+        if new_state != self.state:
+            self.state = new_state
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
