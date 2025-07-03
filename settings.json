@@ -1,0 +1,20 @@
+{
+  "agents": [
+    {
+      "ime": "Agent1",
+      "filozofija": "Stoicism",
+      "motivacija": "Self-realization",
+      "dimenzija": "Ego",
+      "tension_threshold": 5,
+      "emotion_threshold": 5
+    },
+    {
+      "ime": "Agent2",
+      "filozofija": "Existentialism",
+      "motivacija": "Survival",
+      "dimenzija": "Jaz",
+      "tension_threshold": 6,
+      "emotion_threshold": 6
+    }
+  ]
+}

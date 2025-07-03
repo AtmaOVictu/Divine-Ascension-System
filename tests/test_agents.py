@@ -1,6 +1,12 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.config import CodexConfig
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +15,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_load_config(self):
+        config = CodexConfig("settings.json")
+        agents = config.get_agents()
+        self.assertGreater(len(agents), 0)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
