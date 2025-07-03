@@ -1,0 +1,29 @@
+from typing import List
+
+from .agent import Agent
+
+
+def emotional_debate(agent1: Agent, agent2: Agent) -> List[str]:
+    """Simulate a short debate where emotions trigger state transitions."""
+    lines: List[str] = []
+
+    # Initial statements
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    # Increase emotions and cause potential transitions
+    agent1.update_emotion(0.6, 'anger')
+    lines.append(
+        f"{agent1.name} čuti {agent1.emotion_label}; prehaja v stanje: {agent1.transition()}"
+    )
+
+    agent2.update_emotion(0.8, 'joy')
+    lines.append(
+        f"{agent2.name} čuti {agent2.emotion_label}; prehaja v stanje: {agent2.transition()}"
+    )
+
+    # Final statements after transition
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    return lines
