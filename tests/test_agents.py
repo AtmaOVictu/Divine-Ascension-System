@@ -1,4 +1,11 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure the divine_agents package is discoverable when tests are run
+ROOT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT_DIR))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
