@@ -21,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_custom_parameters(self):
+        """Ensure custom tension parameters trigger transitions."""
+        a1 = Agent("B1")
+        a2 = Agent("B2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2, tension1=0.8, tension2=0.8)
+        self.assertIn("Jaz", lines[2])
+        self.assertIn("Enotnost", lines[3])
+
 
 if __name__ == '__main__':
     unittest.main()
