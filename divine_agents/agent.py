@@ -3,21 +3,28 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, nomen: str | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.nomen = nomen or self.generate_nomen()
+
+    def generate_nomen(self) -> str:
+        """Generate an ontological value based on the agent attributes."""
+        return f"{self.name}-V:{self.tension:.2f}-{self.emotion:.2f}"
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.nomen = self.generate_nomen()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.nomen = self.generate_nomen()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,12 +34,18 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.nomen = self.generate_nomen()
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        return f"{answer} (čustvo: {self.emotion:.2f})"
+
+    def __repr__(self) -> str:
+        return f"Agent(name={self.name}, state={self.state}, nomen={self.nomen})"
