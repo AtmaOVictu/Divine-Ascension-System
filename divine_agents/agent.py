@@ -36,3 +36,19 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def history_expression(self) -> str:
+        """Return the symbolic expression of the agent's state history."""
+        return " -> ".join(self.history)
+
+    def history_function(self):
+        """Return a function mapping an index to the state at that step."""
+        if len(self.history) < 2:
+            raise ValueError("Not enough history to build a function.")
+
+        def _state_at(index: int) -> str:
+            if index < 0 or index >= len(self.history):
+                raise IndexError("History index out of range")
+            return self.history[index]
+
+        return _state_at
