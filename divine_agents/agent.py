@@ -1,19 +1,21 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can transition states based on emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.feelings: dict[str, float] = {}
+        self.emotion = 0.0
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def add_feeling(self, feeling: str, intensity: float) -> None:
+        """Record a feeling and update tension and overall emotion."""
+        self.feelings[feeling] = intensity
+        self.emotion = max(self.feelings.values())
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +32,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on state and emotion."""
+        prefix = ""
+        if self.emotion > 0.5 and self.feelings:
+            feeling = max(self.feelings, key=self.feelings.get)
+            prefix = f"[{feeling}] "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        return prefix + base
