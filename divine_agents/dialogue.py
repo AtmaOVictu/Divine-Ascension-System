@@ -1,19 +1,64 @@
+"""Conversation utilities for ontological agents."""
+
 from typing import List
+
 from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+    lines: List[str] = []
 
+    # Initial statements reflecting their current philosophical stances
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+
+    # Emotional reactions to the initial statements
     agent1.update_emotion(0.8)
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
 
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
+    # Final responses after possible state transitions
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def dynamic_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+    """Simulate a multi-step dialogue with emotional updates.
+
+    Agents update their emotions which may trigger state transitions.
+    The dialogue reflects these changes.
+    """
+
+    lines: List[str] = []
+
+    # Initial exchange
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+
+    # Increase emotions and potentially transition
+    agent1.update_emotion(0.6)
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+    agent2.update_emotion(0.8)
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    # Second exchange reflecting new states
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
     return lines
