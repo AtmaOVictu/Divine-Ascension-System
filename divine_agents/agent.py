@@ -19,14 +19,21 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def calm_down(self, factor: float = 0.1) -> None:
+        """Gradually decrease emotion and tension."""
+        self.tension = max(0.0, self.tension - factor)
+        self.emotion = max(0.0, self.emotion - factor)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        old_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        if old_state != self.state:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
