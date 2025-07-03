@@ -3,17 +3,23 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set emotion type and intensity, adjusting tension accordingly."""
+        self.emotion_type = name
+        self.emotion = intensity
+        self.tension += intensity
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Backward compatible wrapper for adjusting emotion intensity."""
+        self.set_emotion(self.emotion_type, value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
