@@ -1,5 +1,11 @@
+import sys
+from pathlib import Path
 import unittest
-from divine_agents.agent import Agent
+
+# Ensure project root is on sys.path when tests are executed directly with pytest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from divine_agents.agent import Agent, EmotionType
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -7,6 +13,12 @@ class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
         agent.update_tension(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_emotion_triggers_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(EmotionType.FEAR, 0.6)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
