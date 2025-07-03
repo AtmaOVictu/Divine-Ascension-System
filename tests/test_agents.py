@@ -12,7 +12,7 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
+        reply = agent.respond()
         self.assertIn("eno", reply)
 
     def test_dialogue(self):

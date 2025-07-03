@@ -29,7 +29,7 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
+    def respond(self) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
