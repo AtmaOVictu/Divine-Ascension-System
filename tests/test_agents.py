@@ -10,6 +10,14 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_no_transition_below_threshold(self):
+        """Agent should not change state when thresholds aren't exceeded."""
+        agent = Agent("B")
+        original_state = agent.state
+        state = agent.transition()
+        self.assertEqual(state, original_state)
+        self.assertEqual(agent.state, original_state)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
