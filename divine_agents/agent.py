@@ -4,6 +4,11 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Initialize the agent and validate the provided state."""
+        if state not in self.STATES:
+            raise ValueError(
+                f"Invalid state '{state}'. Valid states are: {', '.join(self.STATES)}"
+            )
         self.name = name
         self.state = state
         self.tension = tension
