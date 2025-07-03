@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def symbolic_expression(self) -> str:
+        """Return a symbolic description of the agent's state history."""
+        if len(self.history) < 3:
+            return "Ni dovolj zgodovine za simbolni opis."
+        parts = [f"S(t{idx})={state}" for idx, state in enumerate(self.history)]
+        return " -> ".join(parts)
