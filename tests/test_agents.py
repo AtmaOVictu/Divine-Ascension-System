@@ -13,7 +13,16 @@ class TestAgentTransitions(unittest.TestCase):
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
+        self.assertIn("Kaj je resnica?", reply)
         self.assertIn("eno", reply)
+
+    def test_emotion_dependent_responses(self):
+        agent = Agent("A")
+        agent.update_emotion(0.2)
+        calm = agent.respond("Kaj je resnica?")
+        agent.update_emotion(0.8)
+        intense = agent.respond("Kaj je resnica?")
+        self.assertNotEqual(calm, intense)
 
     def test_dialogue(self):
         a1 = Agent("A1")
