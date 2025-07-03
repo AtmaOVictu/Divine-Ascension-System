@@ -12,7 +12,9 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
+        question = "Kaj je resnica?"
+        reply = agent.respond(question)
+        self.assertIn(question, reply)
         self.assertIn("eno", reply)
 
     def test_dialogue(self):
@@ -20,6 +22,7 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Kaj je resnica?" in line for line in lines))
 
 
 if __name__ == '__main__':
