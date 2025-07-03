@@ -36,3 +36,33 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class NegationAgent(Agent):
+    """Agent that emphasizes negation when performing actions."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, negation_factor: int = 1):
+        super().__init__(name, state, tension, emotion)
+        self.negation_factor = max(1, negation_factor)
+
+    def apply_negation(self, action: str) -> str:
+        """Apply negation repeatedly based on ``negation_factor``."""
+        result = action
+        for _ in range(self.negation_factor):
+            result = f"\u00ac({result})"
+        return result
+
+    def perform_action(self, action: str) -> str:
+        """Record a negated action in the agent's history."""
+        negated = self.apply_negation(action)
+        self.history.append(negated)
+        return negated
+
+    def evolve(self) -> str:
+        """Transition state and strengthen negation when active."""
+        previous = self.state
+        new_state = self.transition()
+        if previous != new_state and new_state != "Ego":
+            self.negation_factor += 1
+        return new_state
