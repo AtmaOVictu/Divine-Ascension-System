@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """An ontological agent capable of emotional transitions.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Initial ontological state (Ego, Jaz, Enotnost).
+    tension:
+        Initial tension level influencing transitions.
+    emotion:
+        Emotional intensity in range ``0.0`` to ``1.0``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,19 +20,26 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        # Keep a history of ontological states for introspection
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set ``emotion`` to ``value`` and increase ``tension``.
+
+        Parameters
+        ----------
+        value:
+            Emotional intensity to apply.
+        """
         self.emotion = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Directly set ``tension`` level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Transition between states when thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +49,13 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by the emotional state."""
+
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }
+
+        emotion_desc = "mirno" if self.emotion <= 0.5 else "z močnimi čustvi"
+        return f"{base.get(self.state, '')} Odgovarjam {emotion_desc}."
