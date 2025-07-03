@@ -1,26 +1,47 @@
+from dataclasses import dataclass, field
+from typing import Dict
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between states.
+
+    Parameters
+    ----------
+    name:
+        Display name of the agent.
+    state:
+        Initial ontological state. One of ``Ego``, ``Jaz`` or ``Enotnost``.
+    tension:
+        Current tension level driving transitions.
+    emotion:
+        Current emotion intensity. This influences ``tension``.
+    """
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: list = field(default_factory=list)
+    emotions: Dict[str, float] = field(default_factory=dict)
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set an emotion with a given intensity and update tension."""
+        self.emotions[name] = intensity
+        self.emotion = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform a state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
