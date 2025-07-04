@@ -29,6 +29,15 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def advance(self, emotion: float) -> str:
+        """Update emotion, adjust tension and attempt a transition."""
+        self.update_emotion(emotion)
+        return self.transition()
+
+    def is_complete(self) -> bool:
+        """Return True if the agent reached the final ontological state."""
+        return self.state == "Enotnost"
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
