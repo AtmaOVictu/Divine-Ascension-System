@@ -3,12 +3,31 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, potence: float = 1.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.potence = potence
+        self.connections = []
         self.history = [state]
+
+    def connect(self, other: "Agent") -> None:
+        """Record knowledge of another agent."""
+        if other is not self and other not in self.connections:
+            self.connections.append(other)
+
+    def share_potence(self, other: "Agent") -> float:
+        """Multiply potence with another agent to represent connection."""
+        self.connect(other)
+        return self.potence * other.potence
+
+    def divide_potence(self, other: "Agent") -> float:
+        """Divide potence by another agent's potence."""
+        self.connect(other)
+        if other.potence == 0:
+            return float('inf')
+        return self.potence / other.potence
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
