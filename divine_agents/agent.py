@@ -9,6 +9,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.step_count = 0
+        self.optimized_steps = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +38,26 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # Optimization and progression utilities
+    def seciraj(self) -> str:
+        """Create a new step and apply binary optimization."""
+        self.create_new_step()
+        binary = self.optimized_steps[-1]
+        return f"Step {self.step_count} created (binary {binary})"
+
+    def create_new_step(self) -> None:
+        """Increment the internal step counter and store binary optimization."""
+        self.step_count += 1
+        self.history.append(f"Step {self.step_count}")
+        self.apply_binary_optimization()
+
+    def apply_binary_optimization(self) -> None:
+        """Convert the current step count to binary for optimized tracking."""
+        binary = self.convert_to_binary(self.step_count)
+        self.optimized_steps.append(binary)
+
+    @staticmethod
+    def convert_to_binary(number: int) -> str:
+        """Return the binary representation of a number without prefix."""
+        return bin(number)[2:]
