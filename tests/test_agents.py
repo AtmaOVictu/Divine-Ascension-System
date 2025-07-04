@@ -1,4 +1,10 @@
 import unittest
+from pathlib import Path
+import sys
+
+# Ensure project root is on sys.path so tests run from any location
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
