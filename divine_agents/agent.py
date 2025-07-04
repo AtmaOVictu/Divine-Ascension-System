@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def __repr__(self) -> str:
+        """Return a developer-friendly representation of the agent."""
+        return (
+            f"Agent(name='{self.name}', state='{self.state}', "
+            f"tension={self.tension}, emotion={self.emotion})"
+        )
