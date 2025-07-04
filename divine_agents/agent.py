@@ -1,18 +1,28 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type or "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, kind: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if kind:
+            self.emotion_type = kind
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -26,13 +36,27 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            elif self.state == "Enotnost":
+                self.state = "Ego"
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type != "neutral":
+            return f"Z občutkom {self.emotion_type} pravim: {base}"
+        return base
+
+    def __str__(self) -> str:
+        return (
+            f"Agent {self.name}: State={self.state}, "
+            f"Tension={self.tension:.2f}, Emotion={self.emotion:.2f}, "
+            f"EmotionType={self.emotion_type}"
+        )
