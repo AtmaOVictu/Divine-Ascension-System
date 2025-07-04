@@ -10,6 +10,10 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_invalid_state(self):
+        with self.assertRaises(ValueError):
+            Agent("B", state="Invalid")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
