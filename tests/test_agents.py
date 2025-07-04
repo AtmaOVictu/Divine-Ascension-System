@@ -1,4 +1,12 @@
+import os
+import sys
 import unittest
+
+# Ensure divine_agents can be imported when running tests directly with pytest
+TEST_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if TEST_ROOT not in sys.path:
+    sys.path.insert(0, TEST_ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
