@@ -1,3 +1,5 @@
+"""Utility functions supporting philosophical conversations between agents."""
+
 from typing import List
 from .agent import Agent
 
@@ -16,4 +18,25 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def detailed_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+    """Conduct a more elaborate dialogue influenced by emotions.
+
+    The function updates each agent's emotion and triggers possible
+    state transitions according to the defined thresholds.
+    """
+    lines = [
+        f"{agent1.name} ({agent1.state}): {agent1.speak_about_truth()}",
+        f"{agent2.name} ({agent2.state}): {agent2.speak_about_truth()}",
+    ]
+
+    agent1.update_emotion(0.6)
+    agent2.update_emotion(0.6)
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.speak_about_truth()}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.speak_about_truth()}")
     return lines
