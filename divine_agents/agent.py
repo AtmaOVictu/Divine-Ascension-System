@@ -1,7 +1,28 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name: str
+        Human readable name of the agent.
+    state: str
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension: float
+        Accumulated tension influencing transitions.
+    emotion: float
+        Current emotional intensity. Higher values increase tension.
+    history: List[str]
+        Chronological record of states after each transition.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    RESPONSES = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+    THRESHOLD_TENSION = 0.7
+    THRESHOLD_EMOTION = 0.5
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -11,7 +32,7 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotional intensity and automatically adjust tension."""
         self.emotion = value
         self.tension += value
 
@@ -21,7 +42,10 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if (
+            self.tension > self.THRESHOLD_TENSION
+            or self.emotion > self.THRESHOLD_EMOTION
+        ):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -31,8 +55,4 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.RESPONSES.get(self.state, "")
