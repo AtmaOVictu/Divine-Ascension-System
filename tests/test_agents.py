@@ -1,4 +1,12 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure project root is on the Python path for module resolution
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +28,26 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_emotion_triggers_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_jaz_to_enotnost_transition(self):
+        agent = Agent("C", state="Jaz")
+        agent.update_tension(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
+
+    def test_no_progress_beyond_enotnost(self):
+        agent = Agent("D", state="Jaz")
+        agent.update_emotion(0.9)
+        agent.transition()
+        agent.update_tension(1.0)
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
 
 
 if __name__ == '__main__':
