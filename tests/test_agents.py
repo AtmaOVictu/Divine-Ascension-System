@@ -1,4 +1,13 @@
 import unittest
+import os
+import sys
+
+# Allow the tests to run without installing the package by adjusting sys.path
+TEST_DIR = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.join(TEST_DIR, os.pardir))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
