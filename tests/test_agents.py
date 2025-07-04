@@ -1,5 +1,10 @@
 import unittest
-from divine_agents.agent import Agent
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from divine_agents.agent import Agent, AntiAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -8,6 +13,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_antiagent_transition(self):
+        anti = AntiAgent("B", state="Enotnost")
+        anti.update_tension(0.9)
+        state = anti.transition()
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):
@@ -20,6 +31,7 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("fear" in line for line in lines))
 
 
 if __name__ == '__main__':
