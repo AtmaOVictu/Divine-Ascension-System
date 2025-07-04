@@ -30,9 +30,14 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the current emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            text = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            text = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            text = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            text += " Čutim močan čustveni naboj glede tega."
+        return text
