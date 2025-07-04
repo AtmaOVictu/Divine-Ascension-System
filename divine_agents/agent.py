@@ -3,12 +3,25 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str = "neutral",
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
+
+    def set_emotion(self, kind: str, intensity: float) -> None:
+        """Set emotion type and intensity, adjusting tension."""
+        self.emotion_type = kind
+        self.update_emotion(intensity)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -31,8 +44,20 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }
+        response = base.get(self.state, "")
+
+        if self.emotion_type == "fear":
+            prefix = "V strahu"
+        elif self.emotion_type == "anger":
+            prefix = "Z jezo"
+        elif self.emotion_type == "joy":
+            prefix = "Z veseljem"
+        else:
+            prefix = ""
+
+        return f"{prefix} {response}".strip()
