@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Identifier of the agent.
+    state:
+        Starting ontological state (``"Ego"``, ``"Jaz"`` or ``"Enotnost"``).
+    tension:
+        Current level of tension influencing transitions.
+    emotion:
+        Intensity of the current emotion.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,11 +20,13 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, name: str = "neutral") -> None:
+        """Update emotion intensity and name, adjusting tension accordingly."""
         self.emotion = value
+        self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -20,7 +34,11 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        The agent moves from ``Ego`` -> ``Jaz`` -> ``Enotnost`` when either
+        :pyattr:`tension` exceeds ``0.7`` or :pyattr:`emotion` exceeds ``0.5``.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
