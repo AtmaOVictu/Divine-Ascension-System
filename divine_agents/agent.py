@@ -19,6 +19,12 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def apply_influence(self, emotion_delta: float, tension_delta: float) -> str:
+        """Increase emotion and tension then attempt a state transition."""
+        self.emotion += emotion_delta
+        self.tension += tension_delta + emotion_delta
+        return self.transition()
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -36,3 +42,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def philosophical_statement(self) -> str:
+        """Return a statement about truth based on the current state."""
+        return self.respond("Kaj je resnica?")

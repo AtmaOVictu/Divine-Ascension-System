@@ -17,3 +17,14 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def philosophical_debate(agent1: Agent, agent2: Agent, rounds: int = 1) -> List[str]:
+    """Simulate a multi-round debate where emotions influence transitions."""
+    transcript: List[str] = []
+    for _ in range(rounds):
+        transcript.append(f"{agent1.name} ({agent1.state}): {agent1.philosophical_statement()}")
+        transcript.append(f"{agent2.name} ({agent2.state}): {agent2.philosophical_statement()}")
+        transcript.append(f"{agent1.name} prehaja v stanje: {agent1.apply_influence(0.4, 0.3)}")
+        transcript.append(f"{agent2.name} prehaja v stanje: {agent2.apply_influence(0.4, 0.3)}")
+    return transcript
