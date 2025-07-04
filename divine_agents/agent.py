@@ -19,14 +19,24 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+    def log_history(self, filepath: str) -> None:
+        """Append the current state with a timestamp to the given file."""
+        from datetime import datetime
+        timestamp = datetime.now().isoformat()
+        line = f"{timestamp}: {self.state}\n"
+        with open(filepath, "a", encoding="utf-8") as f:
+            f.write(line)
+
+    def transition(self, log_path: str | None = None) -> str:
+        """Perform state transition if thresholds are exceeded and optionally log."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        if log_path:
+            self.log_history(log_path)
         return self.state
 
     def respond(self, question: str) -> str:
