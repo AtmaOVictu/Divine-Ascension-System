@@ -1,3 +1,6 @@
+from .evolution import evolution_function, transition_res
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +12,20 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+
+    def calculate_progress(self, t: float) -> float:
+        """Return progress using a logistic curve."""
+        return evolution_function(t)
+
+    def evolve(self, t: float) -> str:
+        """Evolve state based on non-linear progress."""
+        progress = self.calculate_progress(t)
+        if progress > 0.7:
+            self.state = "Jaz"
+        if progress > 0.9:
+            self.state = "Enotnost"
+        self.history.append(self.state)
+        return transition_res(progress)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
