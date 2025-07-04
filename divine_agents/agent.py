@@ -10,6 +10,13 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def __repr__(self) -> str:
+        """Return string representation with name and current state."""
+        return (
+            f"<Agent {self.name} state={self.state} "
+            f"tension={self.tension:.2f} emotion={self.emotion:.2f}>"
+        )
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
