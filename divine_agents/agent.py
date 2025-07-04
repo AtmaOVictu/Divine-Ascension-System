@@ -31,8 +31,19 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = self._emotion_prefix()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            core = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            core = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            core = "Vse resnice so eno, medsebojno povezane."
+        return f"{prefix}{core}"
+
+    def _emotion_prefix(self) -> str:
+        """Return a short prefix describing the emotional intensity."""
+        if self.emotion > 0.7:
+            return "Z veliko čustev, "
+        if self.emotion > 0.3:
+            return "Mirno, "
+        return ""
