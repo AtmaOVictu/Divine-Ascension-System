@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.last_cause = None
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +19,29 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def apply_force(self, force_type: str, value: float) -> None:
+        """Apply an external or internal influence.
+
+        Parameters
+        ----------
+        force_type: str
+            One of ``"external"``, ``"internal"``, or ``"previous"`` to denote
+            the origin of the influence.
+        value: float
+            Intensity of the influence.
+        """
+        if force_type == "external":
+            self.update_tension(value)
+        elif force_type == "internal":
+            self.update_emotion(value)
+        elif force_type == "previous":
+            self.update_emotion(value * 0.5)
+            self.update_tension(value * 0.5)
+        else:
+            raise ValueError("Invalid force type")
+
+        self.last_cause = force_type
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -30,9 +54,16 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            return base + " Čutim to zelo intenzivno."
+        if self.emotion < 0.3:
+            return base + " Govorim mirno."
+        return base
