@@ -3,6 +3,23 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
+    #: Mapping of emotion labels to intensity values.
+    EMOTION_LEVELS = {
+        "fear": 0.8,
+        "anger": 0.7,
+        "joy": 0.6,
+        "sorrow": 0.5,
+        "doubt": 0.6,
+        "neutral": 0.0,
+    }
+
+    #: Philosophical response per ontological state.
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
@@ -10,8 +27,9 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion: str) -> None:
+        """Update emotion intensity based on an emotion label."""
+        value = self.EMOTION_LEVELS.get(emotion, 0.0)
         self.emotion = value
         self.tension += value
 
@@ -31,8 +49,8 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.PHILOSOPHY.get(self.state, "")
+
+    def speak(self) -> str:
+        """Return the agent's current philosophical position."""
+        return self.respond("Kaj je resnica?")
