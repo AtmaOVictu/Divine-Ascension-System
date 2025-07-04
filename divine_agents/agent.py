@@ -1,7 +1,25 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Agent identifier.
+    state: str, optional
+        Initial ontological state. Defaults to ``"Ego"``.
+    tension: float, optional
+        Initial tension level.
+    emotion: float, optional
+        Initial emotion intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    _MOODS = {
+        "low": "mirno",
+        "medium": "resno",
+        "high": "razburjeno",
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -29,10 +47,23 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    # ------------------------------------------------------------------
+    # Dialogue helpers
+    # ------------------------------------------------------------------
+
+    def mood(self) -> str:
+        """Return a textual representation of the agent's current mood."""
+        if self.emotion > 0.7:
+            return self._MOODS["high"]
+        if self.emotion > 0.3:
+            return self._MOODS["medium"]
+        return self._MOODS["low"]
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        mood = self.mood()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"[{mood}] Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"[{mood}] Resnica je relativna, oblikovana z našimi odnosi."
+        return f"[{mood}] Vse resnice so eno, medsebojno povezane."
