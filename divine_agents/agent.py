@@ -36,3 +36,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def fully_transform(self) -> str:
+        """Transition through all states until reaching Enotnost."""
+        while self.state != "Enotnost":
+            # Increase emotion to trigger transitions
+            self.update_emotion(0.8)
+            self.transition()
+        return self.state
