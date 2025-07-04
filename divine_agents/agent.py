@@ -1,9 +1,37 @@
+"""Core agent functionality used throughout the Codex examples.
+
+Each agent can exist in three ontological states:
+```
+Ego -> Jaz -> Enotnost
+```
+Transitions are triggered when either ``tension`` exceeds ``0.7`` or
+``emotion`` exceeds ``0.5``.  The class stores a history of states so tests can
+verify how the agent evolves during a dialogue.
+"""
+
+from __future__ import annotations
+
+from enum import Enum
+
+
+class OntologicalState(Enum):
+    """Enumeration of supported philosophical states."""
+
+    EGO = "Ego"
+    JAZ = "Jaz"
+    ENOTNOST = "Enotnost"
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: OntologicalState = OntologicalState.EGO,
+        tension: float = 0.0,
+        emotion: float = 0.0,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -19,20 +47,20 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
+    def transition(self) -> OntologicalState:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+            if self.state is OntologicalState.EGO:
+                self.state = OntologicalState.JAZ
+            elif self.state is OntologicalState.JAZ:
+                self.state = OntologicalState.ENOTNOST
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
+        if self.state is OntologicalState.EGO:
             return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
+        if self.state is OntologicalState.JAZ:
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
