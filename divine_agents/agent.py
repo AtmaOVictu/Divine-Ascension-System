@@ -1,3 +1,6 @@
+from typing import Dict
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,11 +12,28 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Track individual emotions that may influence tension
+        self.emotions: Dict[str, float] = {"generic": emotion}
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, value: float, kind: str = "generic") -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value:
+            Intensity of the emotion in range ``0``-``1``.
+        kind:
+            Name of the emotion (e.g. ``"fear"``, ``"joy"``, ``"anger"``).
+        """
+        self.emotions[kind] = value
+        # Aggregate emotion intensity as the strongest current feeling
+        self.emotion = max(self.emotions.values())
+
+        # Fear and anger add tension, joy can calm the agent
+        if kind in {"fear", "anger", "generic"}:
+            self.tension += value
+        elif kind == "joy":
+            self.tension = max(0.0, self.tension - value / 2)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
