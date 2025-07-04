@@ -1,6 +1,16 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+
+try:
+    from divine_agents.agent import Agent
+    from divine_agents.dialogue import philosophical_dialogue
+except ModuleNotFoundError:  # fallback for editable installs
+    import os
+    import sys
+
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    sys.path.append(repo_root)
+    from divine_agents.agent import Agent
+    from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
