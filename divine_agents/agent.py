@@ -29,6 +29,17 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def activate_opposite_state(self) -> str:
+        """Switch to the opposite ontological state."""
+        if self.state == "Ego":
+            self.state = "Jaz"
+        elif self.state == "Jaz":
+            self.state = "Ego"
+        else:
+            self.state = "Ego"
+        self.history.append(self.state)
+        return self.state
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
