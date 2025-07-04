@@ -3,16 +3,26 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type or "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
+        """Update emotion intensity and type and adjust tension accordingly."""
         self.emotion = value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -36,3 +46,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Respond while reflecting emotional state."""
+        base = self.respond(question)
+        if self.emotion_type == "anger":
+            prefix = "(jezen) "
+        elif self.emotion_type == "joy":
+            prefix = "(vesel) "
+        elif self.emotion_type == "fear":
+            prefix = "(prestrašen) "
+        else:
+            prefix = ""
+        return prefix + base
