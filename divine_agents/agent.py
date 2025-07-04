@@ -29,10 +29,21 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _tone(self) -> str:
+        """Return a textual description of the emotional tone."""
+        if self.emotion >= 0.7:
+            return "z jezo"
+        if self.emotion >= 0.3:
+            return "odločno"
+        return "mirno"
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = self._tone()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            msg = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            msg = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            msg = "Vse resnice so eno, medsebojno povezane."
+        return f"{prefix}, {msg}"
