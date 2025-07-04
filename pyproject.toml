@@ -1,0 +1,12 @@
+[project]
+name = "divine_agents"
+version = "0.1.0"
+description = "Dynamic agent-based system based on an ontological framework"
+requires-python = ">=3.8"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "-q"
