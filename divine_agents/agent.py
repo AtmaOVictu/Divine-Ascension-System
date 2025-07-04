@@ -1,26 +1,51 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Identifier for the agent.
+    state: str, optional
+        Initial ontological state (default ``"Ego"``).
+    tension: float, optional
+        Initial tension level ``[0, 1]``.
+    emotion: float, optional
+        Initial emotion intensity ``[0, 1]``.
+    emotion_type: str, optional
+        Descriptive emotion label (e.g. ``"fear"``).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral") -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
-        self.tension += value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
+        # emotion contributes to tension growth
+        self.tension = min(1.0, self.tension + value)
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level within [0, 1]."""
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        Returns
+        -------
+        str
+            The new state after transition (or current state if no change).
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
