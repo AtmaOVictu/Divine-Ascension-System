@@ -17,3 +17,34 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def dynamic_debate(agent1: Agent, agent2: Agent, steps: int = 3) -> List[str]:
+    """Run a dynamic philosophical debate updating emotions and states."""
+    transcript: List[str] = []
+    for _ in range(steps):
+        transcript.append(
+            f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+        )
+        transcript.append(
+            f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+        )
+
+        if agent1.state != agent2.state:
+            agent1.update_emotion(0.3)
+            agent2.update_emotion(0.3)
+        else:
+            agent1.update_emotion(-0.2)
+            agent2.update_emotion(-0.2)
+
+        agent1.transition()
+        agent2.transition()
+
+        transcript.append(
+            f"{agent1.name} prehaja v stanje: {agent1.state}"
+        )
+        transcript.append(
+            f"{agent2.name} prehaja v stanje: {agent2.state}"
+        )
+
+    return transcript

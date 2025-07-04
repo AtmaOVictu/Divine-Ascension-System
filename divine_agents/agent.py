@@ -10,10 +10,10 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, delta: float) -> None:
+        """Adjust emotion level and update tension accordingly."""
+        self.emotion += delta
+        self.tension += delta
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +30,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
+        emotion_note = ""
+        if self.emotion > 0.5:
+            emotion_note = " (strastno)"
+        elif self.emotion < -0.5:
+            emotion_note = " (mirno)"
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
