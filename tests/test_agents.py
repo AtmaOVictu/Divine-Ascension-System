@@ -14,12 +14,20 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+        self.assertIn("ego_ratio", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_ratio_updates(self):
+        agent = Agent("R")
+        agent.update_tension(0.8)
+        agent.transition()
+        self.assertLess(agent.ego_ratio, 0.49)
+        self.assertGreater(agent.jaz_ratio, 0.51)
 
 
 if __name__ == '__main__':
