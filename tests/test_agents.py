@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.curiosity import CuriousAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestCuriousAgent(unittest.TestCase):
+    def test_explore_progression(self):
+        agent = CuriousAgent("C")
+        initial_dim = agent.DIMENSIONS[agent.phase]
+        message = agent.explore()
+        self.assertIn(initial_dim, message)
+        self.assertIn(agent.state, message)
 
 
 if __name__ == '__main__':
