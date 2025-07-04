@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_seciraj_step(self):
+        agent = Agent("A")
+        message = agent.seciraj()
+        self.assertEqual(agent.step_count, 1)
+        self.assertIn("binary", message)
+        self.assertEqual(agent.optimized_steps[0], "1")
+
 
 if __name__ == '__main__':
     unittest.main()
