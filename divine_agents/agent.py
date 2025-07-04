@@ -1,3 +1,10 @@
+"""Core agent logic for the Divine-Ascension system."""
+
+# Thresholds used for state transitions
+EMOTION_THRESHOLD = 0.5
+TENSION_THRESHOLD = 0.7
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -21,7 +28,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > TENSION_THRESHOLD or self.emotion > EMOTION_THRESHOLD:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
