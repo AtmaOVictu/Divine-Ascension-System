@@ -1,3 +1,9 @@
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -14,19 +20,25 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        logger.info(
+            "%s emotion updated to %.2f, tension=%.2f", self.name, self.emotion, self.tension
+        )
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        logger.info("%s tension set to %.2f", self.name, self.tension)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        logger.info("%s transitioned from %s to %s", self.name, previous, self.state)
         return self.state
 
     def respond(self, question: str) -> str:
