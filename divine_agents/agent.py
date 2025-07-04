@@ -36,3 +36,15 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def analyze_phase(self) -> str:
+        """Return an analysis string describing the current ontological state."""
+        if self.state == "Ego":
+            return f"{self.name} raziskuje notranjo absolutno resnico."
+        if self.state == "Jaz":
+            return f"{self.name} raziskuje relativno resnico v odnosih."
+        return f"{self.name} čuti enotnost vseh resnic."
+
+    def hold_state(self) -> str:
+        """Return a statement indicating the agent remains in the same state."""
+        return f"{self.name} ostaja v stanju {self.state}."
