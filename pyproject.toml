@@ -1,0 +1,4 @@
+[project]
+name = "divine-ascension-system"
+version = "0.1.0"
+packages = ["divine_agents"]
