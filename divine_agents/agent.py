@@ -1,5 +1,20 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name : str
+        Unique identifier for the agent.
+    state : str, optional
+        Ontological phase (one of ``Ego``, ``Jaz``, ``Enotnost``).
+        Defaults to ``"Ego"``.
+    tension : float, optional
+        Internal stress level on a ``0.0``-``1.0`` scale. Defaults to ``0.0``.
+        Values above ``0.7`` may trigger a state change.
+    emotion : float, optional
+        Emotional intensity on a ``0.0``-``1.0`` scale. Defaults to ``0.0``.
+        Values above ``0.5`` may trigger a state change.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
