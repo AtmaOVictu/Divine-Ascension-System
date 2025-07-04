@@ -29,10 +29,21 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _emotion_prefix(self) -> str:
+        """Return a textual prefix based on the current emotion level."""
+        if self.emotion > 0.7:
+            return "Strastno"
+        if self.emotion > 0.3:
+            return "Čustveno"
+        return "Mirno"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        prefix = self._emotion_prefix()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{prefix}: {base}"
