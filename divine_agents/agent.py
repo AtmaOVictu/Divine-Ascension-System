@@ -14,10 +14,12 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.transition()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.transition()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
