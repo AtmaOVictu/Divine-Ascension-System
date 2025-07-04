@@ -1,14 +1,32 @@
+"""Ontological agent model."""
+
+from dataclasses import dataclass, field
+
+
+def numerology_value(word: str) -> int:
+    """Calculate the numerological value of a word using a=1, b=2 ..."""
+    return sum(ord(c.lower()) - 96 for c in word if c.isalpha())
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: list[str] = field(default_factory=list)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    SYMBOLS = {
+        "Ego": "⊘",
+        "Jaz": "∫(dru/x)",
+        "Enotnost": "RES001",
+    }
+
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
+        self.num_value = numerology_value(self.state)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,12 +45,24 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.num_value = numerology_value(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            principle = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            principle = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            principle = "Vse resnice so eno, medsebojno povezane."
+        return principle
+
+    def symbol(self) -> str:
+        """Return symbolic representation of the current state."""
+        return self.SYMBOLS.get(self.state, self.state)
+
+    def philosophical_line(self, question: str) -> str:
+        """Generate a dialogue line incorporating state and emotion."""
+        base = self.respond(question)
+        return f"{self.name} ({self.symbol()}): {base} (čustvo={self.emotion:.2f})"
