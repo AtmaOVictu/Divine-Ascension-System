@@ -1,4 +1,11 @@
+import sys
+from pathlib import Path
 import unittest
+
+# Ensure the project root is on sys.path so imports work when tests are
+# executed directly via ``pytest`` or ``python tests/test_agents.py``.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
