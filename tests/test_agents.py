@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import RES_STATES, simulate_process_e
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_res_states_defined(self):
+        self.assertIn("RES000", RES_STATES)
+        self.assertIn("RES100", RES_STATES)
+
+    def test_simulate_process_e(self):
+        agent = Agent("A")
+        history = simulate_process_e(agent)
+        self.assertEqual(history[-1], "Enotnost")
 
 
 if __name__ == '__main__':
