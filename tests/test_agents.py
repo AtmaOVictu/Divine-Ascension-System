@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, Path(__file__).resolve().parents[1].as_posix())
+
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
