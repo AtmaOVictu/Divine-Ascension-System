@@ -20,12 +20,26 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition when thresholds are crossed.
+
+        Transitions occur forward when tension or emotion exceed upper
+        thresholds and backward when both fall below lower thresholds.
+        """
+
+        # Forward transitions
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+
+        # Backward transitions
+        if self.tension < 0.3 and self.emotion < 0.2:
+            if self.state == "Enotnost":
+                self.state = "Jaz"
+            elif self.state == "Jaz":
+                self.state = "Ego"
+
         self.history.append(self.state)
         return self.state
 
