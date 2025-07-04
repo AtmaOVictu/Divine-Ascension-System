@@ -3,17 +3,41 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str = "neutral",
+    ) -> None:
+        """Initialize the agent with state, tension and emotion settings."""
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
+        """Update emotion intensity and adjust tension.
+
+        Parameters
+        ----------
+        value:
+            Intensity of the emotion in the ``0-1`` range.
+        emotion_type:
+            Optional name of the emotion (e.g. ``"fear"`` or ``"joy"``).
+        """
         self.emotion = value
-        self.tension += value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
+
+        # Negative emotions cause a larger tension increase
+        if self.emotion_type in {"fear", "anger"}:
+            self.tension += value
+        else:
+            self.tension += value * 0.5
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +56,17 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        emotion_prefix = {
+            "fear": "V strahu",
+            "joy": "V radosti",
+            "anger": "V jezi",
+            "sorrow": "V žalosti",
+        }.get(self.emotion_type, "")
+
+        return f"{emotion_prefix} {base}".strip()
