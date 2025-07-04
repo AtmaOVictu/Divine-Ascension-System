@@ -1,13 +1,15 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional state transitions and responses."""
 
+    #: valid ontological states
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        # store state history for debugging
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -19,8 +21,17 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    @property
+    def principle(self) -> str:
+        """Return the philosophical principle tied to the current state."""
+        if self.state == "Ego":
+            return "Resnica je absolutna in neodvisna od drugih."
+        if self.state == "Jaz":
+            return "Resnica je relativna, oblikovana z našimi odnosi."
+        return "Vse resnice so eno, medsebojno povezane."
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotional thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +41,8 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by state and emotion."""
+        base = self.principle
+        if self.emotion > 0.5:
+            return f"{base} Čutim intenzivna čustva ({self.emotion:.2f})."
+        return base
