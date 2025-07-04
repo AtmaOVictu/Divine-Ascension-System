@@ -1,5 +1,20 @@
+"""Core module defining the :class:`Agent` used in philosophical debates."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Human readable identifier of the agent.
+    state:
+        Starting ontological state. One of ``"Ego"``, ``"Jaz"`` or ``"Enotnost"``.
+    tension:
+        Initial tension level influencing transitions.
+    emotion:
+        Initial emotional intensity influencing transitions.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +33,19 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def _emotion_descriptor(self) -> str:
+        """Return a short descriptor based on the current emotion."""
+        if self.emotion > 0.7:
+            return "strastno"
+        if self.emotion > 0.3:
+            return "umirjeno"
+        return "mirno"
+
+    def speak_about_truth(self, question: str = "Kaj je resnica?") -> str:
+        """Return an answer coloured by the agent's emotion."""
+        base = self.respond(question)
+        return f"{self._emotion_descriptor()} odgovori: {base}"
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
