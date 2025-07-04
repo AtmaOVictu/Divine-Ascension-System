@@ -2,6 +2,7 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    OPPOSITES = {"Ego": "Jaz", "Jaz": "Enotnost", "Enotnost": "Ego"}
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -26,6 +27,12 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        self.history.append(self.state)
+        return self.state
+
+    def activate_opposite_state(self) -> str:
+        """Switch to the opposite philosophical state."""
+        self.state = self.OPPOSITES.get(self.state, self.state)
         self.history.append(self.state)
         return self.state
 
