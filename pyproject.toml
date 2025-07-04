@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "divine-ascension-system"
+version = "0.1.0"
+description = "Dynamic agent-based system based on ontological framework"
+authors = [{name = "Unknown", email = "unknown@example.com"}]
+requires-python = ">=3.8"
+readme = "README.md"
+keywords = ["agents", "ontology", "philosophy"]
+dependencies = []
+
+[project.urls]
+Homepage = "https://example.com"
+
