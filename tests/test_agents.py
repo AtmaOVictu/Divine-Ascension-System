@@ -18,7 +18,8 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        # Provide explicit emotion values to ensure dialogue remains consistent
+        lines = philosophical_dialogue(a1, a2, agent1_emotion=0.8, agent2_emotion=0.6)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
