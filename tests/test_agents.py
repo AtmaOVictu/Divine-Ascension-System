@@ -21,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_extended_dialogue_emotions(self):
+        """Ensure dialogue includes anger, joy and sorrow labels."""
+        a1 = Agent("X1")
+        a2 = Agent("X2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2)
+        text = "\n".join(lines)
+        self.assertIn("anger", text)
+        self.assertIn("joy", text)
+        self.assertIn("sorrow", text)
+
 
 if __name__ == '__main__':
     unittest.main()
