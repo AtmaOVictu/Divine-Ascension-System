@@ -1,3 +1,5 @@
+"""Utilities for simulating philosophical dialogue between agents."""
+
 from typing import List
 from .agent import Agent
 
@@ -17,3 +19,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+if __name__ == "__main__":
+    a1 = Agent("A1")
+    a2 = Agent("A2", state="Jaz")
+    for line in philosophical_dialogue(a1, a2):
+        print(line)
