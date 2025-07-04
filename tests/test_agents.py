@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+# Ensure project root is on the import path when tests are executed
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -7,6 +13,20 @@ class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
         agent.update_tension(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+        # Transition should not occur when below thresholds
+        agent = Agent("B")
+        agent.update_tension(0.6)
+        # Emotion below threshold keeps combined tension low enough
+        agent.update_emotion(0.1)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
+    def test_transition_by_emotion(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6, "strah")
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
@@ -19,6 +39,9 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        # Expect references to philosophical standpoints from both agents
+        self.assertTrue(any("absolutna" in line for line in lines))
+        self.assertTrue(any("relativna" in line for line in lines))
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
