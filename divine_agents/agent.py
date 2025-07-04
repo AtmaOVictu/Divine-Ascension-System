@@ -1,3 +1,7 @@
+from datetime import datetime
+from typing import Optional, Dict, List
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,7 +12,8 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history: List[Dict[str, object]] = []
+        self.log_transition(None, state, tension, emotion, notes="initial")
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,13 +26,35 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        prev_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+
+        if self.state != prev_state:
+            self.log_transition(prev_state, self.state, self.tension, self.emotion)
         return self.state
+
+    def log_transition(
+        self,
+        prev_state: Optional[str],
+        new_state: str,
+        tension: float,
+        emotion: float,
+        notes: Optional[str] = None,
+    ) -> None:
+        """Record a state change entry with timestamp."""
+        entry = {
+            "timestamp": datetime.utcnow(),
+            "from": prev_state,
+            "to": new_state,
+            "tension": tension,
+            "emotion": emotion,
+            "notes": notes,
+        }
+        self.history.append(entry)
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
