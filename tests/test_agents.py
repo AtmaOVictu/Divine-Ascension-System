@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.cycle import OuroborosCycle
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -22,5 +23,16 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestOuroborosCycle(unittest.TestCase):
+    def test_full_cycle(self):
+        oc = OuroborosCycle()
+        oc.cycle()  # Ego -> Jaz
+        oc.cycle()  # Jaz -> Enotnost
+        state = oc.cycle()  # Enotnost -> Ego
+        self.assertEqual(state, "Ego")
+        self.assertEqual(oc.get_history(), ["Ego", "Jaz", "Enotnost", "Ego"])
+
+
 if __name__ == '__main__':
     unittest.main()
+
