@@ -3,11 +3,23 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        *,
+        tension_threshold: float = 0.7,
+        emotion_threshold: float = 0.5,
+    ) -> None:
+        """Initialize the agent with optional configurable thresholds."""
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.tension_threshold = tension_threshold
+        self.emotion_threshold = emotion_threshold
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -21,7 +33,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > self.tension_threshold or self.emotion > self.emotion_threshold:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -32,7 +44,19 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{base} (emocija: {self.emotion_label()})"
+
+    def emotion_label(self) -> str:
+        """Return a simple textual label for the current emotion level."""
+        if self.emotion > 0.7:
+            return "visoka"
+        if self.emotion > 0.3:
+            return "srednja"
+        return "nizka"
+
