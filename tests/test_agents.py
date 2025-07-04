@@ -21,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_custom_dialogue(self):
+        a1 = Agent("X")
+        a2 = Agent("Y", state="Jaz")
+        lines, states = philosophical_dialogue(
+            a1,
+            a2,
+            emotion1_inc=0.9,
+            emotion2_inc=0.9,
+            exchanges=3,
+            return_states=True,
+        )
+        self.assertEqual(states, ("Enotnost", "Enotnost"))
+        self.assertEqual(len(lines), 10)
+
 
 if __name__ == '__main__':
     unittest.main()
