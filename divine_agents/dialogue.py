@@ -17,3 +17,19 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+from .opposite_agent import OppositeAgent
+
+
+def opposing_dialogue(agent1: OppositeAgent, agent2: OppositeAgent) -> List[str]:
+    """Dialogue demonstrating contradictory transitions between agents."""
+    lines = []
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    lines.append(f"{agent1.name} prehaja v nasprotno stanje: {agent1.contradiction_transition(0.6)}")
+    lines.append(f"{agent2.name} prehaja v nasprotno stanje: {agent2.contradiction_transition(0.8)}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
