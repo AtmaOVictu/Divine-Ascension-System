@@ -21,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_transition_history(self):
+        agent = Agent("H")
+        agent.update_tension(0.9)
+        agent.transition()
+        self.assertEqual(len(agent.history.get()), 1)
+        record = agent.history.get()[0]
+        self.assertEqual(record.previous_state, "Ego")
+        self.assertEqual(record.new_state, "Jaz")
+        self.assertGreaterEqual(record.tension, 0.9)
+
 
 if __name__ == '__main__':
     unittest.main()

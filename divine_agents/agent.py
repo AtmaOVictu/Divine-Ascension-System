@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from .history import History
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,7 +13,8 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.state_history = [state]
+        self.history = History()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,12 +27,14 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        self.state_history.append(self.state)
+        self.history.add(previous_state, self.state, self.tension, self.emotion)
         return self.state
 
     def respond(self, question: str) -> str:
