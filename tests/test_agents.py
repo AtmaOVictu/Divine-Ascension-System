@@ -21,6 +21,24 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_emotion_only_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_sequential_transitions(self):
+        agent = Agent("C")
+        agent.update_emotion(0.6)
+        first_state = agent.transition()
+        self.assertEqual(first_state, "Jaz")
+        self.assertIn("relativna", agent.respond("Kaj je resnica?"))
+
+        agent.update_tension(0.8)
+        second_state = agent.transition()
+        self.assertEqual(second_state, "Enotnost")
+        self.assertIn("medsebojno povezane", agent.respond("Kaj je resnica?"))
+
 
 if __name__ == '__main__':
     unittest.main()
