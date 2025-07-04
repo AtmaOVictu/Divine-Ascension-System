@@ -21,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_phase_manipulation(self):
+        agent = Agent("A")
+        start = agent.phase
+        agent.evolve()
+        self.assertEqual(agent.phase, start + 1)
+        agent.degrade()
+        self.assertEqual(agent.phase, start)
+
+
 
 if __name__ == '__main__':
     unittest.main()

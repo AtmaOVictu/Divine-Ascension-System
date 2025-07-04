@@ -1,13 +1,15 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and phases."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, phase: int = 1):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.phase = phase
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +20,27 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    # -------------------------------
+    # Phase manipulation operations
+    # -------------------------------
+
+    def evolve(self) -> int:
+        """Move the agent one phase forward."""
+        if self.phase < 100:
+            self.phase += 1
+        return self.phase
+
+    def permute(self, shift: int = 1) -> int:
+        """Change the current phase by ``shift`` within the allowed range."""
+        self.phase = max(1, min(100, self.phase + shift))
+        return self.phase
+
+    def degrade(self) -> int:
+        """Move the agent one phase backward if possible."""
+        if self.phase > 1:
+            self.phase -= 1
+        return self.phase
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
