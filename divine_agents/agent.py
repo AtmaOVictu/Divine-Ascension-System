@@ -1,5 +1,12 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Each agent maintains an ontological ``state`` (``Ego``, ``Jaz`` or
+    ``Enotnost``) together with numeric ``tension`` and ``emotion`` levels.
+    When either the tension exceeds ``0.7`` or emotion exceeds ``0.5`` the
+    agent automatically advances to the next state according to the
+    philosophical principles defined for this project.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -29,10 +36,15 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def principle(self) -> str:
+        """Return the philosophical principle of the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical answer influenced by emotion."""
+        base = self.principle()
+        return f"[{self.emotion:.2f}] {base}"
