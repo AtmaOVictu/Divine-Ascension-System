@@ -17,3 +17,19 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def philosophical_debate(agent1: Agent, agent2: Agent, rounds: int = 2) -> List[str]:
+    """Run a multi-round debate adjusting emotions and tracking transitions."""
+    transcript = []
+    for i in range(rounds):
+        transcript.extend(philosophical_dialogue(agent1, agent2))
+        transcript.append(
+            f"Krog {i+1}: {agent1.name} je v stanju {agent1.state}, {agent2.name} je v stanju {agent2.state}"
+        )
+        # increase tension slightly for next round
+        agent1.update_tension(0.4)
+        agent2.update_tension(0.4)
+        agent1.transition()
+        agent2.transition()
+    return transcript
