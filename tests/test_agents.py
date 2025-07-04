@@ -1,4 +1,11 @@
 import unittest
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -14,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_emotion_influence(self):
+        agent = Agent("B")
+        agent.update_emotion(0.9, "fear")
+        self.assertGreater(agent.tension, 0.7)
+        agent.transition()
+        self.assertEqual(agent.state, "Jaz")
 
     def test_dialogue(self):
         a1 = Agent("A1")
