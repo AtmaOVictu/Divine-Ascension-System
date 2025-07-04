@@ -9,9 +9,14 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Track individual emotions to influence tension and dialogue
+        self.emotions = {"fear": 0.0, "joy": 0.0, "anger": 0.0}
+        self.current_emotion = None
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion: str, value: float) -> None:
+        """Update a specific emotion and adjust tension accordingly."""
+        self.current_emotion = emotion
+        self.emotions[emotion] = value
         self.emotion = value
         self.tension += value
 
@@ -30,9 +35,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.current_emotion:
+            return f"({self.current_emotion}) {base}"
+        return base
