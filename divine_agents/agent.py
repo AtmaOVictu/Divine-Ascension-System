@@ -4,6 +4,27 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Initialize a new agent.
+
+        Parameters
+        ----------
+        name:
+            The agent's display name.
+        state:
+            Initial ontological state. Must be one of :data:`STATES`.
+        tension:
+            Starting tension level.
+        emotion:
+            Starting emotion intensity.
+
+        Raises
+        ------
+        ValueError
+            If ``state`` is not a valid ontological state.
+        """
+        if state not in self.STATES:
+            raise ValueError(f"Invalid state: {state}")
+
         self.name = name
         self.state = state
         self.tension = tension
