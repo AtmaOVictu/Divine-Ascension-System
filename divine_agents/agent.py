@@ -1,3 +1,6 @@
+"""Core agent logic for ontological state transitions and responses."""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -19,6 +22,9 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    # --------------------------------------------------------------
+    # Transition Logic
+    # --------------------------------------------------------------
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -31,8 +37,16 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+        if self.emotion > 0.5:
+            return f"Močna čustva me vodijo. {base}"
+        return base
+
+    def speak(self, question: str) -> str:
+        """Return formatted response line for dialogue."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}): {answer}"
