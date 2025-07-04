@@ -21,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_emotion_triggered_transition(self):
+        agent = Agent("B", state="Jaz")
+        agent.update_emotion(0.6, "fear")
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
+
+    def test_dialogue_emotional_responses(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2)
+        # After dialogue agent1 should move to Jaz and mention emotion
+        self.assertIn("Jaz", a1.state)
+        self.assertTrue(any("jezo" in line or "radost" in line for line in lines))
+
 
 if __name__ == '__main__':
     unittest.main()
