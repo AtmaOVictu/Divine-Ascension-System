@@ -1,4 +1,11 @@
 import unittest
+import os
+import sys
+
+# Ensure repository root is on the import path so tests run when executed
+# directly or via pytest from any working directory.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +27,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("anger" in line for line in lines))
+
+    def test_emotion_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6, name="fear")
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
 
 
 if __name__ == '__main__':
