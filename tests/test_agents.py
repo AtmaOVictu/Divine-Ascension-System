@@ -9,11 +9,20 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+        self.assertEqual(len(agent.history), 2)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_no_duplicate_history(self):
+        agent = Agent("A")
+        agent.update_tension(0.8)
+        agent.transition()
+        agent.update_tension(0.3)
+        agent.transition()
+        self.assertEqual(len(agent.history), 2)
 
     def test_dialogue(self):
         a1 = Agent("A1")
