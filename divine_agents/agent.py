@@ -1,18 +1,22 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions based on emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if emotion_type:
+            self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +34,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        emotional_tag = f" (\u010dustvo: {self.emotion_type}, intenziteta: {self.emotion:.1f})"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotional_tag
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z na\u0161imi odnosi." + emotional_tag
+        return "Vse resnice so eno, medsebojno povezane." + emotional_tag
