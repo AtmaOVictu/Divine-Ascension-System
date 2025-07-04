@@ -1,18 +1,30 @@
+"""Core agent implementation for the ontological system."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type or "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -31,8 +43,19 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_note = {
+            "fear": "Bojim se, a verjamem, da ",
+            "anger": "Jezen sem, ker verjamem, da ",
+            "joy": "Z veseljem verjamem, da ",
+        }.get(self.emotion_type, "")
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if emotion_note:
+            return f"{emotion_note}{base}"
+        return base
