@@ -36,3 +36,22 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class DynamicAgent(Agent):
+    """Agent with optional adaptability after each transition."""
+
+    def __init__(self, name: str, adaptability: bool = True,
+                 state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        super().__init__(name, state=state, tension=tension, emotion=emotion)
+        self.adaptability = adaptability
+
+    def adapt(self) -> None:
+        """Adapt to new circumstances by slightly reducing tension."""
+        if self.adaptability and self.tension > 0:
+            self.tension = max(0.0, self.tension - 0.1)
+
+    def transition(self) -> str:
+        new_state = super().transition()
+        self.adapt()
+        return new_state
