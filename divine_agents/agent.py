@@ -1,5 +1,11 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent.
+
+    The agent holds its current ontological state, emotional intensity and
+    tension. It can move from ``Ego`` to ``Jaz`` and from ``Jaz`` to
+    ``Enotnost`` whenever the tension exceeds ``0.7`` or the emotion exceeds
+    ``0.5``. Every state change is stored in :pyattr:`history`.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -11,16 +17,42 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set the emotional intensity and update tension.
+
+        Parameters
+        ----------
+        value : float
+            New emotional intensity in the range ``0`` to ``1``.
+
+        The agent's tension is increased by the same amount to model the
+        connection between heightened emotion and tension.
+        """
         self.emotion = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Set the tension level.
+
+        Parameters
+        ----------
+        value : float
+            The new tension value in the range ``0`` to ``1``.
+        """
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Attempt to transition to the next ontological state.
+
+        The agent moves from ``Ego`` to ``Jaz`` or from ``Jaz`` to
+        ``Enotnost`` when either its tension is greater than ``0.7`` or its
+        emotion exceeds ``0.5``. The resulting state is appended to
+        :pyattr:`history`.
+
+        Returns
+        -------
+        str
+            The current state after the transition check.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,7 +62,19 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical statement about truth.
+
+        Parameters
+        ----------
+        question : str
+            Text of the question prompting the response. The value is
+            currently unused.
+
+        Returns
+        -------
+        str
+            A reply reflecting the agent's current ontological state.
+        """
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":

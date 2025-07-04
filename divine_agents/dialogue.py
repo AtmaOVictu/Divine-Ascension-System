@@ -3,7 +3,21 @@ from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Create a short dialogue demonstrating state transitions.
+
+    Parameters
+    ----------
+    agent1 : Agent
+        The first debating agent.
+    agent2 : Agent
+        The second debating agent.
+
+    Returns
+    -------
+    List[str]
+        Lines of conversation showing each agent's answers and any
+        transitions triggered by heightened emotion.
+    """
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
