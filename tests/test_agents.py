@@ -21,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_dialogue_includes_state_prefix_after_transition(self):
+        """Ensure dialogue lines after transitions show the agent's state."""
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        lines = philosophical_dialogue(a1, a2)
+        # The last two lines should include the updated state in parentheses
+        last_lines = lines[-2:]
+        for agent, line in zip((a1, a2), last_lines):
+            self.assertTrue(
+                line.startswith(f"{agent.name} ({agent.state})"),
+                msg=f"Line '{line}' missing state prefix",
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
