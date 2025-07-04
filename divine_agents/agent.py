@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from .memory import MemorySystem
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +14,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.memory = MemorySystem()
+        self.memory.update(state)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,12 +28,16 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        transition_type = "none"
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
+                transition_type = "tension" if self.tension > 0.7 else "emotion"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+                transition_type = "tension" if self.tension > 0.7 else "emotion"
         self.history.append(self.state)
+        self.memory.update(self.state, transition_type)
         return self.state
 
     def respond(self, question: str) -> str:
