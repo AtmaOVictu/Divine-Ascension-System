@@ -10,8 +10,22 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def __repr__(self) -> str:
+        return (
+            f"Agent(name={self.name!r}, state={self.state!r}, "
+            f"tension={self.tension:.2f}, emotion={self.emotion:.2f})"
+        )
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            New emotion intensity added to the current level. The same
+            amount increases the internal tension, driving potential
+            state transitions.
+        """
         self.emotion = value
         self.tension += value
 
@@ -20,7 +34,13 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        An agent moves from ``Ego`` to ``Jaz`` or from ``Jaz`` to
+        ``Enotnost`` when its tension rises above ``0.7`` or emotion
+        exceeds ``0.5``. The final state ``Enotnost`` has no further
+        transitions.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
