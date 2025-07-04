@@ -1,13 +1,28 @@
+from __future__ import annotations
+
+from typing import Optional
+
+from .phases import RESPhase
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        phase: Optional[RESPhase] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.phase = phase
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -36,3 +51,27 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # ------------------------------------------------------------------
+    # Phase handling methods
+    # ------------------------------------------------------------------
+    def set_phase(self, phase: RESPhase) -> None:
+        """Assign a phase to the agent."""
+        self.phase = phase
+
+    def modify_phase(
+        self,
+        new_emotion: str | None = None,
+        new_tension: float | None = None,
+        new_purpose: str | None = None,
+        new_gift: str | None = None,
+    ) -> None:
+        """Modify the assigned phase if present."""
+        if self.phase is not None:
+            self.phase.modify(new_emotion, new_tension, new_purpose, new_gift)
+
+    def progress_phase(self) -> bool:
+        """Attempt to transition the current phase."""
+        if self.phase is None:
+            return False
+        return self.phase.transition()
