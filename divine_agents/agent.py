@@ -1,14 +1,20 @@
+"""Core agent logic used in philosophical simulations."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    STATES = ("Ego", "Jaz", "Enotnost")
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -32,7 +38,13 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            reply = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            reply = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            reply = "Vse resnice so eno, medsebojno povezane."
+
+        # More intense emotion amplifies the response
+        if self.emotion > 0.7:
+            reply = reply.upper()
+        return reply
