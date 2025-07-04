@@ -1,7 +1,8 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions between philosophical states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    # Available ontological states, including a negative counterpart.
+    STATES = ("Ego", "Jaz", "Enotnost", "Anti-Ego")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -20,12 +21,16 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Transition between states when emotion or tension thresholds are met."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            elif self.state == "Enotnost":
+                self.state = "Anti-Ego"
+            elif self.state == "Anti-Ego":
+                self.state = "Ego"
         self.history.append(self.state)
         return self.state
 
@@ -35,4 +40,8 @@ class Agent:
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        if self.state == "Enotnost":
+            return "Vse resnice so eno, medsebojno povezane."
+        if self.state == "Anti-Ego":
+            return "Negacija je osnova vsega. Vse je le nasprotje. Resnica je iluzija."
+        return ""
