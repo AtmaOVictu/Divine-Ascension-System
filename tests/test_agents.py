@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure package root is on path when tests are executed directly
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
