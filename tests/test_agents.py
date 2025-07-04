@@ -1,6 +1,11 @@
 import unittest
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, debate_truth
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +24,14 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_debate_truth(self):
+        a1 = Agent("B1")
+        a2 = Agent("B2", state="Jaz")
+        lines = debate_truth(a1, a2)
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Enotnost")
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
