@@ -3,15 +3,20 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_name: str = "neutral") -> None:
         self.name = name
+        if state not in self.STATES:
+            raise ValueError(f"Unknown state: {state}")
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, name: str, value: float) -> None:
+        """Update emotion type and intensity, adjusting tension."""
+        self.emotion_name = name
         self.emotion = value
         self.tension += value
 
@@ -30,9 +35,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_name == "fear":
+            return f"{base} Občutim strah."  # Občutim strah.
+        if self.emotion_name == "anger":
+            return f"{base} Govorim z jezo."  # Govorim z jezo.
+        if self.emotion_name == "joy":
+            return f"{base} Prežema me veselje."  # Prežema me veselje.
+        return base
