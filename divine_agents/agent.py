@@ -1,5 +1,12 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions between philosophical states.
+
+    The agent holds an ontological ``state`` (``Ego``, ``Jaz`` or ``Enotnost``)
+    and numerical values for ``tension`` and ``emotion``.  When either the
+    tension exceeds ``0.7`` or the emotion exceeds ``0.5`` the agent will move
+    to the next ontological state.  ``Ego`` transitions to ``Jaz`` and
+    ``Jaz`` transitions to ``Enotnost``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -11,7 +18,7 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set emotion intensity and increase tension accordingly."""
         self.emotion = value
         self.tension += value
 
@@ -20,7 +27,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotion or tension exceed thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +37,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return an ontological answer influenced by the current emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            prefix = "Z močnimi čustvi"
+        elif self.emotion > 0.3:
+            prefix = "Čustveno"
+        else:
+            prefix = "Mirno"
+        return f"{prefix}: {base}"
