@@ -9,9 +9,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+        self.assertGreater(agent.transition_time, 0)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion(0.6)
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
