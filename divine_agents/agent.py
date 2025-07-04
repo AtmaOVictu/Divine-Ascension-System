@@ -1,3 +1,9 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - for type hints only
+    from .phase import RESPhase
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -36,3 +42,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class PhaseModifier(Agent):
+    """Agent capable of modifying RES phases before transitioning."""
+
+    def modify_phase(self, phase: "RESPhase", **kwargs) -> None:
+        """Delegate modification of a RESPhase."""
+        phase.modify(**kwargs)
