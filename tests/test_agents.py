@@ -3,6 +3,15 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+class TestPublicImports(unittest.TestCase):
+    def test_root_package_exports(self):
+        from divine_agents import Agent as RootAgent
+        from divine_agents import philosophical_dialogue as pd
+
+        self.assertIs(RootAgent, Agent)
+        self.assertIs(pd, philosophical_dialogue)
+
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
