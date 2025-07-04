@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Respond including a note about current emotion."""
+        base = self.respond(question)
+        if self.emotion > 0.5:
+            return f"{base} (občutenje: {self.emotion:.1f})"
+        return base
