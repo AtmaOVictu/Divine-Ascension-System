@@ -1,5 +1,8 @@
+from .emotions import get_intensity
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning ontological states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,12 +11,19 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.current_emotion = None
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion(self, name: str) -> None:
+        """Set emotion by name and update tension based on predefined intensity."""
+        intensity = get_intensity(name)
+        self.update_emotion(intensity)
+        self.current_emotion = name
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
