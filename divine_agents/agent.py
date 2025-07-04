@@ -3,12 +3,16 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.step_count = 0
+        self.optimized_steps = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +40,15 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def advance(self) -> None:
+        """Create a new step and store its binary representation."""
+        self.step_count += 1
+        binary = self._to_binary(self.step_count)
+        self.optimized_steps.append(binary)
+        self.history.append(f"step:{self.step_count}")
+
+    @staticmethod
+    def _to_binary(step: int) -> str:
+        """Return binary representation of a step number."""
+        return bin(step)[2:]
