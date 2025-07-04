@@ -20,13 +20,21 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        Tracks the previous state and only records a new entry in ``history``
+        when a real change occurs.
+        """
+        prev_state = self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+
+        if self.state != prev_state:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
