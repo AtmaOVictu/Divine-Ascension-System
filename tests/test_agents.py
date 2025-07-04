@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.ethical_agent import EthicalAgent
+from divine_agents.dialogue import philosophical_dialogue, ethical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,21 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestEthicalAgent(unittest.TestCase):
+    def test_moral_choice(self):
+        beliefs = {"honesty": 0.9}
+        emotions = {"guilt": 0.6}
+        agent = EthicalAgent("E", beliefs, emotions)
+        self.assertEqual(agent.calculate_moral_choice(), "Tell the truth")
+
+    def test_ethical_dialogue_transition(self):
+        a1 = EthicalAgent("E1", {"honesty": 0.9}, {"guilt": 0.6, "fear": 0.8})
+        a2 = EthicalAgent("E2", {"honesty": 0.4}, {"joy": 0.7})
+        lines = ethical_dialogue(a1, a2)
+        self.assertTrue(any("Tell the truth" in line for line in lines))
+        self.assertIn(a1.state, ["Jaz", "Enotnost"])
 
 
 if __name__ == '__main__':
