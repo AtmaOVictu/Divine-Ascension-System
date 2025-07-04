@@ -2,10 +2,22 @@
 UX HUB FOR INTERACTIVE COMMAND/
 
 ## Purpose
-This project simulates agents that evolve through ontological states—Ego, Jaz, and Enotnost—according to their emotions and tension. It provides a simple framework for exploring philosophical dialogues where these states influence how agents perceive truth.
+The Divine-Ascension-System showcases agents that move through the ontological
+states of **Ego**, **Jaz**, and **Enotnost**. Agents shift when their emotional
+intensity or tension exceeds preset thresholds, letting you explore dialogues
+that contrast absolute, relative, and unified truths.
+
+## Installation
+Clone the repository and optionally install the package in editable mode:
+
+```bash
+git clone <repo-url>
+cd Divine-Ascension-System
+pip install -e .
+```
 
 ## Running the sample dialogue
-Run the following snippet to see two agents discuss the nature of truth:
+Run the snippet below to start a short conversation between two agents:
 
 ```python
 from divine_agents.agent import Agent
