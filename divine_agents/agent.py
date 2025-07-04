@@ -1,7 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    EMOTION_THRESHOLD = 0.5
+    TENSION_THRESHOLD = 0.7
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -36,3 +39,14 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return a response influenced by the agent's emotional state."""
+        base = self.respond(question)
+        if self.emotion > 0.7:
+            prefix = "Z veliko strastjo pravim: "
+        elif self.emotion > 0.3:
+            prefix = "Čutim, da "
+        else:
+            prefix = ""
+        return prefix + base
