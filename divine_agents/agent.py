@@ -4,6 +4,7 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Create a new agent with an initial ontological state."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -14,6 +15,11 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def update_state(self, value: str) -> None:
+        """Directly set the agent state and record the change."""
+        self.state = value
+        self.history.append(value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +38,13 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion >= 0.5:
+            base += f" (Čustvena intenziteta: {self.emotion:.1f})"
+
+        return base
