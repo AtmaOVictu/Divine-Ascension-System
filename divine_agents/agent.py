@@ -6,6 +6,7 @@ class Agent:
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
+        self.previous_state = None
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
@@ -21,12 +22,19 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        # Remember the state before the potential transition
+        self.previous_state = self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+
+        # Only record the transition when the state actually changes
+        if self.previous_state != self.state:
+            self.history.append(self.state)
+
         return self.state
 
     def respond(self, question: str) -> str:
