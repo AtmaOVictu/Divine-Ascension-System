@@ -1,6 +1,11 @@
+import os
+import sys
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+
+# Ensure project root is on the path for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from divine_agents import Agent, philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +14,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+        self.assertEqual(len(agent.history), 2)
+
+    def test_history_not_updated_on_no_transition(self):
+        agent = Agent("A")
+        agent.update_tension(0.3)
+        agent.transition()
+        self.assertEqual(len(agent.history), 1)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
