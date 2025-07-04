@@ -15,11 +15,26 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
-    def test_dialogue(self):
+    def test_dialogue_default(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dialogue_low_emotion(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2, agent1_emotion=0.3, agent2_emotion=0.3)
+        # emotions below threshold should keep states unchanged
+        self.assertFalse(any("Jaz" in line for line in lines if "prehaja" in line and "A1" in line))
+        self.assertFalse(any("Enotnost" in line for line in lines if "prehaja" in line and "A2" in line))
+
+    def test_dialogue_custom_emotion(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2, agent1_emotion=0.9, agent2_emotion=0.9)
+        self.assertTrue(any("Jaz" in line for line in lines if "prehaja" in line and "A1" in line))
+        self.assertTrue(any("Enotnost" in line for line in lines if "prehaja" in line and "A2" in line))
 
 
 if __name__ == '__main__':
