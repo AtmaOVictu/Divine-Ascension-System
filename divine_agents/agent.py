@@ -1,7 +1,10 @@
+from .res_phases import RES_PHASES
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    STATES = ["Ego", "Jaz", "Enotnost"] + [phase.code for phase in RES_PHASES]
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -22,10 +25,9 @@ class Agent:
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+            current_index = self.STATES.index(self.state)
+            if current_index < len(self.STATES) - 1:
+                self.state = self.STATES[current_index + 1]
         self.history.append(self.state)
         return self.state
 
