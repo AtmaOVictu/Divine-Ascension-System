@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -30,9 +30,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer reflecting the current state and emotion."""
+        prefix = f"(čustvo: {self.emotion:.2f})"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"{prefix} Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"{prefix} Resnica je relativna, oblikovana z našimi odnosi."
+        return f"{prefix} Vse resnice so eno, medsebojno povezane."
