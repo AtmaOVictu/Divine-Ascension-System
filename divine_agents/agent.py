@@ -4,6 +4,8 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        if state not in self.STATES:
+            raise ValueError(f"Invalid state: {state}")
         self.name = name
         self.state = state
         self.tension = tension
@@ -21,11 +23,20 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        if self.state not in self.STATES:
+            raise ValueError(f"Invalid state: {self.state}")
+
+        new_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
-                self.state = "Jaz"
+                new_state = "Jaz"
             elif self.state == "Jaz":
-                self.state = "Enotnost"
+                new_state = "Enotnost"
+
+        if new_state not in self.STATES:
+            raise ValueError(f"Invalid transition target: {new_state}")
+
+        self.state = new_state
         self.history.append(self.state)
         return self.state
 
