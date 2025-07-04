@@ -1,3 +1,9 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - for type checking only
+    from .shumnik import Shumnik
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -18,6 +24,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def interact_with_shumnik(self, shumnik: "Shumnik") -> None:
+        """Interact with a Shumnik, applying its effect."""
+        shumnik.activate(self)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
