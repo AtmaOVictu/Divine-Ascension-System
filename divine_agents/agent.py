@@ -9,6 +9,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.step_count = 0
+        self.steps = []  # store optimization info for each created step
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -32,7 +34,25 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} (Čustveni nivo: {self.emotion:.2f})"
+
+    # --- step and optimization functionality ---
+    def create_step(self) -> None:
+        """Create a new step and store its binary optimization."""
+        self.step_count += 1
+        binary = bin(self.step_count)[2:]
+        self.steps.append({"step": self.step_count, "binary": binary})
+
+    def seciraj(self) -> None:
+        """Simulate continuous exploration by creating a new optimized step."""
+        self.history.append("SECIRAJ")
+        self.create_step()
+
+    def progress_table(self):
+        """Return the table of created steps."""
+        return list(self.steps)
