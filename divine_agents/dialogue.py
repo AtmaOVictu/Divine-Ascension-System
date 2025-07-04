@@ -17,3 +17,14 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def transformation_path(agent: Agent) -> List[str]:
+    """Transform the agent through all states and record dialogue."""
+    lines = []
+    while agent.state != "Enotnost":
+        lines.append(f"{agent.name} ({agent.state}): {agent.respond('Kaj je resnica?')}")
+        agent.update_emotion(0.8)
+        lines.append(f"{agent.name} prehaja v stanje: {agent.transition()}")
+    lines.append(f"{agent.name} doseže stanje: {agent.state}")
+    return lines
