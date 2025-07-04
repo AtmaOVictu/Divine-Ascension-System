@@ -1,18 +1,46 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name:
+        Agent's identifier.
+    state:
+        Current ontological state.
+    tension:
+        Numerical representation of the agent's inner tension.
+    emotion:
+        Numerical intensity of the current emotion.
+    emotion_label:
+        Human readable label describing the current emotion.
+    history:
+        List of states the agent has transitioned through.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_label: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, label: str | None = None) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value:
+            New emotion intensity.
+        label:
+            Optional descriptive label for the emotion (e.g., ``"fear"`` or
+            ``"joy"``).
+        """
         self.emotion = value
+        if label is not None:
+            self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +58,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The response also includes the agent's current emotional label to
+        reflect how feelings colour their perspective.
+        """
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} (Čustvo: {self.emotion_label})"
