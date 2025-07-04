@@ -3,21 +3,50 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral"):
+        """Create a new agent.
+
+        Parameters
+        ----------
+        name:
+            Name of the agent.
+        state:
+            Initial ontological state.
+        tension:
+            Initial tension level.
+        emotion:
+            Initial emotion intensity in the range ``0.0-1.0``.
+        emotion_type:
+            Description of the current emotion (e.g. ``"fear"`` or ``"joy"``).
+        """
+
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion_type: str, value: float) -> None:
+        """Update emotion intensity and type, adjusting tension.
+
+        Parameters
+        ----------
+        emotion_type:
+            Description of the emotion.
+        value:
+            Intensity between ``0.0`` and ``1.0``. Higher values increase
+            tension.
+        """
+
+        self.emotion_type = emotion_type
         self.emotion = value
-        self.tension += value
+        self.tension = min(1.0, self.tension + value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -32,7 +61,12 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type and self.emotion_type != "neutral":
+            base += f" (občuti {self.emotion_type})"
+        return base
