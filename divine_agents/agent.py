@@ -1,17 +1,21 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    BINARY_CODES = {"Ego": "0", "Jaz": "1", "Enotnost": "10"}
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral") -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion_type: str, value: float) -> None:
+        """Update emotion type and intensity and adjust tension accordingly."""
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
 
@@ -32,7 +36,13 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        return f"{answer} (Čustvo: {self.emotion_type})"
+
+    def get_binary_state(self) -> str:
+        """Return binary code representing current ontological state."""
+        return self.BINARY_CODES.get(self.state, "0")
