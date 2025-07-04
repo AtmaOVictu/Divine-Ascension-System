@@ -15,6 +15,14 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def _emotion_desc(self) -> str:
+        """Return textual description of the current emotional state."""
+        if self.emotion > 0.75:
+            return "zelo razburjen"
+        if self.emotion > 0.5:
+            return "čustveno napet"
+        return "miren"
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
@@ -31,8 +39,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        desc = self._emotion_desc()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"({desc}) Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"({desc}) Resnica je relativna, oblikovana z našimi odnosi."
+        return f"({desc}) Vse resnice so eno, medsebojno povezane."
