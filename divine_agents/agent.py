@@ -10,6 +10,10 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def interact_with_shumnik(self, shumnik) -> None:
+        """Interact with a Shumnik instance."""
+        shumnik.activate(self)
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
