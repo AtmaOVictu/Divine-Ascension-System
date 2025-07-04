@@ -1,14 +1,24 @@
+from typing import Dict
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_name: str = ""):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
+
+    def experience_emotion(self, emotion: str, intensity: float, multipliers: Dict[str, float]) -> None:
+        """Experience an emotion and adjust tension accordingly."""
+        self.emotion_name = emotion
+        self.emotion = intensity
+        self.tension += intensity * multipliers.get(emotion, 0.5)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -31,8 +41,16 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        if self.emotion_name == "anger":
+            return base + "!"
+        if self.emotion_name == "fear":
+            return "Negotov sem, a " + base
+        if self.emotion_name == "joy":
+            return "Z veseljem povem, " + base
+        return base
