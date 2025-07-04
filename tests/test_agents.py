@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.evolution import evolution_function, transition_res
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,8 +19,21 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, t=1.0)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_evolution_function(self):
+        self.assertAlmostEqual(evolution_function(0), 0.5, places=2)
+
+    def test_transition_res(self):
+        self.assertEqual(
+            transition_res(0.05),
+            "RES001 - Začetek: Stabilno stanje, minimalen napredek.",
+        )
+        self.assertEqual(
+            transition_res(0.95),
+            "RES100 - Popolna integracija: Dosežena popolna enotnost.",
+        )
 
 
 if __name__ == '__main__':
