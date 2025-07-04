@@ -11,9 +11,15 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and adjust tension accordingly.
+
+        If the provided emotion does not exceed the transition threshold
+        (0.5), it is nudged by ``0.01`` to ensure potential progression.
+        """
         self.emotion = value
-        self.tension += value
+        if self.emotion <= 0.5:
+            self.emotion += 0.01
+        self.tension += self.emotion
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +36,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The response intensity reflects the agent's current emotional level.
+        """
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            statement = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            statement = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            statement = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5:
+            return f"{statement} (občuti intenziteto {self.emotion:.2f})"
+        return statement
