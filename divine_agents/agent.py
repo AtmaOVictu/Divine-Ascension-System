@@ -1,3 +1,6 @@
+from .memory import MemorySystem
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,7 +11,8 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.memory = MemorySystem()
+        self.memory.update(state, transition_type="initial")
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -26,7 +30,7 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        self.memory.update(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
