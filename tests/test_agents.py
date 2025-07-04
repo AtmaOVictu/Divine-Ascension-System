@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+# Ensure project root is on the path for imports
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -6,12 +12,14 @@ from divine_agents.dialogue import philosophical_dialogue
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        # emotion over threshold should trigger transition even with low tension
+        agent.update_emotion("fear", 0.6)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion("joy", 0.2)
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
