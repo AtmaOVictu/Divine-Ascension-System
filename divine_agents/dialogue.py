@@ -17,3 +17,30 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def advanced_dialogue(agent1: Agent, agent2: Agent, rounds: int = 2) -> List[str]:
+    """Run a dialogue with emotional influence and possible state transitions."""
+    transcript: List[str] = []
+
+    for _ in range(rounds):
+        transcript.append(
+            f"{agent1.name} ({agent1.state}, {agent1.emotion_label}): {agent1.respond('Kaj je resnica?')}"
+        )
+        transcript.append(
+            f"{agent2.name} ({agent2.state}, {agent2.emotion_label}): {agent2.respond('Kaj je resnica?')}"
+        )
+
+        agent1.update_emotion(0.6, "anger")
+        transcript.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+        transcript.append(
+            f"{agent1.name} ({agent1.state}, {agent1.emotion_label}): {agent1.respond('Kaj je resnica?')}"
+        )
+
+        agent2.update_emotion(0.6, "joy")
+        transcript.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+        transcript.append(
+            f"{agent2.name} ({agent2.state}, {agent2.emotion_label}): {agent2.respond('Kaj je resnica?')}"
+        )
+
+    return transcript
