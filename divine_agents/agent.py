@@ -3,17 +3,24 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = ""):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def set_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Set the type and intensity of emotion and adjust tension."""
+        self.emotion_type = emotion_type
+        self.update_emotion(intensity)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -31,8 +38,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_note = f" Počutim se {self.emotion_type}." if self.emotion_type else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
