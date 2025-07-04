@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_toggle_invertni_jaz(self):
+        agent = Agent("B")
+        agent.toggle_invertni_jaz()
+        self.assertEqual(agent.state, "Invertni Jaz")
+        agent.toggle_invertni_jaz()
+        self.assertEqual(agent.state, "Ego")
+
 
 if __name__ == '__main__':
     unittest.main()
