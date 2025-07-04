@@ -19,6 +19,10 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def interact_with_shumnik(self, shumnik) -> None:
+        """Interact with a Shumnik object, applying its effect."""
+        shumnik.activate(self)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
