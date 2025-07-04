@@ -1,13 +1,28 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name : str
+        Agent identifier.
+    state : str
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension : float
+        Accumulated tension driving potential transitions.
+    emotion : float
+        Current emotional intensity.
+    temperature : float
+        Environmental or internal temperature affecting the agent.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, temperature: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.temperature = temperature
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +33,22 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    @staticmethod
+    def temperature_to_color(temperature: float) -> str:
+        """Map a temperature value to a color name."""
+        if temperature < 0:
+            return "blue"
+        if 0 <= temperature < 25:
+            return "green"
+        if 25 <= temperature < 50:
+            return "yellow"
+        return "red"
+
+    def update_temperature(self, value: float) -> str:
+        """Update temperature and return the mapped color."""
+        self.temperature = value
+        return self.temperature_to_color(value)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
