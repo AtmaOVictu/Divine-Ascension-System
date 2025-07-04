@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.integration import ExternalIntegrationLayer, CodeX
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_external_layer_and_codex(self):
+        layer = ExternalIntegrationLayer()
+        layer.add_data("change", "awakening")
+        self.assertEqual(layer.get_data("change"), "awakening")
+
+        codex = CodeX()
+        agent = Agent("A1")
+        codex.log_transition(agent.name, agent.state, "Jaz")
+        self.assertIn(("A1", "Ego", "Jaz"), codex.review_transitions())
 
 
 if __name__ == '__main__':
