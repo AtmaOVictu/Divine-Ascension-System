@@ -6,9 +6,15 @@ from divine_agents.dialogue import philosophical_dialogue
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
+        initial_len = len(agent.history)
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+        self.assertEqual(len(agent.history), initial_len + 1)
+
+        agent.update_tension(0.1)
+        agent.transition()
+        self.assertEqual(len(agent.history), initial_len + 1)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")

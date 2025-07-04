@@ -8,6 +8,7 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.previous_state = state
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -21,12 +22,15 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        self.previous_state = previous_state
+        if previous_state != self.state:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
