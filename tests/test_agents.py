@@ -9,6 +9,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+        self.assertEqual(agent.history, ["Ego", "Jaz"])
+
+    def test_no_history_on_no_change(self):
+        agent = Agent("B")
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+        self.assertEqual(agent.history, ["Ego"])
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
