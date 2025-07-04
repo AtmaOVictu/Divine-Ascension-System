@@ -1,19 +1,35 @@
+"""Core logic for the ontological agents used in tests and simulations."""
+
+from __future__ import annotations
+
+import subprocess
+from typing import List
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of philosophical transitions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history: List[str] = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def describe_emotion(self) -> str:
+        """Return a textual representation of the current emotional state."""
+        if self.emotion > 0.7:
+            return "visoka"
+        if self.emotion > 0.3:
+            return "zmerna"
+        return "nizka"
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +48,19 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            reply = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            reply = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            reply = "Vse resnice so eno, medsebojno povezane."
+        return f"{reply} (čustva: {self.describe_emotion()})"
+
+    def log_to_github(self, message: str) -> None:
+        """Attempt to create a git commit describing the agent's state."""
+        commit_message = f"Agent {self.name}: {message}"
+        try:
+            subprocess.run(["git", "add", "-A"], check=True)
+            subprocess.run(["git", "commit", "-m", commit_message], check=True)
+            subprocess.run(["git", "push", "origin", "main"], check=True)
+        except Exception as exc:
+            print(f"GitHub logging failed: {exc}")
