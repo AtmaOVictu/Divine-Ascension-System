@@ -4,20 +4,27 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        if state not in self.STATES:
+            raise ValueError(f"Invalid state '{state}'")
         self.name = name
         self.state = state
-        self.tension = tension
-        self.emotion = emotion
+        self.tension = self._clamp(tension)
+        self.emotion = self._clamp(emotion)
         self.history = [state]
+
+    @staticmethod
+    def _clamp(value: float) -> float:
+        """Clamp a numeric value between 0.0 and 1.0."""
+        return max(0.0, min(1.0, value))
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = self._clamp(value)
+        self.tension = self._clamp(self.tension + self.emotion)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = self._clamp(value)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
