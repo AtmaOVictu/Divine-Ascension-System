@@ -14,6 +14,12 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
+    # Demonstrate potence sharing and division
+    share = agent2.share_potence(agent1)
+    divide = agent1.divide_potence(agent2)
+    lines.append(f"{agent2.name} povezuje potenco: {share}")
+    lines.append(f"{agent1.name} deli potenco: {divide}")
+
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines

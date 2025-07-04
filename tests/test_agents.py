@@ -21,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_potence_operations(self):
+        a1 = Agent("A1", potence=10)
+        a2 = Agent("A2", potence=5)
+        self.assertEqual(a1.divide_potence(a2), 2)
+        self.assertEqual(a1.share_potence(a2), 50)
+
 
 if __name__ == '__main__':
     unittest.main()
