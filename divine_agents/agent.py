@@ -3,17 +3,26 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, mood: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.mood = mood
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, mood: str = "neutral") -> None:
+        """Update emotion intensity, store mood and adjust tension."""
         self.emotion = value
-        self.tension += value
+        self.mood = mood
+        if mood == "joy":
+            # Joy can ease tension slightly
+            self.tension = max(0.0, self.tension - value / 2)
+        elif mood in {"fear", "anger"}:
+            # Negative emotions add more tension
+            self.tension += value
+        else:
+            self.tension += value / 2
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -31,8 +40,16 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = ""
+        if self.mood == "anger":
+            prefix = "Jezen, "
+        elif self.mood == "fear":
+            prefix = "Z zaskrbljenostjo, "
+        elif self.mood == "joy":
+            prefix = "Vesel, "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "Resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "Vse resnice so eno, medsebojno povezane."
