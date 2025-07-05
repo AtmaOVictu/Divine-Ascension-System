@@ -10,10 +10,14 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def calculate_tension(self) -> float:
+        """Return tension as a dynamic force based on emotion."""
+        return (self.emotion ** 2) / (1 + self.tension)
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and recalculate tension."""
         self.emotion = value
-        self.tension += value
+        self.tension = self.calculate_tension()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -36,3 +40,14 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def emotional_respond(self, question: str) -> str:
+        """Return a response influenced by the agent's emotion."""
+        base = self.respond(question)
+        if self.emotion > 0.7:
+            prefix = "S strastjo odgovarjam: "
+        elif self.emotion > 0.3:
+            prefix = "Mirno pojasnim: "
+        else:
+            prefix = "Brez čustev povem: "
+        return prefix + base
