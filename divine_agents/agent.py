@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -11,7 +11,14 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and increase tension.
+
+        Parameters
+        ----------
+        value:
+            New emotion level. This value is also added to the current tension
+            to reflect the influence of emotions on the agent's stress level.
+        """
         self.emotion = value
         self.tension += value
 
