@@ -2,16 +2,24 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTIONS = ("fear", "joy", "anger", "neutral")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
+        if state not in self.STATES:
+            raise ValueError(f"Neveljavno stanje: {state}")
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def set_emotion(self, emotion_type: str, value: float) -> None:
+        """Set emotion type and intensity, adjusting tension accordingly."""
+        if emotion_type not in self.EMOTIONS:
+            raise ValueError(f"Neveljavno čustvo: {emotion_type}")
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
 
@@ -32,7 +40,18 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        prefix = ""
+        if self.emotion_type == "fear":
+            prefix = "(S strahom) "
+        elif self.emotion_type == "joy":
+            prefix = "(Z veseljem) "
+        elif self.emotion_type == "anger":
+            prefix = "(Z jezo) "
+
+        return f"{prefix}{base}"
