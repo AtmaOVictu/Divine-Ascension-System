@@ -21,6 +21,18 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_nano_event(self):
+        agent = Agent("N")
+        agent.nano_event(0.6, 0.6)
+        self.assertEqual(agent.state, "Jaz")
+        self.assertEqual(agent.nano_count, 1)
+
+    def test_mega_transition(self):
+        agent = Agent("M")
+        agent.update_tension(1.2)
+        state = agent.mega_transition()
+        self.assertEqual(state, "Enotnost")
+
 
 if __name__ == '__main__':
     unittest.main()
