@@ -1,4 +1,9 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -12,8 +17,15 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        reply = agent.respond("What is truth?")
+        self.assertIn("interconnected", reply)
+
+    def test_learning_cluster(self):
+        agent = Agent("A")
+        agent.update_tension(0.9)
+        agent.transition()
+        cluster = agent.learn_from_history()
+        self.assertEqual(cluster, 2)
 
     def test_dialogue(self):
         a1 = Agent("A1")
