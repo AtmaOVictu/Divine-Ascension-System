@@ -1,7 +1,8 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional transitions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTION_EFFECTS = {"fear": 0.3, "joy": -0.1, "anger": 0.4}
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -9,6 +10,11 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+
+    def feel(self, emotion: str, intensity: float) -> None:
+        """Experience an emotion and adjust tension."""
+        self.emotion = intensity
+        self.tension += intensity + self.EMOTION_EFFECTS.get(emotion, 0)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -30,9 +36,19 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion."""
+        base = self._base_response()
+        feedback = self._emotional_feedback() if self.emotion > 0.3 else ""
+        return f"{base} {feedback}".strip()
+
+    def _base_response(self) -> str:
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def _emotional_feedback(self) -> str:
+        if self.emotion > 0.7:
+            return "Močno čustvujem."
+        return "Čustva rahlo vplivajo na moj odgovor."
