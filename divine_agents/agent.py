@@ -1,7 +1,17 @@
+from typing import Dict
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    #: Influence of an emotion on tension.
+    EMOTION_EFFECT: Dict[str, float] = {
+        "fear": 1.0,
+        "anger": 0.8,
+        "joy": 0.2,
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -14,6 +24,12 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def experience_emotion(self, name: str, intensity: float) -> None:
+        """Apply a named emotion and adjust tension based on its effect."""
+        self.emotion = intensity
+        effect = self.EMOTION_EFFECT.get(name.lower(), 0.5)
+        self.tension += intensity * effect
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
