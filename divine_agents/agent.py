@@ -3,6 +3,14 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
+    #: Mapping of emotions to their influence on tension
+    EMOTION_INFLUENCE = {
+        "fear": 0.8,
+        "anger": 0.7,
+        "joy": 0.4,
+        "sorrow": 0.5,
+    }
+
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
@@ -14,6 +22,11 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion(self, emotion: str) -> None:
+        """Apply named emotion and update internal states."""
+        value = self.EMOTION_INFLUENCE.get(emotion.lower(), 0.0)
+        self.update_emotion(value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -36,3 +49,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return a formatted line representing the agent's answer."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}): {answer}"
