@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+# Ensure the package is discoverable when running tests directly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -8,7 +14,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(state, "RES000")
+
+        expected_states = ["RES001", "RES002", "RES003", "Jaz", "Enotnost"]
+        for expected in expected_states:
+            agent.update_tension(0.8)
+            state = agent.transition()
+            self.assertEqual(state, expected)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
@@ -19,6 +31,7 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("RES000" in line for line in lines))
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
