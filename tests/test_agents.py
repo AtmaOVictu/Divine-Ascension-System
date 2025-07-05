@@ -10,6 +10,15 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_opposite_influence(self):
+        agent = Agent("B")
+        agent.update_emotion(0.4, 0.4)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+        tension, emotion, opposite = agent.get_state()
+        self.assertAlmostEqual(opposite, 0.4)
+        self.assertAlmostEqual(tension, 0.8)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
@@ -20,6 +29,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_get_state(self):
+        agent = Agent("C")
+        agent.update_emotion(0.2, -0.1)
+        tension, emotion, opposite = agent.get_state()
+        self.assertAlmostEqual(emotion, 0.2)
+        self.assertAlmostEqual(opposite, -0.1)
 
 
 if __name__ == '__main__':
