@@ -1,19 +1,41 @@
+"""Dialogue helpers for ontological agents."""
+
 from typing import List
+
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+def philosophical_dialogue(agent1: Agent, agent2: Agent, turns: int = 2) -> List[str]:
+    """Simulate a philosophical dialogue and state transitions.
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    Parameters
+    ----------
+    agent1, agent2 : Agent
+        Participating ontological agents.
+    turns : int, optional
+        Number of conversational rounds to simulate, by default ``2``.
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    Returns
+    -------
+    List[str]
+        Dialogue lines describing the interaction and state changes.
+    """
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    lines: List[str] = []
+    for _ in range(turns):
+        lines.append(
+            f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+        )
+        lines.append(
+            f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+        )
+
+        # Emotions intensify the debate and may trigger state transitions.
+        agent1.update_emotion(agent1.emotion + 0.6)
+        lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+        agent2.update_emotion(agent2.emotion + 0.6)
+        lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
     return lines
+
