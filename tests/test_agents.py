@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.ontology import should_transition
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +10,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_should_transition_formula(self):
+        self.assertTrue(should_transition(0.8, 0.2))
+        self.assertTrue(should_transition(0.4, 0.6))
+        self.assertFalse(should_transition(0.2, 0.4))
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
