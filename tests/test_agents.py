@@ -35,10 +35,16 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("močno", reply)
 
+    def test_principle_method(self):
+        agent = Agent("P", state="Jaz")
+        self.assertIn("relativna", agent.principle())
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertEqual(a1.state, "Enotnost")
+        self.assertEqual(a2.state, "Enotnost")
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
