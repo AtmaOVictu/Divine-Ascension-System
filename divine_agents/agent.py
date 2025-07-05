@@ -1,38 +1,54 @@
+from dataclasses import dataclass, field
+from enum import Enum
+
+
+class State(Enum):
+    """Possible ontological states for an agent."""
+    EGO = "Ego"
+    JAZ = "Jaz"
+    ENOTNOST = "Enotnost"
+
+
+@dataclass
+class Emotions:
+    """Track emotional intensities."""
+    fear: float = 0.0
+    joy: float = 0.0
+    anger: float = 0.0
+
+    def intensity(self) -> float:
+        """Return the highest emotional intensity."""
+        return max(self.fear, self.joy, self.anger)
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: State = State.EGO
+    tension: float = 0.0
+    emotions: Emotions = field(default_factory=Emotions)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def feel(self, **kwargs) -> None:
+        """Update emotions and adjust tension accordingly."""
+        for emotion, value in kwargs.items():
+            if hasattr(self.emotions, emotion):
+                setattr(self.emotions, emotion, value)
+        self.tension = self.emotions.intensity()
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_state(self) -> None:
+        """Transition to the next state if thresholds are exceeded."""
+        triggered = self.tension > 0.7 or self.emotions.intensity() > 0.5
+        if self.state == State.EGO and triggered:
+            self.state = State.JAZ
+        elif self.state == State.JAZ and triggered:
+            self.state = State.ENOTNOST
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
-
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
-        self.history.append(self.state)
-        return self.state
-
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+    def respond(self) -> str:
+        """Return a philosophical response based on the current state."""
+        if self.state == State.EGO:
+            return f"{self.name}: Truth is absolute and independent of others."
+        if self.state == State.JAZ:
+            return f"{self.name}: Truth is relative, shaped by our relationships."
+        return f"{self.name}: All truths are one and interconnected."
