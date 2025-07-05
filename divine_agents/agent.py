@@ -1,5 +1,10 @@
+"""Ontological agent capable of transitioning states."""
+
+from .legitimator import Legitimator
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent with emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -15,18 +20,19 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def update(self, tension: float, emotion: float) -> str:
+        """Set tension and emotion then attempt a transition."""
+        self.tension = tension
+        self.emotion = emotion
+        return self.transition()
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
-        self.history.append(self.state)
+    def transition(self, force: bool = False) -> str:
+        """Transition to the next state using :class:`Legitimator`."""
+        Legitimator.transition(self, force=force)
         return self.state
 
     def respond(self, question: str) -> str:
