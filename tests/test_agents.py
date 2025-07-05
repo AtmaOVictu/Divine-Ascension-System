@@ -1,4 +1,9 @@
+import sys
+from pathlib import Path
 import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
