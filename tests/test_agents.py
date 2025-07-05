@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.i18n import QUESTION
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -12,14 +13,28 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        reply_sl = agent.respond(QUESTION["sl"], language="sl")
+        reply_en = agent.respond(QUESTION["en"], language="en")
+        self.assertIn("eno", reply_sl)
+        self.assertIn("one", reply_en)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, lang1="en", lang2="sl")
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_clamping(self):
+        agent = Agent("Clamp", tension=5, emotion=-1)
+        self.assertEqual(agent.tension, 1.0)
+        self.assertEqual(agent.emotion, 0.01)
+
+        agent.update_emotion(2)
+        self.assertEqual(agent.emotion, 1.0)
+        self.assertEqual(agent.tension, 1.0)
+
+        agent.update_tension(-5)
+        self.assertEqual(agent.tension, 0.01)
 
 
 if __name__ == '__main__':
