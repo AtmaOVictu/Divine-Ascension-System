@@ -8,7 +8,14 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(state, "RES000")
+
+    def test_full_transition(self):
+        agent = Agent("A")
+        for expected_state in ["RES000", "RES001", "RES002", "RES003", "Jaz", "Enotnost"]:
+            agent.update_tension(0.8)
+            state = agent.transition()
+            self.assertEqual(state, expected_state)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
