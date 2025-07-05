@@ -7,6 +7,7 @@ class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
         agent.update_tension(0.8)
+        agent.meditate()
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
