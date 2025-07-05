@@ -1,5 +1,13 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    An agent keeps track of its ontological ``state`` (``Ego``, ``Jaz`` or
+    ``Enotnost``) together with its current ``tension`` and ``emotion`` level.
+    State transitions occur whenever the tension exceeds ``0.7`` or the emotion
+    exceeds ``0.5``.  Each call to :py:meth:`respond` will return a statement
+    that reflects both the ontological state and the emotional tone of the
+    agent.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +17,14 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+
+    def emotion_descriptor(self) -> str:
+        """Return a short textual description for the current emotion level."""
+        if self.emotion > 0.7:
+            return "strasten"
+        if self.emotion > 0.3:
+            return "vznemirjen"
+        return "miren"
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -30,9 +46,16 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The returned text also reflects the agent's current emotional tone.
+        """
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        descriptor = self.emotion_descriptor()
+        return f"{base} Moj odziv je {descriptor}."
