@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.interactive import Kapacitor
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -14,6 +15,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_kapacitor_process(self):
+        k = Kapacitor()
+        msg = k.process_input("aktiviraj")
+        self.assertEqual(k.state, "Aktivacija")
+        self.assertIn("aktivira", msg)
 
     def test_dialogue(self):
         a1 = Agent("A1")
