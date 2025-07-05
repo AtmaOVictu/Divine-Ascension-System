@@ -21,6 +21,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -28,6 +29,10 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def detect_loop(self) -> bool:
+        """Return True if the agent has not changed state since last transition."""
+        return len(self.history) >= 2 and self.history[-1] == self.history[-2]
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
