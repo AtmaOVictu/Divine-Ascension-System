@@ -1,5 +1,19 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name: str
+        Agent's identifier.
+    state: str
+        Current ontological state (``Ego``, ``Jaz``, ``Enotnost``).
+    tension: float
+        Current tension level influencing transitions.
+    emotion: float
+        Emotional intensity influencing transitions and dialogue tone.
+    history: list[str]
+        Log of state changes for the agent.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -29,10 +43,23 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def philosophical_principle(self) -> str:
+        """Return the philosophical principle for the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical answer influenced by emotion."""
+        if self.emotion > 0.8:
+            prefix = "Strastno odgovarjam:" 
+        elif self.emotion > 0.5:
+            prefix = "Čustveno pravim:" 
+        else:
+            prefix = "Mirno razlagam:" 
+        return f"{prefix} {self.philosophical_principle()}"
+
+    def __repr__(self) -> str:
+        return f"Agent(name={self.name!r}, state={self.state!r}, emotion={self.emotion}, tension={self.tension})"
