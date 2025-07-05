@@ -3,6 +3,12 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
@@ -30,9 +36,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by emotional intensity."""
+        base = self.PHILOSOPHY[self.state]
+        tone = self._emotion_tone()
+        return f"{tone} {base}"
+
+    def _emotion_tone(self) -> str:
+        """Return a short descriptor for the current emotional level."""
+        if self.emotion > 0.7:
+            return "Strastno"  # passionately
+        if self.emotion > 0.3:
+            return "Zavzeto"  # engaged
+        return "Mirno"  # calmly
