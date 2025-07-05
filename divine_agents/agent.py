@@ -1,5 +1,16 @@
+from enum import Enum, auto
+
+
+class Emotion(Enum):
+    """Enumerate possible emotions influencing an agent."""
+
+    FEAR = auto()
+    JOY = auto()
+    ANGER = auto()
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,12 +19,18 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = None
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, emotion_type: Emotion, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
+
+    def apply_opposite(self, factor: float = 0.5) -> None:
+        """Apply opposing influence to reduce tension."""
+        self.tension *= factor
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
