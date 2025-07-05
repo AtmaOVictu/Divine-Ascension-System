@@ -18,8 +18,16 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, rounds=4)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("MEGA prehod" in line for line in lines))
+
+    def test_nano_to_mega(self):
+        agent = Agent("A")
+        for _ in range(agent.nano_threshold):
+            agent.nano_event()
+        self.assertGreaterEqual(agent.tension, 1.0)
+        self.assertEqual(agent.nano_counter, 0)
 
 
 if __name__ == '__main__':
