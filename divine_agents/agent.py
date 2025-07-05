@@ -1,19 +1,40 @@
+from enum import Enum
+
+
+class Emotion(Enum):
+    """Basic emotion types that influence agent responses."""
+
+    NEUTRAL = "neutral"
+    FEAR = "fear"
+    JOY = "joy"
+    ANGER = "anger"
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion_intensity: float = 0.0,
+        emotion_type: Emotion = Emotion.NEUTRAL,
+    ):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotion = emotion_intensity
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: Emotion, intensity: float) -> None:
+        """Update emotion type and intensity, adjusting tension."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +51,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on the current state and emotion."""
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        emotion_phrase = {
+            Emotion.FEAR: "Čutim strah.",
+            Emotion.JOY: "Preveva me veselje.",
+            Emotion.ANGER: "Čutim jezo.",
+            Emotion.NEUTRAL: "",
+        }[self.emotion_type]
+
+        return f"{base} {emotion_phrase}".strip()
