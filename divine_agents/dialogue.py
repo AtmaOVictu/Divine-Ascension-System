@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .symbolic import Symbol, Expression
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Symbolic exchange using special characters
+    var = Symbol('Š')
+    expr = Expression(var, Symbol('Č'))
+    lines.append(f"{agent1.name} math: {agent1.discuss_expression(expr, var)}")
+    lines.append(f"{agent2.name} math: {agent2.discuss_expression(expr, var)}")
     return lines

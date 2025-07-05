@@ -1,3 +1,6 @@
+from .symbolic import Expression, Symbol
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -30,9 +33,20 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion and state."""
+        intensity = "!" if self.emotion > 0.5 else "."
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"Resnica je absolutna in neodvisna od drugih{intensity}"
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"Resnica je relativna, oblikovana z našimi odnosi{intensity}"
+        return f"Vse resnice so eno, medsebojno povezane{intensity}"
+
+    def discuss_expression(self, expr: Expression, var: Symbol) -> str:
+        """Return a symbolic manipulation based on the current state."""
+        if self.state == "Ego":
+            result = expr.differentiate(var)
+        elif self.state == "Jaz":
+            result = expr.integrate(var)
+        else:
+            result = expr.simplify()
+        return str(result)
