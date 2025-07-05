@@ -1,4 +1,11 @@
+import os
+import sys
 import unittest
+
+# Ensure the project root is on the Python path so imports work when tests
+# are executed directly or via pytest
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -14,6 +21,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_emotional_response(self):
+        agent = Agent("B", emotion=0.6)
+        response = agent.respond("Kaj je resnica?")
+        self.assertIn("Močno", response)
 
     def test_dialogue(self):
         a1 = Agent("A1")
