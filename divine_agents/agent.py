@@ -1,23 +1,45 @@
+from .intensity import Intensity
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.intensity = Intensity("stabilnost")
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self._update_intensity_state()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self._update_intensity_state()
+
+    def _update_intensity_state(self) -> None:
+        """Adjust intensity state based on tension levels."""
+        if self.tension > 0.7:
+            self.intensity.stanje = "visoka napetost"
+        elif self.tension > 0.5:
+            self.intensity.stanje = "prehod"
+        else:
+            self.intensity.stanje = "stabilnost"
+        self.intensity.povecaj()
+
+    def show_intensity(self) -> str:
+        """Return a user friendly string describing current intensity."""
+        return self.intensity.prikazi()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
