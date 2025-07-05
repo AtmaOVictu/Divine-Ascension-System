@@ -1,9 +1,22 @@
+from .math_model import (
+    transition_score,
+    transition_allowed,
+    error_value,
+)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -28,6 +41,23 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def complex_transition(
+        self,
+        interactions: float = 0.0,
+        environment: float = 0.0,
+        alpha: float = 1.5,
+    ) -> tuple[str, float]:
+        """Transition using non-linear model and return error value."""
+        score = transition_score(self.tension, self.emotion, interactions, environment)
+        err = error_value(score, alpha)
+        if transition_allowed(score, alpha):
+            if self.state == "Ego":
+                self.state = "Jaz"
+            elif self.state == "Jaz":
+                self.state = "Enotnost"
+        self.history.append(self.state)
+        return self.state, err
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
