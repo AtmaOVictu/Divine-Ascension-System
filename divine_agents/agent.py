@@ -11,15 +11,34 @@ class Agent:
         Initial tension level. Values are clamped to the range ``0.01`` .. ``1``.
     emotion : float, optional
         Initial emotion intensity. Values are clamped to the range ``0.01`` .. ``1``.
+    language : str, optional
+        Language code used for responses. ``"sl"`` for Slovenian or ``"en"`` for
+        English.
     """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    RESPONSES = {
+        "Ego": {
+            "sl": "Resnica je absolutna in neodvisna od drugih.",
+            "en": "Truth is absolute and independent of others.",
+        },
+        "Jaz": {
+            "sl": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "en": "Truth is relative and shaped by our relationships.",
+        },
+        "Enotnost": {
+            "sl": "Vse resnice so eno, medsebojno povezane.",
+            "en": "All truths are one and interconnected.",
+        },
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, language: str = "sl"):
         self.name = name
         self.state = state
         self.tension = self._clamp(tension)
         self.emotion = self._clamp(emotion)
+        self.language = language
         self.history = [state]
 
     @staticmethod
@@ -64,8 +83,4 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.RESPONSES[self.state][self.language]
