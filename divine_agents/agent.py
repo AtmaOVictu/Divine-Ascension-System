@@ -1,9 +1,12 @@
+"""Core logic for ontological agents."""
+
+from .states import State, RESPONSES
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: State = State.EGO, tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -19,20 +22,16 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
+    def transition(self) -> State:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+            if self.state == State.EGO:
+                self.state = State.JAZ
+            elif self.state == State.JAZ:
+                self.state = State.ENOTNOST
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return RESPONSES[self.state]
