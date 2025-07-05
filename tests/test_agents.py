@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.contradiction_agent import AgentWithContradictions, philosophical_debate
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +20,21 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestContradictionAgent(unittest.TestCase):
+    def test_state_transition(self):
+        agent = AgentWithContradictions("C")
+        agent.update_emotion(0.6, 0.2)
+        agent.evolve()
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_debate(self):
+        a1 = AgentWithContradictions("C1")
+        a2 = AgentWithContradictions("C2", state="Jaz")
+        lines = philosophical_debate(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
