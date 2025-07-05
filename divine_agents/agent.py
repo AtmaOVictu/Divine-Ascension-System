@@ -36,3 +36,15 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class ReflectiveAgent(Agent):
+    """Agent capable of basic self-reflection based on state history."""
+
+    def self_reflect(self) -> bool:
+        """Return True if prior state was ``Enotnost`` and emotion is high."""
+        if len(self.history) > 1:
+            last_state = self.history[-2]
+            if last_state == "Enotnost" and self.emotion > 0.7:
+                return True
+        return False
