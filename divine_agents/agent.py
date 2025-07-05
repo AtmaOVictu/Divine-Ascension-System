@@ -1,3 +1,6 @@
+from .time_tracking import TimeTracker
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +12,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.tracker = TimeTracker(self.STATES)
+        self.tracker.start(state)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,11 +26,14 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        new_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
-                self.state = "Jaz"
+                new_state = "Jaz"
             elif self.state == "Jaz":
-                self.state = "Enotnost"
+                new_state = "Enotnost"
+        self.tracker.switch(new_state)
+        self.state = new_state
         self.history.append(self.state)
         return self.state
 
@@ -36,3 +44,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def time_spent(self) -> dict:
+        """Return a snapshot of time spent in states."""
+        return self.tracker.time_spent
