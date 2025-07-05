@@ -3,16 +3,36 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str | None = None) -> None:
+        """Create a new agent.
+
+        Parameters
+        ----------
+        name:
+            Identifier for the agent.
+        state:
+            Ontological state of the agent.
+        tension:
+            Current tension level.
+        emotion:
+            Intensity of the current emotion (0-1 range).
+        emotion_type:
+            Optional label for the emotion (e.g. ``"fear"``).
+        """
+
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type or "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if emotion_type:
+            self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -36,3 +56,15 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self) -> str:
+        """Return a response influenced by the agent's emotional state."""
+        base = self.respond("Kaj je resnica?")
+        prefix = ""
+        if self.emotion_type == "fear":
+            prefix = "S strahom pravi: "
+        elif self.emotion_type == "joy":
+            prefix = "Z veseljem pravi: "
+        elif self.emotion_type == "anger":
+            prefix = "Z jezo pravi: "
+        return f"{prefix}{base}"
