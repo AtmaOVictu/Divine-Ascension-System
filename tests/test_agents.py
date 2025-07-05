@@ -10,6 +10,11 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_tension_increase_with_shadow(self):
+        agent = Agent("B")
+        agent.update_emotion(0.5, -0.2)
+        self.assertAlmostEqual(agent.get_tension(), agent.emotion + agent.shadow)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
