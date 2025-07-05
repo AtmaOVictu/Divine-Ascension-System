@@ -1,3 +1,6 @@
+from .emotion_transformer import EmotionTransformer
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -14,6 +17,13 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def mutate_emotion(self) -> float:
+        """Mutate current emotion using ``EmotionTransformer`` and update tension."""
+        transformer = EmotionTransformer(self.emotion)
+        self.emotion = transformer.get_transformed_emotion()
+        self.tension += self.emotion
+        return self.emotion
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
