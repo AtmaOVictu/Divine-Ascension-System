@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.intensity import Intensity
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_intensity(self):
+        intensity = Intensity(state="visoka napetost")
+        color = intensity.increase()
+        display = intensity.display(color)
+        self.assertIn("RDE\u010cA", display)
 
 
 if __name__ == '__main__':
