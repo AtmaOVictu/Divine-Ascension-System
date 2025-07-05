@@ -1,13 +1,20 @@
+from typing import Optional
+
+from .language import LanguageModel
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 language_model: Optional[LanguageModel] = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language_model = language_model
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -36,3 +43,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def change_language(self, novi_jezik: str) -> str:
+        """Use attached language model to change language."""
+        if not self.language_model:
+            raise ValueError("Language model not set")
+        return self.language_model.prehod_v_jezik(novi_jezik)
