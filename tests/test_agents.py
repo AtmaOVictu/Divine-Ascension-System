@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure the project root is on the path so imports work when running the tests
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
