@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.simulation import simulate_agent_progression
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+
+class TestSimulation(unittest.TestCase):
+    def test_simulate_agent_progression(self):
+        agent = Agent("Sim")
+        steps = [0, 1, 2, 3]
+        states = simulate_agent_progression(agent, steps)
+        self.assertEqual(states[-1], "Enotnost")
 
 
 if __name__ == '__main__':
