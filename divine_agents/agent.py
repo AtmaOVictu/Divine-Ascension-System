@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and adapting attributes."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,12 +8,46 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.norm = ""
+        self.shape = ""
+        self.moral_value = ""
         self.history = [state]
+
+        self.change_norm()
+        self.change_shape()
+        self.update_moral_value()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def change_norm(self) -> None:
+        """Adjust normative guideline based on current state."""
+        if self.state == "Ego":
+            self.norm = "Samooskrba"
+        elif self.state == "Jaz":
+            self.norm = "Sodelovanje"
+        else:
+            self.norm = "Enotnost"
+
+    def change_shape(self) -> None:
+        """Change physical or symbolic shape according to state."""
+        if self.state == "Ego":
+            self.shape = "kocka"
+        elif self.state == "Jaz":
+            self.shape = "krogla"
+        else:
+            self.shape = "sfera"
+
+    def update_moral_value(self) -> None:
+        """Update moral value tied to the state."""
+        if self.state == "Ego":
+            self.moral_value = "Self-preservation"
+        elif self.state == "Jaz":
+            self.moral_value = "Cooperation"
+        else:
+            self.moral_value = "Unity"
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -26,13 +60,22 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            self.change_norm()
+            self.change_shape()
+            self.update_moral_value()
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5:
+            return f"{base} Čutim močna čustva."
+        return base
