@@ -19,6 +19,10 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def apply_nano(self, nano: 'Nano') -> None:
+        """Apply a Nano instance to adjust emotion and tension."""
+        nano.apply(self)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
