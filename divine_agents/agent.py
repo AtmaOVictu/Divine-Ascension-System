@@ -36,3 +36,39 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # New functionality for saving and loading agent state
+    def to_dict(self) -> dict:
+        """Serialize the agent state to a dictionary."""
+        return {
+            "name": self.name,
+            "state": self.state,
+            "tension": self.tension,
+            "emotion": self.emotion,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Agent":
+        """Instantiate an Agent from a serialized dictionary."""
+        return cls(
+            data.get("name", "Unnamed"),
+            state=data.get("state", "Ego"),
+            tension=data.get("tension", 0.0),
+            emotion=data.get("emotion", 0.0),
+        )
+
+    def save(self, path: str) -> None:
+        """Save the agent state to a JSON file."""
+        import json
+
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f)
+
+    @classmethod
+    def load(cls, path: str) -> "Agent":
+        """Load an Agent instance from a JSON file."""
+        import json
+
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return cls.from_dict(data)
