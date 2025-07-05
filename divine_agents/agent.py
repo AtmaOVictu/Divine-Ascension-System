@@ -8,6 +8,7 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = "neutral"
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,12 +16,22 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def _derive_emotion_type(self) -> None:
+        """Derive a simple emotion type based on current tension."""
+        if self.tension > 0.8:
+            self.emotion_type = "anger"
+        elif self.tension < 0.3:
+            self.emotion_type = "sorrow"
+        else:
+            self.emotion_type = "neutral"
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        self._derive_emotion_type()
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -32,7 +43,17 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type == "anger":
+            prefix = "(jezno)"
+        elif self.emotion_type == "sorrow":
+            prefix = "(žalostno)"
+        else:
+            prefix = "(mirno)"
+
+        return f"{prefix} {base}"
