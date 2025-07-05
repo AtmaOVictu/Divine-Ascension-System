@@ -10,6 +10,14 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_tension_increase(self):
+        """Tension should grow when emotion is updated."""
+        agent = Agent("B")
+        initial = agent.get_tension()
+        agent.update_emotion(0.5)
+        expected = initial + 0.5
+        self.assertEqual(agent.get_tension(), expected)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
