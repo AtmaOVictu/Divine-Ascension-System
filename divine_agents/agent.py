@@ -1,18 +1,45 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name: str
+        Name of the agent.
+    state: str
+        Current ontological state (Ego, Jaz, or Enotnost).
+    tension: float
+        Accumulated tension influencing state transitions.
+    emotion: float
+        Intensity of the current emotion in the range ``0.0`` - ``1.0``.
+    emotion_type: str
+        Type of emotion (e.g. ``fear``, ``joy``, ``anger``).
+    history: List[str]
+        History of states the agent has been through.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str = "neutral") -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value:
+            Intensity of the emotion in the range ``0.0`` - ``1.0``.
+        emotion_type:
+            Type of the emotion which may colour the agent's responses.
+        """
         self.emotion = value
+        self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +57,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The tone of the response is lightly influenced by the current
+        ``emotion_type``.
+        """
+        emotion_part = ""
+        if self.emotion_type != "neutral":
+            emotion_part = f" ({self.emotion_type})"
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"Resnica je absolutna in neodvisna od drugih.{emotion_part}"
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"Resnica je relativna, oblikovana z našimi odnosi.{emotion_part}"
+        return f"Vse resnice so eno, medsebojno povezane.{emotion_part}"
