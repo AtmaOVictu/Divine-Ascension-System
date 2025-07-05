@@ -1,38 +1,81 @@
+"""Ontological agent model with emotional dynamics."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Tuple
+
+
+class State(Enum):
+    """Philosophical states of an agent."""
+
+    EGO = "Ego"
+    JAZ = "Jaz"
+    ENOTNOST = "Enotnost"
+
+
+@dataclass
+class Emotions:
+    """Container for basic emotions."""
+
+    fear: float = 0.0
+    joy: float = 0.0
+    anger: float = 0.0
+
+    def intensity(self) -> float:
+        """Return the maximum emotional intensity."""
+
+        return max(self.fear, self.joy, self.anger)
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents a debating agent."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: State = State.EGO
+    tension: float = 0.0
+    emotions: Emotions = field(default_factory=Emotions)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def feel(self, **kwargs: float) -> None:
+        """Update emotions and tension based on provided values."""
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        for emotion, value in kwargs.items():
+            if hasattr(self.emotions, emotion):
+                setattr(self.emotions, emotion, value)
+        self.tension = self.emotions.intensity()
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+    def update_state(self) -> None:
+        """Trigger a state transition when thresholds are exceeded."""
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
-        self.history.append(self.state)
-        return self.state
+        triggered = self.tension > 0.7 or self.emotions.intensity() > 0.5
+        if self.state == State.EGO and triggered:
+            self.state = State.JAZ
+        elif self.state == State.JAZ and triggered:
+            self.state = State.ENOTNOST
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+    def respond(self) -> str:
+        """Return a statement reflecting the current ontological stance."""
+
+        if self.state == State.EGO:
+            return f"{self.name}: Truth is absolute and independent of others."
+        if self.state == State.JAZ:
+            return f"{self.name}: Truth is relative, shaped by our relationships."
+        return f"{self.name}: All truths are one and interconnected."
+
+
+@dataclass
+class Debate:
+    """Simple dialogue simulator for two agents."""
+
+    agent1: Agent
+    agent2: Agent
+
+    def step(self) -> Tuple[str, str]:
+        """Perform one dialogue step and update each agent."""
+
+        self.agent1.update_state()
+        self.agent2.update_state()
+        return self.agent1.respond(), self.agent2.respond()
+

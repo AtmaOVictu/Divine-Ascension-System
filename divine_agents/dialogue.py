@@ -1,19 +1,31 @@
+"""Dialogue helpers for ontological agents."""
+
+from __future__ import annotations
+
 from typing import List
-from .agent import Agent
+
+from .agent import Agent, Debate
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Run a short dialogue demonstrating state changes."""
+
+    debate = Debate(agent1, agent2)
     lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    # Initial responses
+    a1_resp, a2_resp = debate.step()
+    lines.append(a1_resp)
+    lines.append(a2_resp)
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    # Agents experience emotions influencing tension
+    agent1.feel(fear=0.8)
+    agent2.feel(joy=0.6)
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    # Next round after emotions updated
+    a1_resp, a2_resp = debate.step()
+    lines.append(a1_resp)
+    lines.append(a2_resp)
+
     return lines
+
