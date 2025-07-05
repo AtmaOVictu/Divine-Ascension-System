@@ -1,18 +1,48 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name:
+        Identifier of the agent.
+    state:
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension:
+        Numeric value representing internal tension. Values above ``0.7`` may
+        trigger a state transition.
+    emotion:
+        Numeric value representing current emotional intensity. Values above
+        ``0.5`` may also trigger a state transition.
+    emotion_name:
+        Descriptive name of the current emotion (e.g. ``jeza``, ``strah``).
+    history:
+        List of states the agent has transitioned through.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_name: str = "nevtralno"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, name: str | None = None) -> None:
+        """Update emotion intensity and optionally its descriptive name.
+
+        Parameters
+        ----------
+        value:
+            New emotional intensity.
+        name:
+            Optional textual description of the emotion (e.g. ``jeza``).
+        """
         self.emotion = value
+        if name is not None:
+            self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +60,14 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        emotion_part = f" Moja čustva so {self.emotion_name} ({self.emotion:.1f})."
+        return base + emotion_part
