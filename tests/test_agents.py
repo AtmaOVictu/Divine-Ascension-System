@@ -10,6 +10,15 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_love_hate_influence(self):
+        agent = Agent("B")
+        agent.update_love(1.0)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+        agent.update_hate(2.0)
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")

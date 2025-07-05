@@ -8,12 +8,24 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.love = 0.0
+        self.hate = 0.0
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
-        self.tension += value
+        self.tension += abs(value)
+
+    def update_love(self, value: float) -> None:
+        """Increase love and recalculate emotion."""
+        self.love = value
+        self.update_emotion(self.love - self.hate)
+
+    def update_hate(self, value: float) -> None:
+        """Increase hate and recalculate emotion."""
+        self.hate = value
+        self.update_emotion(self.love - self.hate)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
