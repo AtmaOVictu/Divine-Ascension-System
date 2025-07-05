@@ -1,4 +1,10 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure the package root is importable when tests are run directly
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -15,11 +21,23 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_emotion_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        lines = philosophical_dialogue(a1, a2, turns=3)
+        self.assertTrue(any("prehaja v stanje" in line for line in lines))
+
+    def test_emotional_prefix(self):
+        agent = Agent("C")
+        agent.update_emotion(0.7)
+        response = agent.respond("Kaj je resnica?")
+        self.assertTrue(response.startswith("Čutim močan naboj"))
 
 
 if __name__ == '__main__':
