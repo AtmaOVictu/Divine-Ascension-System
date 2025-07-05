@@ -21,6 +21,11 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_processor_symbol_transition(self):
+        agent = Agent("P")
+        agent.prehod("A")
+        self.assertEqual(agent.state, "Jaz")
+
 
 if __name__ == '__main__':
     unittest.main()

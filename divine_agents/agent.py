@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from .processor import OntoProcesor
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +14,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.onto_processor = OntoProcesor(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +42,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def prehod(self, simbol: str) -> str:
+        """Public interface for symbol-based transitions via OntoProcesor."""
+        return self.onto_processor.analizira_prehod(simbol)
+
