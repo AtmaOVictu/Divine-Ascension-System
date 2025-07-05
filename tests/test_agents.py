@@ -1,4 +1,8 @@
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +24,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_ethics(self):
+        agent = Agent("Eth")
+        judgement = agent.ethics.evaluate("egoizem")
+        self.assertEqual(judgement, "Unethical")
+
+    def test_reinforcement(self):
+        agent = Agent("RL")
+        agent.learner.update("Ego", "Aktiviraj", 1.0)
+        action = agent.learner.choose_action("Ego", ["Aktiviraj", "Prehod"])
+        self.assertEqual(action, "Aktiviraj")
 
 
 if __name__ == '__main__':
