@@ -1,13 +1,20 @@
+import uuid
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, equation: str | None = None,
+                 agent_id: str | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.equation = equation
+        self.agent_id = agent_id or str(uuid.uuid4())
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -28,6 +35,16 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def evaluate_equation(self, x: float) -> float:
+        """Evaluate the agent's equation if provided."""
+        if not self.equation:
+            raise ValueError("No equation defined for this agent")
+        return eval(self.equation.replace("x", str(x)))
+
+    def __str__(self) -> str:
+        return (f"Agent {self.name} (ID: {self.agent_id}) - State: {self.state}"
+                f" Tension: {self.tension:.2f} Emotion: {self.emotion:.2f}")
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
