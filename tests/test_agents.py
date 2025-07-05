@@ -10,6 +10,13 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_transition_jaz_to_enotnost(self):
+        """Agent in 'Jaz' should transition to 'Enotnost' when tension is high."""
+        agent = Agent("B", state="Jaz")
+        agent.update_tension(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
