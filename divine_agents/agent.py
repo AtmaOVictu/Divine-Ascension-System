@@ -36,3 +36,30 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class VersionedAgent(Agent):
+    """Agent that can transition through different versions when contacting others."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, version: str = "verzija 1"):
+        super().__init__(name, state, tension, emotion)
+        self.version = version
+
+    def transition_version(self, new_version: str) -> None:
+        """Transition to a different version."""
+        self.version = new_version
+
+    def touch(self, other: "Agent") -> None:
+        """Handle contact with another agent leading to version change and possible state update."""
+        # Increase emotion slightly due to interaction which may raise tension
+        self.update_emotion(self.emotion + 0.2)
+        if self.state == "Ego" and other.state == "Jaz":
+            self.transition_version("verzija 2")
+        elif self.state == "Jaz" and other.state == "Enotnost":
+            self.transition_version("verzija 3")
+        else:
+            self.transition_version("verzija 1")
+        # After contact, evaluate state transition
+        self.transition()
+
