@@ -36,3 +36,18 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class VersionedAgent(Agent):
+    """Agent that increases its version on contact with others."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, version: int = 1):
+        super().__init__(name, state, tension, emotion)
+        self.version = version
+
+    def contact(self, other: "Agent") -> str:
+        """Interact with another agent, increasing version and attempting transition."""
+        self.version += 1
+        # Increase emotional intensity to model effect of interaction
+        self.update_emotion(self.emotion + 0.3)
+        return self.transition()
