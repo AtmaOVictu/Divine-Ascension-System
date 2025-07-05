@@ -1,2 +1,4 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+
+Simple ontological agents that transition between philosophical states.
+Run unit tests with `python -m pytest`.
