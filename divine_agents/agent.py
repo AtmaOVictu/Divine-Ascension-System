@@ -1,3 +1,7 @@
+from typing import List
+from .analysis import SymbolicAI
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +13,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self._analyzer = SymbolicAI()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +41,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def analyze_dialogue(self, lines: List[str]) -> List[str]:
+        """Analyze dialogue lines using SymbolicAI and return inferred states."""
+        return [self._analyzer.analyze(line) for line in lines]
+
