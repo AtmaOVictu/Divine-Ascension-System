@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure project root is on path when tests are invoked directly via `pytest`.
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
