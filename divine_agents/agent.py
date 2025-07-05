@@ -19,6 +19,29 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def grow_emotion(self, t: float, k: float = 1.0, c: float = 0.5) -> float:
+        """Update emotion using a logistic growth model.
+
+        Parameters
+        ----------
+        t : float
+            Time step representing the agent's progression.
+        k : float, optional
+            Growth rate of the logistic curve.
+        c : float, optional
+            Midpoint of the logistic curve.
+
+        Returns
+        -------
+        float
+            New emotion value calculated from the logistic curve.
+        """
+        from .growth import logistic_growth
+
+        value = float(logistic_growth(t, k, c))
+        self.update_emotion(value)
+        return value
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
