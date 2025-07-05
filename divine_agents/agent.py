@@ -1,3 +1,10 @@
+from .introspection import (
+    exponential_introspection,
+    phenomenological_contraction,
+    extractive_introspection,
+)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -19,6 +26,14 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def introspect(self, t: float, k: float) -> float:
+        """Apply introspection functions to modify tension."""
+        level = exponential_introspection(t, k)
+        contraction = phenomenological_contraction(t, k)
+        extract = extractive_introspection(t, k)
+        self.tension += level * contraction + extract
+        return self.tension
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -32,7 +47,12 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5:
+            return f"{base} (čustveno odzvanjam)"
+        return base
