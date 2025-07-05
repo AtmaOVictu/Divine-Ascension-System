@@ -1,3 +1,10 @@
+"""Ontological agent module."""
+
+from __future__ import annotations
+
+import math
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -10,14 +17,22 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def _logistic(self, x: float, k: float = 1.0, c: float = 0.5) -> float:
+        """Return logistic growth for emotion or tension updates."""
+        return 1 / (1 + math.exp(-k * (x - c)))
+
+    def _logarithmic(self, x: float, k: float = 1.0) -> float:
+        """Return logarithmic scaling used for tension increase."""
+        return k * math.log1p(x)
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = min(1.0, self.tension + self._logistic(self.emotion))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -32,7 +47,16 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            prefix = "(Močno čustveno) "
+        elif self.emotion < 0.3:
+            prefix = "(Umirjeno) "
+        else:
+            prefix = ""
+        return prefix + base
