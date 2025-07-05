@@ -3,24 +3,59 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        shadow: "Agent | None" = None,
+        angel: "Agent | None" = None,
+    ) -> None:
+        """Create a new agent.
+
+        Parameters
+        ----------
+        name:
+            Human readable identifier of the agent.
+        state:
+            Starting ontological phase. Must be one of :data:`STATES`.
+        tension:
+            Initial tension level in the ``[0, 1]`` interval. Values are
+            clamped to prevent runaway growth.
+        emotion:
+            Initial emotional intensity in the ``[0, 1]`` interval. Values are
+            also clamped.
+        shadow:
+            Optional reference to the agent's shadow aspect.
+        angel:
+            Optional reference to the agent's angelic aspect.
+        """
+
         self.name = name
         self.state = state
-        self.tension = tension
-        self.emotion = emotion
+        self.tension = max(0.0, min(1.0, tension))
+        self.emotion = max(0.0, min(1.0, emotion))
+        self.shadow = shadow
+        self.angel = angel
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Set emotion and increase tension.
+
+        The provided value is clamped to ``[0, 1]`` to avoid runaway
+        amplification. Tension is increased by the same amount and clamped to
+        the valid range as well.
+        """
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = max(0.0, min(1.0, self.tension + value))
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level with clamping."""
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Move to the next state if emotion or tension exceed thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
