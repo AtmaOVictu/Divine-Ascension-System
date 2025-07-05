@@ -1,5 +1,6 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and
+    metaphysical dimensions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,6 +9,7 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.dimension = self.STATES.index(state) + 1
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -26,8 +28,13 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            self.dimension = self.STATES.index(self.state) + 1
         self.history.append(self.state)
         return self.state
+
+    def heart_center_value(self) -> float:
+        """Calculate a value for the heart center based on emotion and dimension."""
+        return round(self.emotion * self.dimension * 100, 2)
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
