@@ -1,9 +1,22 @@
+import os
+import sys
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
+    def test_emotion_updates_tension(self):
+        agent = Agent("A")
+        self.assertEqual(agent.tension, 0)
+        agent.update_emotion(0.5)
+        self.assertAlmostEqual(agent.tension, 0.5)
+        agent.update_emotion(0.4)
+        self.assertAlmostEqual(agent.tension, 0.9)
+
     def test_transition_thresholds(self):
         agent = Agent("A")
         agent.update_tension(0.8)
