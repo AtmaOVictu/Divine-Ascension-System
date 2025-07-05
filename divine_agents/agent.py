@@ -19,6 +19,15 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def apply_logistic_tension(
+            self, t: float, k: float = 1.0, c: float = 0.5) -> str:
+        """Update tension using logistic growth and perform transition."""
+        from .utils import logistic_growth
+
+        self.tension = logistic_growth(t, k, c)
+        return self.transition()
+
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
