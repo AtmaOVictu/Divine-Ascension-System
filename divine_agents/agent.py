@@ -10,6 +10,21 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def introspect(self) -> str:
+        """Return a string describing the agent's current ontological status."""
+        reflection = (
+            f"{self.name} introspects: state={self.state}, "
+            f"tension={self.tension}, emotion={self.emotion}"
+        )
+        self.history.append(f"INTROSPECT:{self.state}")
+        return reflection
+
+    def test_block(self, block_condition: str) -> None:
+        """Block the agent if a specific condition is met."""
+        if block_condition == "NEGATIVE_FEELING":
+            self.state = "BLOCKED"
+            self.history.append(self.state)
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value

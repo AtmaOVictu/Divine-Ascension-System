@@ -1,4 +1,9 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +25,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_introspection_and_block(self):
+        agent = Agent("B")
+        reflection = agent.introspect()
+        self.assertIn("state=Ego", reflection)
+        agent.test_block("NEGATIVE_FEELING")
+        self.assertEqual(agent.state, "BLOCKED")
 
 
 if __name__ == '__main__':
