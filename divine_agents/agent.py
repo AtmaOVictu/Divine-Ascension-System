@@ -29,6 +29,15 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def introspect(self) -> str:
+        """Return a human readable summary of the current internal state."""
+        summary = (
+            f"Agent {self.name} -> state: {self.state}, "
+            f"tension: {self.tension}, emotion: {self.emotion}"
+        )
+        self.history.append(f"INTROSPECT:{self.state}")
+        return summary
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
