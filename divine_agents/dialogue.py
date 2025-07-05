@@ -1,5 +1,5 @@
 from typing import List
-from .agent import Agent
+from .agent import Agent, SecondaryAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +16,12 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def dialogue_with_secondary(main: Agent, secondary: SecondaryAgent) -> List[str]:
+    """Run a dialogue and let the secondary agent monitor the main one."""
+    lines = philosophical_dialogue(main, secondary)
+    secondary.monitor_main_agent()
+    lines.append(f"{secondary.name}: {secondary.respond('Kaj je resnica?')}")
     return lines
