@@ -1,14 +1,27 @@
+from typing import Optional
+
+from .logger import SimpleErrorLogger
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        logger: Optional[SimpleErrorLogger] = None,
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.logger = logger
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -26,6 +39,13 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            if self.logger:
+                self.logger.log_error(f"{self.name} transitioned to {self.state}")
+        else:
+            if self.logger:
+                self.logger.log_error(
+                    f"{self.name} could not transition: tension={self.tension}, emotion={self.emotion}"
+                )
         self.history.append(self.state)
         return self.state
 
