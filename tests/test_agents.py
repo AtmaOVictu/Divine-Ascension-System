@@ -21,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_lenobe_prevents_transition(self):
+        agent = Agent("L")
+        agent.update_tension(0.0)
+        agent.update_emotion(0.0)
+        agent.update()
+        prev_state = agent.state
+        agent.transition()
+        self.assertEqual(agent.state, prev_state)
+        self.assertTrue(agent.lenobe)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,6 +8,8 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.lenobe = False  # Indicates stagnation
+        self.time_duration = 0  # Tracks time spent in current state
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,13 +17,21 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def update(self) -> None:
+        """Update duration in current state and evaluate lenobe."""
+        self.time_duration += 1
+        if self.tension < 0.1 and self.emotion < 0.1:
+            self.lenobe = True
+        else:
+            self.lenobe = False
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if not self.lenobe and (self.tension > 0.7 or self.emotion > 0.5):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -31,8 +41,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = "" if self.emotion < 0.5 else "\u2728 "  # simple emotional cue
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "Resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "Vse resnice so eno, medsebojno povezane."
