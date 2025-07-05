@@ -1,4 +1,9 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -9,6 +14,15 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_lenobe_update(self):
+        agent = Agent("B")
+        agent.update()
+        self.assertEqual(agent.get_lenobe(), 1)
+
+    def test_f_error(self):
+        agent = Agent("C", tension=0.5, emotion=0.2)
+        self.assertAlmostEqual(agent.f_error(), abs((0.5 + 0.2) - 1))
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
