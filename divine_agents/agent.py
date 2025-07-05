@@ -10,14 +10,29 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    def update_emotion(self, value: float, *, increment: bool = False) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            Emotion value to apply.
+        increment: bool, optional
+            When ``True`` the value is added to the current emotion.  By
+            default the emotion is replaced with ``value``.
+        """
+        if increment:
+            self.emotion += value
+        else:
+            self.emotion = value
         self.tension += value
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+    def update_tension(self, value: float, *, increment: bool = False) -> None:
+        """Directly set or increment tension level."""
+        if increment:
+            self.tension += value
+        else:
+            self.tension = value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
