@@ -1,19 +1,39 @@
+import math
+
+
+def logistic_function(t: float, k: float, c: float) -> float:
+    """Compute a logistic transition value without external dependencies."""
+    return 1 / (1 + math.exp(-k * (t - c)))
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 k_bio: float = 1.0, c_bio: float = 0.5, k_soc: float = 1.5, c_soc: float = 0.6):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.k_bio = k_bio
+        self.c_bio = c_bio
+        self.k_soc = k_soc
+        self.c_soc = c_soc
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def evolve(self) -> float:
+        """Update tension using logistic transitions for biological and social phases."""
+        bio = logistic_function(self.tension, self.k_bio, self.c_bio)
+        soc = logistic_function(self.tension, self.k_soc, self.c_soc)
+        self.tension = bio + soc
+        return self.tension
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
