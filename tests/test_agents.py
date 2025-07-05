@@ -1,4 +1,9 @@
+import os
+import sys
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -8,12 +13,23 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(state, "RES000")
+
+        # Advance through all RES phases until Jaz
+        for expected in ["RES001", "RES002", "RES003", "Jaz"]:
+            agent.update_tension(0.8)
+            state = agent.transition()
+            self.assertEqual(state, expected)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_responses_res_states(self):
+        agent = Agent("A", state="RES002")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("transformacijo", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
