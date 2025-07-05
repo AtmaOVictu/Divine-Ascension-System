@@ -3,17 +3,19 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, shadow: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.shadow = shadow  # nasprotje ali senca
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, shadow_value: float = 0.0) -> None:
+        """Update emotion and its nasprotje (shadow), adjusting tension."""
         self.emotion = value
-        self.tension += value
+        self.shadow = shadow_value
+        self.tension += value + shadow_value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -28,6 +30,10 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def get_state(self) -> tuple:
+        """Return current tension, emotion, and shadow."""
+        return self.tension, self.emotion, self.shadow
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
