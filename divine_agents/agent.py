@@ -1,5 +1,15 @@
+from __future__ import annotations
+
+import math
+
+
+def logistic_function(t: float, k: float = 1.0, c: float = 0.5) -> float:
+    """Compute a logistic curve used for tension adjustments."""
+    return 1 / (1 + math.exp(-k * (t - c)))
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -10,10 +20,11 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, k: float = 1.0, c: float = 0.5) -> None:
+        """Update emotion intensity and adjust tension using a logistic curve."""
         self.emotion = value
-        self.tension += value
+        # Tension follows a logistic growth based on emotion
+        self.tension = logistic_function(value, k=k, c=c)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +41,16 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on state and emotion."""
+        emotional_prefix = ""
+        if self.emotion > 0.5:
+            emotional_prefix = "(z visokimi čustvi) "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            core = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            core = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            core = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{emotional_prefix}{core}"
