@@ -21,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_loop_avoidance(self):
+        a1 = Agent("L1")
+        a2 = Agent("L2")
+        lines = philosophical_dialogue(a1, a2, max_turns=10)
+        self.assertEqual(lines[-1], "Zanka ustavljena.")
+
 
 if __name__ == '__main__':
     unittest.main()
