@@ -22,5 +22,20 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestHiddenModerator(unittest.TestCase):
+    def test_activation(self):
+        from divine_agents.moderator import HiddenModerator
+        mod = HiddenModerator("M")
+        mod.evaluate_state(tension=0.6, emotion=0.2)
+        self.assertEqual(mod.state, "active")
+
+    def test_reveal(self):
+        from divine_agents.moderator import HiddenModerator
+        mod = HiddenModerator("M")
+        mod.evaluate_state(tension=0.6, emotion=0.2)
+        mod.reveal_moderator()
+        self.assertEqual(mod.state, "revealed")
+
+
 if __name__ == '__main__':
     unittest.main()
