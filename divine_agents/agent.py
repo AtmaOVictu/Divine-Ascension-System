@@ -15,6 +15,10 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def get_tension(self) -> float:
+        """Return the current tension level."""
+        return self.tension
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
