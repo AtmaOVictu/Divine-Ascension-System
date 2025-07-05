@@ -1,3 +1,6 @@
+from .emotions import EMOTIONS
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,12 +11,19 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = None
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def set_emotion(self, name: str) -> None:
+        """Assign emotion by name and adjust intensity and tension."""
+        self.emotion_name = name
+        value = EMOTIONS.get(name, 0)
+        self.update_emotion(value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
