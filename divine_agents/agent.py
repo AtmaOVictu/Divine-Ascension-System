@@ -36,3 +36,25 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class SecondaryAgent(Agent):
+    """Agent that monitors another agent and intervenes when needed."""
+
+    def __init__(self, name: str, main_agent: Agent, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        super().__init__(name, state=state, tension=tension, emotion=emotion)
+        self.main_agent = main_agent
+
+    def monitor_main_agent(self) -> None:
+        """Adjust state if main agent reaches Enotnost with low tension."""
+        if self.main_agent.state == "Enotnost" and self.main_agent.tension < 0.5:
+            self.state = "Jaz"
+            self.update_emotion(0.5)
+
+    def respond(self, question: str) -> str:
+        """Respond according to secondary agent's role."""
+        if self.state == "Ego":
+            return f"{self.name}: I am here to observe."
+        if self.state == "Jaz":
+            return f"{self.name}: I offer alternative perspectives."
+        return f"{self.name}: I am a silent observer of interconnected truths."
