@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dimension_agent import EmotionDimensionAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dimension_activation(self):
+        agent = EmotionDimensionAgent("DimA", dimension=3)
+        agent.update_emotion(0.8)
+        agent.activate()
+        self.assertEqual(agent.state, "Jaz")
+
+    def test_senses_computation(self):
+        agent = EmotionDimensionAgent("DimB", dimension=2)
+        agent.update_emotion(0.6)
+        agent.activate()
+        self.assertAlmostEqual(agent.senses["touch"], 0.3)
+        self.assertAlmostEqual(agent.senses["sight"], 0.24)
 
 
 if __name__ == '__main__':
