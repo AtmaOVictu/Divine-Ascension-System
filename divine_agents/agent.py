@@ -1,7 +1,16 @@
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    # Extended states including the RES phases for deeper transitions
+    STATES = (
+        "Ego",
+        "RES000",
+        "RES001",
+        "RES002",
+        "RES003",
+        "Jaz",
+        "Enotnost",
+    )
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -23,6 +32,14 @@ class Agent:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
+                self.state = "RES000"
+            elif self.state == "RES000":
+                self.state = "RES001"
+            elif self.state == "RES001":
+                self.state = "RES002"
+            elif self.state == "RES002":
+                self.state = "RES003"
+            elif self.state == "RES003":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
@@ -33,6 +50,14 @@ class Agent:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
+        if self.state == "RES000":
+            return "Začetno stabilno stanje odpira pot spremembi."
+        if self.state == "RES001":
+            return "Oblikuje se začetna harmonija med vsemi deli sistema."
+        if self.state == "RES002":
+            return "Napetosti povzročajo začetno transformacijo."
+        if self.state == "RES003":
+            return "Dosežena je popolna realizacija elementov."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
