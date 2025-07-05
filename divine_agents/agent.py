@@ -1,9 +1,9 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states based on emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def ora_et_labora(self, emotion_value: float = 0.5, tension_value: float = 0.5) -> str:
+        """Simulate working and praying simultaneously, updating state as needed."""
+        self.update_emotion(emotion_value)
+        self.update_tension(tension_value)
+        self.transition()
+        return f"{self.name} deluje in moli. Trenutno stanje: {self.state}."
