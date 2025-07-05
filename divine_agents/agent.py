@@ -1,14 +1,28 @@
+from .language import LanguageModel
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        language: LanguageModel | None = None,
+        agent_id: str | None = None,
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language = language or LanguageModel("slovenščina", "slv")
+        self.agent_id = agent_id or f"EJ-{self.name}"
         self.history = [state]
+        self.language_history = [self.language.name]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +32,12 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def change_language(self, new_language: LanguageModel) -> str:
+        """Switch to a new language model and confirm the transition."""
+        self.language = new_language
+        self.language_history.append(new_language.name)
+        return new_language.confirm_transition()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
