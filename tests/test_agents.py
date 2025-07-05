@@ -15,11 +15,24 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_emotional_response(self):
+        agent = Agent("A")
+        agent.update_emotion(0.9)
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("\u010cutim", reply)
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_context_transition(self):
+        agent = Agent("B")
+        agent.set_contexts("visoka napetost", "stresno okolje")
+        agent.update_emotion(0.6)
+        new_state = agent.transition_by_context()
+        self.assertEqual(new_state, "Jaz")
 
 
 if __name__ == '__main__':
