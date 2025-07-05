@@ -21,6 +21,18 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_apply_humor(self):
+        agent = Agent("H", tension=0.8, emotion=0.6)
+        agent.apply_humor()
+        self.assertLess(agent.tension, 0.8)
+        self.assertLess(agent.emotion, 0.6)
+
+    def test_handle_issue_transition(self):
+        agent = Agent("I", tension=0.6)
+        agent.handle_issue(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
 
 if __name__ == '__main__':
     unittest.main()
