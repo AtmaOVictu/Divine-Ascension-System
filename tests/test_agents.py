@@ -1,4 +1,10 @@
+import os
+import sys
 import unittest
+
+# Ensure the package can be imported when running tests directly.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -10,6 +16,11 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_meditation_decision(self):
+        agent = Agent("B", tension=0.9)
+        decision = agent.meditate()
+        self.assertIn("prehod potreben", decision)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
@@ -19,6 +30,7 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("meditira" in line for line in lines))
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
