@@ -1,26 +1,37 @@
 import unittest
-from divine_agents.agent import Agent
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from divine_agents.agent import Agent, PHILOSOPHICAL_TRUTHS
 from divine_agents.dialogue import philosophical_dialogue
 
 
-class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
-        agent = Agent("A")
+class TestAgentSystem(unittest.TestCase):
+    def test_transition_by_tension(self):
+        agent = Agent("T")
         agent.update_tension(0.8)
-        state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(agent.transition(), "Jaz")
 
-    def test_responses(self):
-        agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+    def test_transition_by_emotion(self):
+        agent = Agent("E")
+        agent.update_emotion(0.6)
+        self.assertEqual(agent.transition(), "Jaz")
 
-    def test_dialogue(self):
+    def test_philosophical_responses(self):
+        for state, truth in PHILOSOPHICAL_TRUTHS.items():
+            agent = Agent("A", state=state)
+            self.assertIn(truth, agent.respond("Kaj je resnica?"))
+
+    def test_dialogue_emotional_labels(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        lines = philosophical_dialogue(a1, a2, rounds=3)
+        self.assertTrue(any("Emotion:" in line for line in lines))
+        # ensure at least one state transition occurs
+        self.assertTrue(any("prehaja v stanje" in line for line in lines))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
