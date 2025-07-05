@@ -10,6 +10,12 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_evolve_changes_tension(self):
+        agent = Agent("A")
+        initial = agent.tension
+        agent.evolve(0.9)
+        self.assertGreater(agent.tension, initial)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
