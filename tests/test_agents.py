@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import agent_precheck, command_filter
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -31,6 +32,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2, emotion1="strah", intensity1=0.4, emotion2="jeza", intensity2=0.8)
         self.assertTrue(any("\u010dutim" in line for line in lines))
+
+class TestAgentUtilities(unittest.TestCase):
+    def test_agent_precheck_needed(self):
+        agent = Agent("A", tension=0.8)
+        result = agent_precheck(agent, "prehod")
+        self.assertIn("potrebuje obravnavo", result)
+
+    def test_command_filter_respond(self):
+        agent = Agent("A")
+        result = command_filter(agent, "respond")
+        self.assertIn("Resnica", result)
 
 
 if __name__ == '__main__':
