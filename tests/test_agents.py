@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, AdvancedAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +20,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_evolve(self):
+        agent = Agent("A")
+        agent.update_emotion(0.9)
+        agent.evolve()
+        self.assertGreater(agent.tension, 0)
+
+    def test_advanced_agent(self):
+        adv = AdvancedAgent("X", emotion_type="negative")
+        adv.update_emotion(0.5)
+        self.assertLess(adv.tension, 0.1)
 
 
 if __name__ == '__main__':
