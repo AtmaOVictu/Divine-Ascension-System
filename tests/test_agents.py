@@ -15,6 +15,11 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_lenobe_detection(self):
+        agent = Agent("L")
+        agent.update()
+        self.assertEqual(agent.get_lenobe(), 1)
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
