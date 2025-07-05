@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.emotion import logistic_emotion
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,8 +19,15 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, time=1.0)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestEmotionFunction(unittest.TestCase):
+    def test_logistic_range(self):
+        value = logistic_emotion(1.0, k=1.0, c=0.0)
+        self.assertGreater(value, 0.0)
+        self.assertLess(value, 1.0)
 
 
 if __name__ == '__main__':
