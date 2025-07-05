@@ -30,9 +30,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer incorporating the asked question."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                f"Kar se ti\u010de '{question}', resnica je absolutna in neodvisna od drugih."
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"V zvezi z '{question}', resnica je relativna, oblikovana z na\u0161imi odnosi."
+            )
+        return (
+            f"Pri '{question}' je vse resnice eno, medsebojno povezane."
+        )
