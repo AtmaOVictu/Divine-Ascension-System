@@ -36,3 +36,30 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class OracleAgent(Agent):
+    """Agent with memory of state transitions and simple prediction capability."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        super().__init__(name, state, tension, emotion)
+        self.transitions = []  # list of dictionaries recording from/to states
+
+    def transition(self) -> str:
+        """Override to store transition path before switching state."""
+        prev_state = self.state
+        new_state = super().transition()
+        if prev_state != new_state:
+            self.transitions.append({"from": prev_state, "to": new_state})
+        return new_state
+
+    def suggest_next_step(self, current_state: str) -> list[str]:
+        """Return possible next states based on transition history."""
+        return [t["to"] for t in self.transitions if t["from"] == current_state]
+
+    def predict_future(self) -> str | None:
+        """Predict the most likely next state based on the last transition."""
+        if not self.transitions:
+            return None
+        last = self.transitions[-1]
+        return last["to"]
