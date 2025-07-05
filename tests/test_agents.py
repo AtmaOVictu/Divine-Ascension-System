@@ -1,4 +1,5 @@
 import unittest
+import unittest.mock
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_time_tracking(self):
+        with unittest.mock.patch('divine_agents.time_tracking.time.time', side_effect=[0, 1]):
+            agent = Agent("A")
+            agent.update_tension(0.8)
+            agent.transition()
+            self.assertEqual(agent.time_spent()["Ego"], 1)
 
 
 if __name__ == '__main__':
