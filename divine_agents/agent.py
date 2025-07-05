@@ -1,3 +1,6 @@
+from .transitions import biological_transition, social_transition
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -19,6 +22,21 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def evolve(
+        self,
+        t: float,
+        k_bio: float = 1.0,
+        c_bio: float = 0.5,
+        k_soc: float = 1.5,
+        c_soc: float = 0.6,
+    ) -> str:
+        """Evolve the agent through biological and social transitions."""
+        bio = biological_transition(t, k_bio, c_bio)
+        soc = social_transition(t, k_soc, c_soc)
+        self.update_emotion(bio)
+        self.update_tension(self.tension + soc)
+        return self.transition()
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -31,8 +49,15 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotional_suffix = ""
+        if self.emotion > 0.7:
+            emotional_suffix = " Moja custva so mocna."  # Slovenian accent
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                "Resnica je absolutna in neodvisna od drugih." + emotional_suffix
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                "Resnica je relativna, oblikovana z nasimi odnosi." + emotional_suffix
+            )
+        return "Vse resnice so eno, medsebojno povezane." + emotional_suffix
