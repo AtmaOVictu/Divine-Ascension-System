@@ -10,6 +10,17 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def express_truth(self) -> str:
+        """Return a dialogue line influenced by the agent's emotional state."""
+        base = self.respond("Kaj je resnica?")
+        if self.emotion > 0.7:
+            mood = "z veliko strastjo"
+        elif self.emotion > 0.3:
+            mood = "mirno"
+        else:
+            mood = "brez \u010dustev"
+        return f"{self.name} ({self.state}, {mood}): {base}"
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
