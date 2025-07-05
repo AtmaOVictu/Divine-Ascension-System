@@ -17,3 +17,22 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+from .contextual_agent import ContextualAgent
+
+
+def contextual_dialogue(agent1: ContextualAgent, agent2: ContextualAgent) -> List[str]:
+    """Dialogue where agents transition based on contexts."""
+    lines = []
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    # Apply contexts and attempt transitions
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.contextual_transition()}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.contextual_transition()}")
+    # Additional transition to show progression
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.contextual_transition()}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
