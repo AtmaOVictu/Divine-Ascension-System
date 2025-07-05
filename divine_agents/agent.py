@@ -36,3 +36,25 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class ReflectiveAgent(Agent):
+    """Agent that performs self-reflection before transitioning."""
+
+    def self_reflect(self) -> bool:
+        """Return True if reflection indicates a state change is needed."""
+        if len(self.history) > 1 and self.state == "Enotnost" and self.emotion > 0.7:
+            # High emotion while in unity prompts a return to the previous state
+            return True
+        return False
+
+    def transition(self) -> str:
+        """Perform transition considering self-reflection."""
+        if self.self_reflect():
+            # return to previous state for balance
+            self.state = self.history[-2]
+            self.history.append(self.state)
+        else:
+            result = super().transition()
+            return result
+        return self.state
