@@ -21,6 +21,18 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_value_clamping(self):
+        agent = Agent("Clamp", tension=1.2, emotion=-0.5)
+        self.assertEqual(agent.tension, 1)
+        self.assertEqual(agent.emotion, 0)
+
+        agent.update_emotion(2)
+        self.assertEqual(agent.emotion, 1)
+        self.assertEqual(agent.tension, 1)
+
+        agent.update_tension(-1)
+        self.assertEqual(agent.tension, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

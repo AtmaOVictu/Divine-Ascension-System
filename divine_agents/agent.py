@@ -1,23 +1,49 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name : str
+        Name of the agent.
+    state : str, optional
+        Starting ontological state (default ``"Ego"``).
+    tension : float, optional
+        Initial tension level clamped between 0 and 1.
+    emotion : float, optional
+        Initial emotion intensity clamped between 0 and 1.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
-        self.tension = tension
-        self.emotion = emotion
+        self.tension = max(0.0, min(1.0, tension))
+        self.emotion = max(0.0, min(1.0, emotion))
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value : float
+            Change in emotion intensity. Positive values increase emotion
+            while negative values decrease it. Emotion and tension are
+            clamped between 0 and 1.
+        """
+        self.emotion = max(0.0, min(1.0, self.emotion + value))
+        self.tension = max(0.0, min(1.0, self.tension + value))
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level.
+
+        Parameters
+        ----------
+        value : float
+            New tension value which will be clamped between 0 and 1.
+        """
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
