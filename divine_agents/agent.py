@@ -36,3 +36,18 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class EmotionDimensionAgent(Agent):
+    """Agent that tracks dimension-specific emotion impact."""
+
+    def __init__(self, name: str, dimension: int = 1, **kwargs):
+        super().__init__(name, **kwargs)
+        self.dimension = dimension
+        self.senses = {"touch": 0.0, "sight": 0.0}
+
+    def process_emotion(self) -> float:
+        """Calculate sense perception based on current emotion and dimension."""
+        self.senses["touch"] = self.emotion * 0.5
+        self.senses["sight"] = self.emotion * 0.4
+        return self.emotion * self.dimension
