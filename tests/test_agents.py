@@ -1,3 +1,4 @@
+import os
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
@@ -20,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_env_custom_threshold(self):
+        os.environ["TENSION_THRESHOLD"] = "0.3"
+        agent = Agent("B")
+        agent.update_tension(0.4)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+        del os.environ["TENSION_THRESHOLD"]
 
 
 if __name__ == '__main__':
