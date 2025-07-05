@@ -3,7 +3,15 @@ from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Run a brief conversation illustrating ontological perspectives.
+
+    The function demonstrates how two agents evolve during discussion. Each
+    agent responds to the question "Kaj je resnica?" based on its current
+    state. Emotional updates increase internal tension, triggering transitions
+    from ``Ego`` to ``Jaz`` or from ``Jaz`` to ``Enotnost`` when thresholds are
+    crossed. The returned list of lines records both the spoken dialogue and
+    any state changes that occur.
+    """
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
