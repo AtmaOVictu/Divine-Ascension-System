@@ -1,13 +1,24 @@
+from .language import LANGUAGE_MODELS
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and languages."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        language: str = "sloven\u0161\u010dina",
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language = language
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -30,9 +41,13 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on the current state and language."""
+        model = LANGUAGE_MODELS.get(self.language)
+        if not model:
+            return ""
+        return model.response(self.state)
+
+    def change_language(self, language: str) -> None:
+        """Change the agent's active language if available."""
+        if language in LANGUAGE_MODELS:
+            self.language = language

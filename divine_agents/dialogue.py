@@ -1,10 +1,24 @@
 from typing import List
+
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
+def philosophical_dialogue(
+    agent1: Agent,
+    agent2: Agent,
+    lang1: str | None = None,
+    lang2: str | None = None,
+) -> List[str]:
+    """Simulate a short philosophical dialogue between two agents.
+
+    Optionally change their languages before the conversation."""
+
+    if lang1:
+        agent1.change_language(lang1)
+    if lang2:
+        agent2.change_language(lang2)
+
+    lines: List[str] = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
