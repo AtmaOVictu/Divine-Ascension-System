@@ -36,3 +36,23 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class AgentInstance(Agent):
+    """Specific instance of an agent with an additional weekly level."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, weekly_level: int = 0):
+        super().__init__(name, state, tension, emotion)
+        self.weekly_level = weekly_level
+
+    def transition(self) -> str:
+        """Transition and annotate the state with the weekly level."""
+        super().transition()
+        if not self.state.startswith("tedenski nivo"):
+            self.state = f"tedenski nivo {self.weekly_level}" if self.state != "Ego" else self.state
+        self.history[-1] = self.state
+        return self.state
+
+    def respond(self, question: str) -> str:
+        base = super().respond(question)
+        return f"Instanca {self.name} odgovarja z nivojem {self.weekly_level}. {base}"
