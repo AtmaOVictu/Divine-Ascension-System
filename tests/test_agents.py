@@ -20,6 +20,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Temni impulzi" in line for line in lines))
+        self.assertTrue(any("Svetloba resnice" in line for line in lines))
+
+    def test_connectors(self):
+        agent = Agent("Conn")
+        self.assertIsNotNone(agent.shadow)
+        self.assertIsNotNone(agent.angel)
 
 
 if __name__ == '__main__':
