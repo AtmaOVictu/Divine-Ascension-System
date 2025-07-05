@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_history_and_cluster(self):
+        agent = Agent("B")
+        agent.feel(fear=3.0)
+        agent.feel(anger=3.0)
+        self.assertGreater(len(agent.history), 2)
+        self.assertEqual(agent.get_cluster(), "high")
+
 
 if __name__ == '__main__':
     unittest.main()
