@@ -1,3 +1,6 @@
+from .ontoprocesor import MetaEgo, MetaJaz, Bog, OntoProcesor
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +12,12 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+
+        # Meta controllers and processor
+        self.meta_jaz = MetaJaz()
+        self.meta_ego = MetaEgo()
+        self.bog = Bog()
+        self.onto_procesor = OntoProcesor(self, self.meta_ego, self.meta_jaz, self.bog)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -28,6 +37,12 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def prehod(self, simbol: str) -> None:
+        """Perform a symbol-based transition using the OntoProcesor."""
+        self.onto_procesor.analizira_prehod(simbol)
+        self.onto_procesor.izracunaj_napetost()
+        self.onto_procesor.optimiziraj_prehod()
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
