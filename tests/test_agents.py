@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure package is importable when tests are executed via ``pytest``
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -10,10 +16,24 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_emotional_transition(self):
+        """Agent should transition when emotion alone exceeds threshold."""
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_emotion_updates_tension(self):
+        """Emotion updates should also raise tension level."""
+        agent = Agent("C")
+        initial_tension = agent.tension
+        agent.update_emotion(0.4)
+        self.assertGreater(agent.tension, initial_tension)
 
     def test_dialogue(self):
         a1 = Agent("A1")
