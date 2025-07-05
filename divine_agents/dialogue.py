@@ -2,18 +2,28 @@ from typing import List
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+def philosophical_dialogue(agent1: Agent, agent2: Agent, rounds: int = 2) -> List[str]:
+    """Simulate a philosophical dialogue between two agents.
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    Parameters
+    ----------
+    agent1, agent2 : Agent
+        Participants in the dialogue.
+    rounds : int, optional
+        Number of conversational rounds to simulate.
+    """
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    lines: List[str] = []
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    for r in range(rounds):
+        lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+        # emotions intensify as discussion continues
+        agent1.update_emotion(0.6, "jeza" if r == 0 else "radovednost")
+        lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+        agent2.update_emotion(0.6 if r == 0 else 0.4, "veselje" if r == 0 else "mirnost")
+        lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
     return lines
