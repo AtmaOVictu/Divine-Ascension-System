@@ -3,17 +3,25 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def feel(self, emotion_type: str, intensity: float) -> None:
+        """Set an emotion type and adjust tension based on intensity."""
+        self.emotion_type = emotion_type
+        self.update_emotion(intensity)
+        if emotion_type == "joy":
+            self.tension = max(0, self.tension - intensity / 2)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +40,17 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type == "fear":
+            answer += " Čutim strah."
+        elif self.emotion_type == "anger":
+            answer += " Občutim jezo."
+        elif self.emotion_type == "joy":
+            answer += " Preveva me radost."
+
+        return answer
