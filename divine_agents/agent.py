@@ -1,19 +1,38 @@
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
+class Emotions:
+    """Container for an agent's emotional state."""
+
+    fear: float = 0.0
+    joy: float = 0.0
+    anger: float = 0.0
+
+    def intensity(self) -> float:
+        """Return the highest emotional intensity."""
+        return max(self.fear, self.joy, self.anger)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotions: Emotions | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+        self.emotions = emotions if emotions is not None else Emotions()
+        self.history: List[str] = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def feel(self, **kwargs: float) -> None:
+        """Update emotional state and adjust tension."""
+        for emotion, value in kwargs.items():
+            if hasattr(self.emotions, emotion):
+                setattr(self.emotions, emotion, value)
+        self.tension = max(self.tension, self.emotions.intensity())
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,11 +40,11 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        triggered = self.tension > 0.7 or self.emotions.intensity() > 0.5
+        if self.state == "Ego" and triggered:
+            self.state = "Jaz"
+        elif self.state == "Jaz" and triggered:
+            self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
 
