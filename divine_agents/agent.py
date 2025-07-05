@@ -1,5 +1,13 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent maintains an ontological ``state`` (``Ego`` -> ``Jaz`` ->
+    ``Enotnost``) as well as numeric ``tension`` and ``emotion`` levels.  When
+    either the tension exceeds ``0.7`` or the emotion exceeds ``0.5`` the agent
+    transitions to the next ontological phase.  Every response therefore
+    reflects both the philosophical stance of the current state and the current
+    emotional context.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -30,9 +38,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the current emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{base} (\u010dustvo={self.emotion:.1f}, napetost={self.tension:.1f})"
