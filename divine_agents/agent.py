@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Unique identifier of the agent.
+    state:
+        One of ``Ego``, ``Jaz`` or ``Enotnost``.
+    tension:
+        Current level of inner tension in the range ``0.0`` - ``1.0``.
+    emotion:
+        Current emotional intensity in the range ``0.0`` - ``1.0``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +30,19 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    @property
+    def pathos(self) -> float:
+        """Return the agent's internal energy calculated from emotion and tension."""
+        return (self.emotion + self.tension) / 2
+
+    def sync_pathos(self) -> None:
+        """Synchronize internal energy with the current state.
+
+        If ``pathos`` exceeds ``0.6`` a state transition is attempted.
+        """
+        if self.pathos > 0.6:
+            self.transition()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
