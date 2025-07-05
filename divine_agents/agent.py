@@ -1,23 +1,48 @@
+from .utils import logistic_function
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        k_bio: float = 1.0,
+        c_bio: float = 0.5,
+        k_soc: float = 1.5,
+        c_soc: float = 0.6,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.k_bio = k_bio
+        self.c_bio = c_bio
+        self.k_soc = k_soc
+        self.c_soc = c_soc
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.evolve()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.evolve()
+
+    def evolve(self) -> None:
+        """Update tension using logistic transformations."""
+        bio_transition = logistic_function(self.tension, self.k_bio, self.c_bio)
+        soc_transition = logistic_function(self.tension, self.k_soc, self.c_soc)
+        self.tension = bio_transition + soc_transition
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -31,8 +56,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotional_note = "" if self.emotion <= 0.5 else "(čustveno) "
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"{emotional_note}Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"{emotional_note}Resnica je relativna, oblikovana z našimi odnosi."
+        return f"{emotional_note}Vse resnice so eno, medsebojno povezane."
