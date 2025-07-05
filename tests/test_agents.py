@@ -10,6 +10,20 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_legitimate_check(self):
+        agent = Agent("A")
+        agent.update_tension(0.6)
+        self.assertFalse(agent.is_legitimate_transition())
+        agent.update_tension(0.8)
+        self.assertTrue(agent.is_legitimate_transition())
+
+    def test_forced_transition(self):
+        agent = Agent("A")
+        # Not legitimate yet
+        agent.update_tension(0.2)
+        state = agent.transition(force=True)
+        self.assertEqual(state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")

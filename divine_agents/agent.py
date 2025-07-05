@@ -1,5 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Legitimate transitions occur only when the agent's tension or emotion
+    exceeds predefined thresholds. If a transition is forced without meeting
+    these thresholds it is considered an "amateur" transition.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -10,6 +15,10 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def is_legitimate_transition(self) -> bool:
+        """Return True if thresholds for a legitimate transition are met."""
+        return self.tension > 0.7 or self.emotion > 0.5
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
@@ -19,9 +28,14 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+    def transition(self, force: bool = False) -> str:
+        """Perform a state transition.
+
+        By default the transition only occurs when legitimate thresholds are
+        exceeded. When ``force`` is ``True`` the transition occurs regardless,
+        representing an amateur or compelled change.
+        """
+        if self.is_legitimate_transition() or force:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
