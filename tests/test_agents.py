@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.loading import simulate_loading_screen
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestLoadingScreen(unittest.TestCase):
+    def test_loading_progress(self):
+        lines = simulate_loading_screen("AgentX", max_cycles=3)
+        joined = "".join(lines)
+        self.assertIn("Loading Screen končan za AgentX.", joined)
 
 
 if __name__ == '__main__':
