@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self._ready_for_transition = False
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,14 +20,22 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def meditate(self) -> str:
+        """Reflect on internal state and decide if transition is needed."""
+        self._ready_for_transition = self.tension > 0.7 or self.emotion > 0.5
+        if self._ready_for_transition:
+            return "Meditacija zaključena: prehod potreben"
+        return "Meditacija zaključena: prehod ni potreben"
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Perform state transition if meditation determined it is needed."""
+        if self._ready_for_transition and (self.tension > 0.7 or self.emotion > 0.5):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self._ready_for_transition = False
         return self.state
 
     def respond(self, question: str) -> str:
