@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.math_utils import logistic_function, logarithmic_function
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_math_utils(self):
+        # logistic value should be above 0.5 for t=1
+        self.assertGreater(logistic_function(1.0), 0.5)
+        # logarithmic growth should increase with larger t
+        self.assertGreater(logarithmic_function(2.0), logarithmic_function(1.0))
 
 
 if __name__ == '__main__':
