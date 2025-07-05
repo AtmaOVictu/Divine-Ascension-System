@@ -1,6 +1,8 @@
 import unittest
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.loading import simulate_loading
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -21,6 +23,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_loading_simulation(self):
+        agent = Agent("Loader")
+        log = simulate_loading(agent, sleep_duration=0)
+        self.assertIn("System Loaded Successfully!", log[-1])
+        self.assertIn(agent.philosopher.state, Agent.STATES)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
