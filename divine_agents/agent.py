@@ -1,3 +1,7 @@
+from .mediator import Mediator
+from .meditator import Meditator
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +13,9 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Components enabling external coordination and internal reflection
+        self.mediator = Mediator(self)
+        self.meditator = Meditator(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +43,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def execute_action(self, action: str) -> str:
+        """Perform an action via mediator after self-reflection."""
+        # Self-reflection output is not used further here but could be logged
+        self.meditator.self_reflection()
+        return self.mediator.validate_command(action)
