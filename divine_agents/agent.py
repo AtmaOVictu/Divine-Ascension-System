@@ -1,14 +1,29 @@
+"""Core agent models used within the Divine-Ascension-System."""
+
+from dataclasses import dataclass, field
+
+from .evolution import biological_transition, social_transition
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of state transitions and evolution."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    # parameters for biological and social transitions
+    state_bio: float = 0.0
+    state_soc: float = 0.0
+    k_bio: float = 1.0
+    c_bio: float = 0.5
+    k_soc: float = 1.5
+    c_soc: float = 0.6
+    history: list = field(default_factory=list)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -28,6 +43,15 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def evolve(self) -> None:
+        """Evolve biological and social states using logistic transitions."""
+        self.state_bio = biological_transition(self.state_bio, self.k_bio, self.c_bio)
+        self.state_soc = social_transition(self.state_soc, self.k_soc, self.c_soc)
+
+    def get_evolution_state(self) -> tuple:
+        """Return current biological and social evolution values."""
+        return self.state_bio, self.state_soc
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
