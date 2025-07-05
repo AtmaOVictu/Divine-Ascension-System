@@ -21,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_dimension_and_senses(self):
+        agent = Agent("B")
+        agent.update_emotion(0.8)
+        agent.transition()
+        senses = agent.compute_senses()
+        self.assertEqual(agent.dimension, 2)
+        self.assertGreater(senses["touch"], senses["sight"])
+        self.assertAlmostEqual(agent.dimension_influence(), agent.emotion * agent.dimension)
+
 
 if __name__ == '__main__':
     unittest.main()
