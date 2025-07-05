@@ -1,3 +1,6 @@
+from math import exp
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -18,6 +21,22 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def logistic_emotion(self, t: float, k: float = 1.0, c: float = 0.0) -> float:
+        """Update emotion using a logistic growth model.
+
+        Parameters
+        ----------
+        t: float
+            Time or intensity step.
+        k: float
+            Growth rate of the emotion.
+        c: float
+            Critical point where the emotion starts to manifest.
+        """
+        value = 1.0 / (1.0 + exp(-k * (t - c)))
+        self.update_emotion(value)
+        return value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
