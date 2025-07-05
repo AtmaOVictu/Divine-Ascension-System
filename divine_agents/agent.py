@@ -3,21 +3,27 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, shadow: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.shadow = shadow
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, shadow_value: float = 0.0) -> None:
+        """Update emotion and its opposing shadow, adjusting tension."""
         self.emotion = value
-        self.tension += value
+        self.shadow = shadow_value
+        self.tension += self.emotion + self.shadow
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def get_tension(self) -> float:
+        """Return current tension level."""
+        return self.tension
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
