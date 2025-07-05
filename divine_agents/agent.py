@@ -3,17 +3,30 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, pathos: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.pathos = pathos
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def adjust_pathos(self, external_factor: float) -> None:
+        """Automatically adjust pathos due to external influence."""
+        self.pathos += external_factor
+        if self.pathos < 0:
+            self.pathos = 0
+        self.sync_pathos()
+
+    def sync_pathos(self) -> None:
+        """Synchronize pathos with tension to maintain harmony."""
+        if self.pathos > 5:
+            self.tension = max(self.tension, 1.0)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
