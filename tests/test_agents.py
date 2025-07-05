@@ -1,4 +1,12 @@
+import os
+import sys
 import unittest
+
+# Ensure project root is in the path for imports when running directly
+ROOT = os.path.dirname(os.path.dirname(__file__))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -10,15 +18,33 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_transition_emotion_threshold(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_emotional_response(self):
+        agent = Agent("C")
+        agent.update_emotion(0.75)
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("močno", reply)
+
+    def test_principle_method(self):
+        agent = Agent("P", state="Jaz")
+        self.assertIn("relativna", agent.principle())
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertEqual(a1.state, "Enotnost")
+        self.assertEqual(a2.state, "Enotnost")
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
