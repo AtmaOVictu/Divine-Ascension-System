@@ -3,15 +3,30 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    TRUTHS = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def set_emotion(self, emotion_type: str, value: float) -> None:
+        """Set an emotion with intensity and adjust tension."""
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
 
@@ -30,9 +45,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on the current state and emotion."""
+        base = self.TRUTHS.get(self.state, "")
+        if self.emotion_type == "fear":
+            return f"V strahu pravim: {base}"
+        if self.emotion_type == "joy":
+            return f"Z veseljem pravim: {base}"
+        if self.emotion_type == "anger":
+            return f"Z jezo izjavljam: {base}"
+        return base
