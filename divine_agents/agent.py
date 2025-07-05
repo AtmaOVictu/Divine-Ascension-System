@@ -1,14 +1,29 @@
+"""Ontological agents and their emotional state transitions."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Display name of the agent.
+    state:
+        Ontological state. One of ``"Ego"``, ``"Jaz"`` or ``"Enotnost"``.
+    tension:
+        Current tension level in the range ``0`` - ``1``.
+    emotion:
+        Intensity of the current dominant emotion in the range ``0`` - ``1``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
-        self.state = state
+        self.state = state if state in self.STATES else "Ego"
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history = [self.state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -31,8 +46,10 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_note = "" if self.emotion <= 0.5 else " Čutim močno čustvo." 
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
+
