@@ -1,14 +1,43 @@
+from .companions import ShadowAgent, AngelAgent
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Starting ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension:
+        Initial tension level in range ``0`` to ``1``.
+    emotion:
+        Initial emotion level in range ``0`` to ``1``.
+    shadow:
+        Optional :class:`ShadowAgent` influencing this agent.
+    angel:
+        Optional :class:`AngelAgent` influencing this agent.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        shadow: ShadowAgent | None = None,
+        angel: AngelAgent | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.shadow = shadow or ShadowAgent()
+        self.angel = angel or AngelAgent()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +47,14 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def interact_with_shadow(self) -> str:
+        """Invoke the shadow agent's influence."""
+        return self.shadow.interact(self)
+
+    def interact_with_angel(self) -> str:
+        """Invoke the angel agent's influence."""
+        return self.angel.interact(self)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
