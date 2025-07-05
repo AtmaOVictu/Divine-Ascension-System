@@ -1,5 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
+from divine_agents.moderator import HiddenModerator
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestHiddenModerator(unittest.TestCase):
+    def test_activation_and_reveal(self):
+        moderator = HiddenModerator("Mod")
+        moderator.evaluate_state(tension=0.6, emotion=0.4)
+        self.assertEqual(moderator.state, "active")
+        moderator.reveal_moderator()
+        self.assertEqual(moderator.state, "revealed")
 
 
 if __name__ == '__main__':
