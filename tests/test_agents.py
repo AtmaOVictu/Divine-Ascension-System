@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure the package is importable when tests are run directly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
