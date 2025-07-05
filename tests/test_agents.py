@@ -1,6 +1,10 @@
+import os, sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.generator import Generator
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +24,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+class TestGenerator(unittest.TestCase):
+    def test_generator_activation(self):
+        g = Generator()
+        g.aktiviraj()
+        msg = g.generiraj_prehod("0")
+        self.assertIn("Prehod iz potencialnosti", msg)
+
 
 
 if __name__ == '__main__':
