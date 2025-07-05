@@ -3,11 +3,26 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    PRINCIPLES = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
+    EMOTION_PREFIX = {
+        "neutral": "",
+        "fear": "(zaskrbljeno) ",
+        "joy": "(veselo) ",
+        "anger": "(nejevoljno) ",
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_state: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_state = emotion_state
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,12 +30,17 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set the emotion state and intensity."""
+        self.emotion_state = name if name in self.EMOTION_PREFIX else "neutral"
+        self.update_emotion(intensity)
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform a state transition if tension > 0.7 or emotion > 0.5."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +50,7 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer reflecting the current state and emotion."""
+        prefix = self.EMOTION_PREFIX.get(self.emotion_state, "")
+        base = self.PRINCIPLES.get(self.state, "")
+        return f"{prefix}{base}"
