@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.language import LanguageModel
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,8 +19,16 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        eng = LanguageModel("angle\u0161\u010dina", "eng")
+        lines = philosophical_dialogue(a1, a2, lang1=eng)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_language_change(self):
+        agent = Agent("L")
+        en = LanguageModel("angle\u0161\u010dina", "eng")
+        msg = agent.change_language(en)
+        self.assertIn("angle\u0161\u010dina", msg)
+        self.assertEqual(agent.language.identifier, "eng")
 
 
 if __name__ == '__main__':
