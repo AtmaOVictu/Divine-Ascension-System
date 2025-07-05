@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.mediation import Mediator, Meditator
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_mediator_transition(self):
+        agent = Agent("M")
+        agent.update_tension(0.8)
+        result = agent.mediator.validate_command("prehod")
+        self.assertIn("uspešno", result)
+
+    def test_meditator_peace(self):
+        agent = Agent("Me", tension=0.2)
+        msg = agent.meditator.transition_to_peace()
+        self.assertIn("Enotnost", msg)
 
 
 if __name__ == '__main__':

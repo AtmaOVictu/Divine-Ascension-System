@@ -9,6 +9,10 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Mediator and Meditator are created lazily to avoid circular imports
+        from .mediation import Mediator, Meditator
+        self.mediator = Mediator(self)
+        self.meditator = Meditator(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +40,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def execute_action(self, action: str) -> None:
+        """Execute an action using Mediator and Meditator."""
+        self.meditator.self_reflection()
+        print(self.mediator.validate_command(action))
