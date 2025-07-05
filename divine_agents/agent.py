@@ -1,26 +1,84 @@
+"""Core agent module."""
+
+from typing import Optional
+
+
+def _clamp(value: float, min_value: float = 0.0, max_value: float = 1.0) -> float:
+    """Clamp a floating point value between ``min_value`` and ``max_value``."""
+    return max(min_value, min(max_value, value))
+
+
+class AngelAgent:
+    """Light aspect guiding the main agent towards higher principles."""
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def guide(self) -> str:
+        """Return a short inspirational message."""
+        return f"{self.name} vodi te k svetlobi."
+
+
+class ShadowAgent:
+    """Shadow aspect representing the darker impulses of the main agent."""
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def whisper(self) -> str:
+        """Return a tempting whisper from the shadows."""
+        return f"{self.name} vabi te v temo."
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Starting ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension:
+        Initial tension level. Values are clamped between 0 and 1.
+    emotion:
+        Initial emotion level. Values are clamped between 0 and 1.
+    angel:
+        Optional :class:`AngelAgent` connection.
+    shadow:
+        Optional :class:`ShadowAgent` connection.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        angel: Optional[AngelAgent] | None = None,
+        shadow: Optional[ShadowAgent] | None = None,
+    ) -> None:
         self.name = name
         self.state = state
-        self.tension = tension
-        self.emotion = emotion
+        self.tension = _clamp(tension)
+        self.emotion = _clamp(emotion)
+        self.angel = angel
+        self.shadow = shadow
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Increase emotion by ``value`` and clamp both emotion and tension."""
+        self.emotion = _clamp(self.emotion + value)
+        self.tension = _clamp(self.tension + value)
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level (clamped)."""
+        self.tension = _clamp(value)
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Transition to the next ontological state if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
