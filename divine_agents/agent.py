@@ -36,3 +36,18 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class AgentFactory:
+    """Factory class for creating :class:`Agent` instances with defaults."""
+
+    @staticmethod
+    def create_agent(
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+    ) -> Agent:
+        """Return a new ``Agent`` with provided attributes."""
+
+        return Agent(name=name, state=state, tension=tension, emotion=emotion)
