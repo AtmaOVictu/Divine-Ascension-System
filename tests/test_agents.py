@@ -1,4 +1,12 @@
 import unittest
+import os
+import sys
+
+# Ensure project root is on the path when running via `pytest`
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 

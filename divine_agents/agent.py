@@ -1,7 +1,29 @@
+import os
+
+
+def _load_env(path: str = ".env") -> None:
+    """Simple environment loader for key=value pairs."""
+    if not os.path.exists(path):
+        return
+    with open(path) as fh:
+        for line in fh:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_env()
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    TENSION_THRESHOLD = float(os.getenv("TENSION_THRESHOLD", "0.7"))
+    EMOTION_THRESHOLD = float(os.getenv("EMOTION_THRESHOLD", "0.5"))
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -21,7 +43,10 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if (
+            self.tension > self.TENSION_THRESHOLD
+            or self.emotion > self.EMOTION_THRESHOLD
+        ):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
