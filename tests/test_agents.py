@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.generator import Generator
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_generator_influence(self):
+        agent = Agent("Gen")
+        gen = Generator()
+        gen.activate()
+        new_state = gen.energize(agent, 1.0)
+        self.assertEqual(new_state, "Jaz")
+        self.assertGreaterEqual(agent.tension, 0.7)
+
+    def test_generator_meaning(self):
+        self.assertIn("prebuja", Generator.meaning())
 
 
 if __name__ == '__main__':
