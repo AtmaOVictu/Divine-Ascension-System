@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can change states based on emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -10,14 +10,22 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def philosophical_principle(self) -> str:
+        """Return a short description of the philosophical stance."""
+        if self.state == "Ego":
+            return "Resnica je absolutna in neodvisna od drugih."
+        if self.state == "Jaz":
+            return "Resnica je relativna, oblikovana z nasimi odnosi."
+        return "Vse resnice so eno, medsebojno povezane."
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Increase emotion intensity and adjust tension accordingly."""
+        self.emotion = max(0.0, min(1.0, self.emotion + value))
+        self.tension = max(0.0, min(1.0, self.tension + value))
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level in a safe range."""
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -31,8 +39,4 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.philosophical_principle()
