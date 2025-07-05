@@ -1,5 +1,21 @@
+"""Core agent primitives used in philosophical simulations."""
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension:
+        Level of internal tension. Values above ``0.7`` may trigger a
+        state transition.
+    emotion:
+        Intensity of the agent's current emotion. Values above ``0.5``
+        also trigger transitions.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -30,9 +46,19 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion and state."""
+        intense = self.emotion > 0.5
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            base = "Resnica je absolutna in neodvisna od drugih."
+            if intense:
+                return base + " Ne strinjam se s tvojimi dvomi!"
+            return base
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+            if intense:
+                return base + " Vsak od nas jo vidi po svoje."
+            return base
+        base = "Vse resnice so eno, medsebojno povezane."
+        if intense:
+            return base + " Čutim globoko povezanost."
+        return base
