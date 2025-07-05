@@ -1,3 +1,6 @@
+from math import exp
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -18,6 +21,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def logistic_update(self, t: float, k: float = 5.0, c: float = 0.5) -> None:
+        """Update tension over time using a logistic curve."""
+        self.tension = 1 / (1 + exp(-k * (t - c)))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
