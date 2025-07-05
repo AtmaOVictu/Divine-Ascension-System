@@ -1,27 +1,53 @@
+"""Core definitions for ontological agents."""
+
+from dataclasses import dataclass
+from typing import List, Optional
+
+
+@dataclass
+class Emotion:
+    """Represents an emotional state with a certain intensity."""
+
+    name: str
+    intensity: float = 0.0
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of moving through philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: Optional[Emotion] = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+        self.emotion = emotion or Emotion("nevtralno", 0.0)
+        self.history: List[str] = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    # ------------------------------------------------------------------
+    # Emotion and tension handling
+    # ------------------------------------------------------------------
+    def update_emotion(self, intensity: float, name: Optional[str] = None) -> None:
+        """Update the agent's emotional state and adjust tension."""
+
+        if name:
+            self.emotion.name = name
+        self.emotion.intensity = intensity
+        # Emotions raise overall tension which may trigger transitions
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Directly set the agent's tension level."""
+
         self.tension = value
 
+    # ------------------------------------------------------------------
+    # State management
+    # ------------------------------------------------------------------
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Transition to the next philosophical state when thresholds are met."""
+
+        if self.tension > 0.7 or self.emotion.intensity > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -29,10 +55,15 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    # ------------------------------------------------------------------
+    # Dialogue helpers
+    # ------------------------------------------------------------------
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical response according to the current state."""
+
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
