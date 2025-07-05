@@ -17,3 +17,12 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def iterative_dialogue(agent1: Agent, agent2: Agent, iterations: int = 3) -> List[str]:
+    """Run repeated dialogue cycles updating emotion and states."""
+    discussion = []
+    for i in range(iterations):
+        discussion.append(f"Krog {i + 1}")
+        discussion.extend(philosophical_dialogue(agent1, agent2))
+    return discussion
