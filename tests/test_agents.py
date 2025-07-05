@@ -8,7 +8,7 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
-        self.assertEqual(state, "Jaz")
+        self.assertEqual(state, "RES000")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
@@ -20,6 +20,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_full_transition_sequence(self):
+        agent = Agent("A")
+        expected = ["RES000", "RES001", "RES002", "RES003", "Jaz", "Enotnost"]
+        for state in expected:
+            agent.update_emotion(0.8, "test")
+            self.assertEqual(agent.transition(), state)
 
 
 if __name__ == '__main__':
