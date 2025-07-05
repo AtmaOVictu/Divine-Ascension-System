@@ -1,4 +1,14 @@
 import unittest
+import os
+import sys
+
+# Ensure the package root is on the Python path so imports work when tests are
+# executed from different working directories.
+TEST_ROOT = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.join(TEST_ROOT, os.pardir))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -8,6 +18,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_introspection_triggers_transition(self):
+        agent = Agent("B")
+        agent.update_tension(0.8)
+        state = agent.introspect()
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):

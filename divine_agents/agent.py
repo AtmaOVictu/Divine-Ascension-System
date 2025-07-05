@@ -10,6 +10,15 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def introspect(self) -> str:
+        """Self-checkpoint using ontological thresholds for transitions."""
+        if self.state == "Ego" and self.tension > 0.7:
+            self.state = "Jaz"
+        elif self.state == "Jaz" and self.emotion > 0.5:
+            self.state = "Enotnost"
+        self.history.append(self.state)
+        return self.state
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
@@ -26,7 +35,8 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        # Invoke introspection to ensure the agent recognizes its new state.
+        self.introspect()
         return self.state
 
     def respond(self, question: str) -> str:
