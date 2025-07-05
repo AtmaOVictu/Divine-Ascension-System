@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.external_factors = {}
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,6 +20,11 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def update_external_factors(self, factor: str, value: float) -> None:
+        """Store external factors influencing the agent."""
+        self.external_factors[factor] = value
+        self.history.append(f"External factor {factor}: {value}")
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -26,7 +32,9 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+            self.history.append(f"Transitioned to: {self.state}")
+        else:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
