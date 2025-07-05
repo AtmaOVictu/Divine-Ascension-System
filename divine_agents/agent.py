@@ -19,9 +19,14 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def calculate_tension(self) -> float:
+        """Calculate a dynamic tension value based on emotion and current tension."""
+        return (self.emotion ** 2) / (1 + self.tension)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        dynamic_tension = self.calculate_tension()
+        if dynamic_tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
