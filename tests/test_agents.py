@@ -12,14 +12,22 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion(0.6)
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+        self.assertIn("čustveno", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_introspection_increases_tension(self):
+        agent = Agent("X")
+        initial = agent.tension
+        agent.introspect(1, 1)
+        self.assertGreater(agent.tension, initial)
 
 
 if __name__ == '__main__':
