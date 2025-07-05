@@ -1,2 +1,4 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Example dynamic agent system demonstrating ontological transitions.
+
+Run tests with `pytest` to verify agent behaviour and philosophical dialogue.
