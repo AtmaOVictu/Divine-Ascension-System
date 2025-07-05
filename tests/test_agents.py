@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.guardians import ShadowAgent, AngelAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -16,10 +17,20 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertIn("eno", reply)
 
     def test_dialogue(self):
-        a1 = Agent("A1")
-        a2 = Agent("A2", state="Jaz")
+        a1 = Agent("A1", shadow=ShadowAgent())
+        a2 = Agent("A2", state="Jaz", angel=AngelAgent())
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("senca" in line for line in lines))
+
+    def test_clamping(self):
+        agent = Agent("A", tension=2.0, emotion=-1.0)
+        self.assertEqual(agent.tension, 1.0)
+        self.assertEqual(agent.emotion, 0.0)
+        agent.update_emotion(1.2)
+        self.assertEqual(agent.emotion, 1.0)
+        agent.update_tension(-0.5)
+        self.assertEqual(agent.tension, 0.0)
 
 
 if __name__ == '__main__':
