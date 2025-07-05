@@ -1,12 +1,32 @@
+import os
+import sys
 import unittest
-from divine_agents.agent import Agent
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from divine_agents.agent import (
+    Agent,
+    TENSION_THRESHOLD,
+    EMOTION_THRESHOLD,
+)
 from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
+        agent.update_tension(TENSION_THRESHOLD + 0.1)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_custom_thresholds(self):
+        agent = Agent("B", tension_threshold=0.9, emotion_threshold=0.9)
         agent.update_tension(0.8)
+        # Should not transition yet
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
+        agent.update_emotion(0.95)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
