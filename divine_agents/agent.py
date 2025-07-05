@@ -1,3 +1,6 @@
+from .emotion import logistic
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -14,6 +17,27 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion_curve(self, t: float, k: float, c: float) -> float:
+        """Update emotion using a logistic curve and adjust tension.
+
+        Parameters
+        ----------
+        t : float
+            Current time step or intensity value.
+        k : float
+            Growth rate controlling how quickly emotion intensifies.
+        c : float
+            Critical point at which emotion manifests strongly.
+
+        Returns
+        -------
+        float
+            Computed emotion intensity.
+        """
+        value = logistic(t, k, c)
+        self.update_emotion(value)
+        return value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
