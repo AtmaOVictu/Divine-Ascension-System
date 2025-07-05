@@ -36,3 +36,20 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+class AgentWithShadow(Agent):
+    """Agent that accounts for opposite emotion as a shadow value."""
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, shadow: float = 0.0):
+        super().__init__(name, state, tension, emotion)
+        self.shadow = shadow
+
+    def update_emotion(self, emotion_value: float, shadow_value: float) -> None:
+        """Update emotion and its opposite (shadow) and adjust tension."""
+        self.emotion = emotion_value
+        self.shadow = shadow_value
+        self.tension += (self.emotion + self.shadow)
+
+    def get_tension(self) -> float:
+        """Return the current tension."""
+        return self.tension
