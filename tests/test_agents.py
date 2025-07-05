@@ -1,4 +1,10 @@
+import sys
+from pathlib import Path
 import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
