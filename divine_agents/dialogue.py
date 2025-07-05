@@ -2,6 +2,15 @@ from typing import List
 from .agent import Agent
 
 
+def simulate_loading_screen(agent_name: str, max_cycles: int = 10) -> List[str]:
+    """Simulate a loading screen and return progress messages."""
+    progress = []
+    for cycle in range(max_cycles):
+        progress.append(f"Loading: {cycle + 1}/{max_cycles} - {agent_name}")
+    progress.append(f"Loading Screen končan za {agent_name}.")
+    return progress
+
+
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
     lines = []
