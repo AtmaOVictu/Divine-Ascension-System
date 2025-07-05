@@ -3,21 +3,40 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str = "neutral",
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, kind: str = "neutral") -> None:
+        """Update emotion intensity, store emotion type and adjust tension."""
         self.emotion = value
+        self.emotion_type = kind
         self.tension += value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def emotion_description(self) -> str:
+        """Return short description of current emotional state."""
+        if self.emotion_type == "fear":
+            return "Čutim strah, kar povečuje napetost."
+        if self.emotion_type == "joy":
+            return "Preveva me veselje, kar me odpira novim pogledom."
+        if self.emotion_type == "anger":
+            return "Čutim jezo, ki narašča v meni."
+        return "Moja čustva so uravnotežena."
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -26,13 +45,16 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            self.tension = 0.0
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} {self.emotion_description()}"
