@@ -21,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_sync_pathos_triggers_transition(self):
+        agent = Agent("A")
+        agent.sync_pathos(5.0)
+        # pathos should raise tension enough for a transition after update
+        agent.sync_pathos(5.0)
+        state = agent.transition()
+        self.assertIn(state, Agent.STATES)
+        self.assertNotEqual(state, "Ego")
+
 
 if __name__ == '__main__':
     unittest.main()
