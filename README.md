@@ -1,2 +1,5 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+
+Simple framework for simulating philosophical agents. Agents transition between
+ontological states based on their emotions and tension levels and participate in
+dialogues about truth.
