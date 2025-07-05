@@ -1,3 +1,6 @@
+from .emotion import EmotionTransformer
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -10,10 +13,31 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, *, transform: bool = True, k: float = 1.0) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            New raw emotion value in the range [-1, 1].
+        transform: bool, optional
+            When ``True``, apply a sigmoid based transformation so that
+            negative emotions can mutate into the positive spectrum and
+            vice-versa.
+        k: float, optional
+            Controls the steepness of the sigmoid transformation.
+        """
         self.emotion = value
-        self.tension += value
+        if transform:
+            transformer = EmotionTransformer(self.emotion, k)
+            self.emotion = transformer.get_transformed_emotion()
+        self.tension += abs(self.emotion)
+
+    def transform_emotion(self, k: float = 1.0) -> float:
+        """Transform the current emotion using :class:`EmotionTransformer`."""
+        transformer = EmotionTransformer(self.emotion, k)
+        self.emotion = transformer.get_transformed_emotion()
+        return self.emotion
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
