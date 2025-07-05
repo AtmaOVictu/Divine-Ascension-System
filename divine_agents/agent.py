@@ -19,6 +19,22 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def handle_issue(self, severity: float) -> str:
+        """Adjust tension based on issue severity and return a comment."""
+        if severity < 0.5:
+            # minor issues calm the agent slightly
+            self.tension = max(0.0, self.tension - 0.1)
+            self.emotion = max(0.0, self.emotion - 0.05)
+            return "Manjša težava je odpravljena."
+        # major issues raise tension and may trigger a transition
+        self.tension = min(1.0, self.tension + severity)
+        return "Težava povečana, agent razmišlja o spremembi."
+
+    def apply_humor(self) -> None:
+        """Reduce tension and emotion using humor."""
+        self.tension = max(0.0, self.tension - 0.2)
+        self.emotion = max(0.0, self.emotion - 0.1)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
