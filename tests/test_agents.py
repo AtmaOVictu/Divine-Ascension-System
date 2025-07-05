@@ -1,6 +1,13 @@
 import unittest
+import os
+import sys
+
+# Ensure package import path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.discourse import Discourse
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -21,6 +28,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_dynamic_discourse(self):
+        a1 = Agent("X1")
+        a2 = Agent("X2", state="Jaz")
+        discourse = Discourse(a1, a2)
+        lines = discourse.run(
+            "Kaj je resnica?",
+            emotions1=[0.2, 0.6],
+            emotions2=[0.4, 0.6],
+        )
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Enotnost")
+        self.assertTrue(len(lines) > 0)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
