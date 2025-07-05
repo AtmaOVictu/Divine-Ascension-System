@@ -20,13 +20,22 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        The method also avoids appending duplicate states to the
+        history, which acts as a simple loop control mechanism.
+        """
+        new_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
-                self.state = "Jaz"
+                new_state = "Jaz"
             elif self.state == "Jaz":
-                self.state = "Enotnost"
-        self.history.append(self.state)
+                new_state = "Enotnost"
+
+        if new_state != self.state:
+            self.state = new_state
+            self.history.append(self.state)
+
         return self.state
 
     def respond(self, question: str) -> str:
