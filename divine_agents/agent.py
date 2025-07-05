@@ -1,18 +1,28 @@
+"""Base agent module used to model ontological transitions."""
+
+from __future__ import annotations
+
+from typing import Optional
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", *, tension: float = 0.0, emotion: float = 0.0, emotion_name: Optional[str] = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, name: Optional[str] = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if name is not None:
+            self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -29,10 +39,24 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _emotion_descriptor(self) -> str:
+        """Return a short emotion descriptor for responses."""
+        if self.emotion_name is None:
+            return ""
+        descriptors = {
+            "fear": "s strahom",
+            "anger": "z jezo",
+            "joy": "z veseljem",
+        }
+        return descriptors.get(self.emotion_name, "")
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        mood = self._emotion_descriptor()
+        return f"{base} {mood}".strip()
