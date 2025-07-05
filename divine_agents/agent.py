@@ -3,16 +3,18 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str = "neutral") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -31,8 +33,25 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type != "neutral":
+            base += f" Čutim {self.emotion_type}."
+        return base
+
+    def section_transition(self) -> str:
+        """Transition based on fine-grained tension and emotion sections."""
+        if self.tension < 0.3:
+            self.state = "Ego"
+        elif self.emotion > 0.5:
+            self.state = "Jaz"
+        else:
+            self.state = "Enotnost"
+        self.history.append(self.state)
+        return self.state
