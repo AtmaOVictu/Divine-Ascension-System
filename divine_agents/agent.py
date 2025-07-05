@@ -3,11 +3,12 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_label: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -36,3 +37,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def process_dialogue(self, line: str) -> None:
+        """Adjust emotional response based on keywords in a dialogue line."""
+        lower = line.lower()
+        if "fear" in lower:
+            self.emotion_label = "fear"
+            self.update_emotion(min(self.emotion + 0.6, 1.0))
+        elif "joy" in lower:
+            self.emotion_label = "joy"
+            self.update_emotion(min(self.emotion + 0.6, 1.0))
+        elif "sorrow" in lower:
+            self.emotion_label = "sorrow"
+            self.update_emotion(min(self.emotion + 0.6, 1.0))
