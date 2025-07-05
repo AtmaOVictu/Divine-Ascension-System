@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "divine_agents"
+version = "0.1.0"
+description = "Dynamic agent-based system for philosophical dialogues"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Unknown", email = "unknown@example.com"}]
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["divine_agents*"]
