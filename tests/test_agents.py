@@ -35,6 +35,23 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
         self.assertTrue(any("norma" in line for line in lines))
 
+    def test_emotional_response(self):
+        agent = Agent("B")
+        agent.update_emotion(0.9)
+        response = agent.respond("Kaj je resnica?")
+        self.assertIn("Čutim močna čustva", response)
+
+    def test_second_transition(self):
+        agent = Agent("C")
+        agent.update_tension(0.9)
+        agent.transition()
+        agent.update_tension(0.9)
+        agent.transition()
+        self.assertEqual(agent.state, "Enotnost")
+        self.assertEqual(agent.norm, "Enotnost")
+        self.assertEqual(agent.shape, "sfera")
+        self.assertEqual(agent.moral_value, "Unity")
+
 
 if __name__ == '__main__':
     unittest.main()

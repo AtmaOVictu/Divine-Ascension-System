@@ -3,7 +3,28 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    STATE_ATTRIBUTES = {
+        "Ego": {
+            "norm": "Samooskrba",
+            "shape": "kocka",
+            "moral_value": "Self-preservation",
+        },
+        "Jaz": {
+            "norm": "Sodelovanje",
+            "shape": "krogla",
+            "moral_value": "Cooperation",
+        },
+        "Enotnost": {
+            "norm": "Enotnost",
+            "shape": "sfera",
+            "moral_value": "Unity",
+        },
+    }
+
+    def __init__(
+        self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0
+    ) -> None:
+        """Initialize agent with ontological state and emotional parameters."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -13,9 +34,7 @@ class Agent:
         self.moral_value = ""
         self.history = [state]
 
-        self.change_norm()
-        self.change_shape()
-        self.update_moral_value()
+        self.apply_state_attributes()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -24,30 +43,21 @@ class Agent:
 
     def change_norm(self) -> None:
         """Adjust normative guideline based on current state."""
-        if self.state == "Ego":
-            self.norm = "Samooskrba"
-        elif self.state == "Jaz":
-            self.norm = "Sodelovanje"
-        else:
-            self.norm = "Enotnost"
+        self.norm = self.STATE_ATTRIBUTES[self.state]["norm"]
 
     def change_shape(self) -> None:
         """Change physical or symbolic shape according to state."""
-        if self.state == "Ego":
-            self.shape = "kocka"
-        elif self.state == "Jaz":
-            self.shape = "krogla"
-        else:
-            self.shape = "sfera"
+        self.shape = self.STATE_ATTRIBUTES[self.state]["shape"]
 
     def update_moral_value(self) -> None:
         """Update moral value tied to the state."""
-        if self.state == "Ego":
-            self.moral_value = "Self-preservation"
-        elif self.state == "Jaz":
-            self.moral_value = "Cooperation"
-        else:
-            self.moral_value = "Unity"
+        self.moral_value = self.STATE_ATTRIBUTES[self.state]["moral_value"]
+
+    def apply_state_attributes(self) -> None:
+        """Set normative, shape, and moral value based on current state."""
+        self.change_norm()
+        self.change_shape()
+        self.update_moral_value()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -60,9 +70,7 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-            self.change_norm()
-            self.change_shape()
-            self.update_moral_value()
+            self.apply_state_attributes()
         self.history.append(self.state)
         return self.state
 
