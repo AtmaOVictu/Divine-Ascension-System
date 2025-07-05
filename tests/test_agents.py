@@ -10,6 +10,11 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_ora_et_labora(self):
+        agent = Agent("B")
+        message = agent.ora_et_labora(0.8, 0.8)
+        self.assertIn("Jaz", message)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
