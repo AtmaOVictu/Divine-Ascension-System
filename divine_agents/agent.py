@@ -1,5 +1,11 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The class embodies the ontological movement from **DA** (potencial) to
+    **JA** (aktivacija). Each agent begins in one of the philosophical phases
+    ``Ego``, ``Jaz`` or ``Enotnost`` and can move forward when tension or
+    emotional intensity surpass specified thresholds.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -27,7 +33,12 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        A transition symbolises prehod iz "DA" v "JA". If ``tension`` exceeds
+        ``0.7`` or ``emotion`` surpasses ``0.5``, the agent advances to the next
+        philosophical phase.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -37,7 +48,11 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The response embodies the agent's current understanding of resnica
+        (truth) as shaped by its ontological phase and emotional colouring.
+        """
         if self.state == "Ego":
             reply = "Resnica je absolutna in neodvisna od drugih."
         elif self.state == "Jaz":
