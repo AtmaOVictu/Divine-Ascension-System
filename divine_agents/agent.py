@@ -20,14 +20,24 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        The agent moves from Ego -> Jaz -> Enotnost -> Ego when
+        the tension or emotion thresholds are surpassed.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            else:
+                self.state = "Ego"
         self.history.append(self.state)
         return self.state
+
+    def display_state(self) -> str:
+        """Return a textual representation of the current state."""
+        return f"Agent {self.name} je v stanju {self.state} z napetostjo {self.tension:.2f}."
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
