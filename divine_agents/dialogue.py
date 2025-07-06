@@ -16,4 +16,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Demonstrate enumerative categorization using connotations
+    categories = agent1.analyze_statement("ljubezen strah ego enotnost")
+    for cat, words in categories.items():
+        lines.append(f"{cat.name}: {', '.join(words)}")
+
     return lines
