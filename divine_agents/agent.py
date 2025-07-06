@@ -3,17 +3,19 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = ""):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Update emotion intensity and type, adjusting tension accordingly."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +32,20 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the agent's state and emotion."""
+        prefix = ""
+        if self.emotion_type:
+            if self.emotion_type == "fear":
+                prefix = "V strahu menim, da "
+            elif self.emotion_type == "joy":
+                prefix = "Z veseljem verjamem, da "
+            elif self.emotion_type == "anger":
+                prefix = "Z jezo trdim, da "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "vse resnice so eno, medsebojno povezane."
+        return prefix + base
