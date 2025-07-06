@@ -1,19 +1,36 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Name of the agent.
+    state: str, optional
+        Initial ontological state. Defaults to ``"Ego"``.
+    tension: float, optional
+        Initial tension level.
+    emotions: dict, optional
+        Mapping of emotion name to its intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTIONS = ("fear", "joy", "anger")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotions: dict | None = None):
         self.name = name
+        if state not in self.STATES:
+            raise ValueError(f"Unknown state '{state}'")
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotions = emotions or {e: 0.0 for e in self.EMOTIONS}
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, name: str, value: float) -> None:
+        """Update a specific emotion intensity and recompute tension."""
+        if name not in self.emotions:
+            raise ValueError(f"Unknown emotion '{name}'")
+        self.emotions[name] = value
+        self.tension = sum(self.emotions.values())
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,7 +38,8 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        peak_emotion = max(self.emotions.values(), default=0.0)
+        if self.tension > 0.7 or peak_emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
