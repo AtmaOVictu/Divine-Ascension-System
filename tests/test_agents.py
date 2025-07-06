@@ -12,14 +12,24 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion(0.6, "joy")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+        self.assertIn("joy", reply)
+
+    def test_transition_on_emotion(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6, "fear")
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        # ensure emotional prefixes are present when emotion high
+        self.assertTrue(any("anger" in line or "joy" in line for line in lines))
 
 
 if __name__ == '__main__':

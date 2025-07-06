@@ -1,18 +1,38 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states.
+
+    Agents hold an ontological ``state`` (``Ego``, ``Jaz`` or ``Enotnost``) and
+    an ``emotion`` intensity.  Higher emotion or tension values may trigger a
+    transition to the next ontological state.  The ``emotion_type`` attribute is
+    a simple textual description (e.g. ``"fear"`` or ``"joy"``) that influences
+    how the agent expresses its philosophical view.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type or "neutral"
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value:
+            New emotion intensity in the range ``[0, 1]``.
+        emotion_type:
+            Optional descriptive label such as ``"fear"`` or ``"joy"``.
+        """
         self.emotion = value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
+        # emotion directly contributes to tension increase
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +50,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by state and emotion."""
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        prefix = ""
+        if self.emotion > 0.5:
+            prefix = f"({self.emotion_type}) "
+
+        return prefix + base
