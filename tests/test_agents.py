@@ -1,4 +1,9 @@
+import os
+import sys
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -9,6 +14,27 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_transition_emotion_only(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)  # above emotion threshold
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_no_transition_at_threshold(self):
+        agent = Agent("C")
+        agent.update_emotion(0.5)  # set emotion but keep below transition
+        agent.update_tension(0.7)  # override tension to exact threshold
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
+    def test_history_records_states(self):
+        agent = Agent("D")
+        agent.update_tension(0.8)
+        agent.transition()
+        agent.update_emotion(0.6)
+        agent.transition()
+        self.assertEqual(agent.history, ["Ego", "Jaz", "Enotnost"])
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
