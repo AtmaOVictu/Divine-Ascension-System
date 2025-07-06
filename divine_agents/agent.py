@@ -1,14 +1,30 @@
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .tracker import Tracker
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        tracker: Optional["Tracker"] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.tracker = tracker
+        if self.tracker:
+            self.tracker.track(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,6 +43,8 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        if self.tracker:
+            self.tracker.track(self)
         return self.state
 
     def respond(self, question: str) -> str:
