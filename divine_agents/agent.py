@@ -1,17 +1,26 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can move between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
 
+    def emotion_descriptor(self) -> str:
+        """Return a human readable description of the current emotion level."""
+        if self.emotion > 0.7:
+            return "intense"
+        if self.emotion > 0.4:
+            return "elevated"
+        return "calm"
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and increase tension accordingly."""
         self.emotion = value
         self.tension += value
 
@@ -30,9 +39,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on state and emotion."""
+        emotion_note = ""
+        if self.emotion > 0.7:
+            emotion_note = " Čutim močna čustva."
+        elif self.emotion > 0.4:
+            emotion_note = " Čutim rahlo napetost."
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return base + emotion_note
