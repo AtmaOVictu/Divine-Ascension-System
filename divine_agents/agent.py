@@ -10,6 +10,15 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def replicate_truth(self) -> str:
+        """Create a replica of the agent's current truth statement."""
+        return f"Kopija: {self.respond('Kaj je resnica?')}"
+
+    def break_ring(self) -> None:
+        """Reset emotional tension representing breaking the cycle."""
+        self.tension = 0.0
+        self.emotion = 0.0
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
