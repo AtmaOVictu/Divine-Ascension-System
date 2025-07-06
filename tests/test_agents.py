@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.interaction import dynamic_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,23 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dynamic_dialogue_transitions(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        steps = [((0.4, "fear"), (0.3, "calm")),
+                 ((0.4, "fear"), (0.6, "joy"))]
+        lines = dynamic_dialogue(a1, a2, steps)
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Enotnost")
+        self.assertTrue(any("Jaz" in line for line in lines))
+
+    def test_emotional_response(self):
+        agent = Agent("B", state="Jaz")
+        agent.update_emotion(0.6, "joy")
+        agent.transition()
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("eno", reply)
 
 
 if __name__ == '__main__':
