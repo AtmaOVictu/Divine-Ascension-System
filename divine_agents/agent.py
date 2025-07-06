@@ -1,7 +1,18 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states.
+
+    States are driven by ``tension`` and ``emotion``. A transition occurs
+    when ``tension`` is greater than ``0.7`` or ``emotion`` is greater than
+    ``0.5``. The mapping of states to their symbolic representation is stored
+    in ``STATE_SYMBOLS``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    STATE_SYMBOLS = {
+        "Ego": "⊘",
+        "Jaz": "∫(dru/x)",
+        "Enotnost": "RES001",
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -29,10 +40,16 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    @property
+    def symbol(self) -> str:
+        """Return the ontological symbol for the current state."""
+        return self.STATE_SYMBOLS[self.state]
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = "" if self.emotion < 0.5 else "(čustveno) "
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "Resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "Vse resnice so eno, medsebojno povezane."
