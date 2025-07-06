@@ -29,10 +29,19 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def emotion_label(self) -> str:
+        """Return a simple textual label for the current emotion value."""
+        if self.emotion > 0.7:
+            return "veselje"
+        if self.emotion > 0.4:
+            return "nemir"
+        return "mirnost"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        label = self.emotion_label()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"({label}) Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"({label}) Resnica je relativna, oblikovana z nasimi odnosi."
+        return f"({label}) Vse resnice so eno, medsebojno povezane."
