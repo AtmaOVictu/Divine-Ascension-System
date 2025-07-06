@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .typing_agent import TypingAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,21 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def dynamic_debate(agent1: TypingAgent, agent2: TypingAgent) -> List[str]:
+    """Conduct a debate where each typed word may trigger state transitions."""
+    lines: List[str] = []
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    lines.append(agent1.type_word('resnica', emotion=0.8))
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.state}")
+
+    lines.append(agent2.type_word('relativnost', emotion=0.6))
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.state}")
+
+    lines.append(agent1.type_word('enotnost', emotion=0.2))
+    lines.append(agent2.type_word('enotnost', emotion=0.2))
     return lines

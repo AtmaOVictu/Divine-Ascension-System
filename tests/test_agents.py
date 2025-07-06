@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, dynamic_debate
+from divine_agents.typing_agent import TypingAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_typing_agent_transition(self):
+        agent = TypingAgent("T")
+        agent.type_word("resnica", emotion=0.6)
+        self.assertEqual(agent.state, "Jaz")
+        agent.type_word("enotnost", emotion=0.6)
+        self.assertEqual(agent.state, "Enotnost")
+
+    def test_dynamic_debate(self):
+        a1 = TypingAgent("A1")
+        a2 = TypingAgent("A2", state="Jaz")
+        lines = dynamic_debate(a1, a2)
+        self.assertIn("Jaz", " ".join(lines))
+        self.assertIn("Enotnost", " ".join(lines))
 
 
 if __name__ == '__main__':
