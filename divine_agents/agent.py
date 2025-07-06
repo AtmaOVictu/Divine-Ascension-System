@@ -1,19 +1,37 @@
+"""Core agent logic for the ontological system."""
+
+from typing import Dict
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0) -> None:
+        self.name: str = name
+        self.state: str = state
+        self.tension: float = tension
+        self.emotion: float = emotion
+        self.history: list[str] = [state]
+
+    EMOTION_EFFECTS: Dict[str, float] = {
+        "fear": 1.0,
+        "anger": 0.8,
+        "joy": -0.4,
+    }
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion(self, emotion: str, intensity: float) -> None:
+        """Influence tension using a named emotion."""
+        self.emotion = intensity
+        effect = self.EMOTION_EFFECTS.get(emotion, 0.0)
+        self.tension += effect * intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
