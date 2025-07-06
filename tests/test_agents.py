@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.debate import ontological_debate
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_debate_triggers_enotnost(self):
+        a1 = Agent("D1")
+        a2 = Agent("D2", state="Jaz")
+        lines = ontological_debate(a1, a2)
+        self.assertIn("Enotnost", [a1.state, a2.state])
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_history_updates(self):
+        a1 = Agent("H1")
+        a2 = Agent("H2", state="Jaz")
+        ontological_debate(a1, a2)
+        self.assertGreater(len(a1.history), 1)
+        self.assertGreater(len(a2.history), 1)
 
 
 if __name__ == '__main__':
