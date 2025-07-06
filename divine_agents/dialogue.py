@@ -17,3 +17,22 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def problem_dialogue(agent1: Agent, agent2: Agent, p1: str, p2: str) -> List[str]:
+    """Simulate agents discussing and solving problems."""
+    agent1.recognize_problem(p1)
+    agent2.recognize_problem(p2)
+    lines = [
+        f"{agent1.name} se sooča z: {p1}",
+        f"{agent2.name} se sooča z: {p2}",
+    ]
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    lines.append(f"{agent1.name} rešuje problem in prehaja v: {agent1.solve_problem()}")
+    lines.append(f"{agent2.name} rešuje problem in prehaja v: {agent2.solve_problem()}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
