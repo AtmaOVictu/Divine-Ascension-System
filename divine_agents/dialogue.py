@@ -17,3 +17,14 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+from .typing_agent import TypingAgent
+
+
+def typing_dialogue(agent1: TypingAgent, agent2: TypingAgent, words: List[str]) -> List[str]:
+    """Simulate agents typing words and transitioning states."""
+    lines: List[str] = []
+    for word in words:
+        lines.append(agent1.type_word(word))
+        lines.append(agent2.type_word(word))
+    return lines
