@@ -1,4 +1,4 @@
-from typing import List
+from typing import Iterable, List
 from .agent import Agent
 
 
@@ -16,4 +16,22 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def group_dialogue(agents: Iterable[Agent]) -> List[str]:
+    """Simulate dialogue among multiple agents with automatic transitions."""
+    agents = list(agents)
+    lines: List[str] = []
+
+    for ag in agents:
+        lines.append(f"{ag.name} ({ag.state}): {ag.respond('Kaj je resnica?')}")
+
+    for ag in agents:
+        ag.update_emotion(0.8)
+        lines.append(f"{ag.name} prehaja v stanje: {ag.transition()}")
+
+    for ag in agents:
+        lines.append(f"{ag.name}: {ag.respond('Kaj je resnica?')}")
+
     return lines
