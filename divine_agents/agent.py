@@ -3,11 +3,14 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, energy: float = 0.0, voltage: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.energy = energy
+        self.voltage = voltage
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +21,14 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def update_energy(self, value: float) -> None:
+        """Update the agent's energy level."""
+        self.energy += value
+
+    def update_voltage(self, value: float) -> None:
+        """Update the agent's voltage level."""
+        self.voltage += value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
