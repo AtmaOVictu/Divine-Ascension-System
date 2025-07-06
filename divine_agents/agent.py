@@ -1,5 +1,8 @@
+from .phonetics import PhoneticTruthMap
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and interpreting phonetic input."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +12,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self._phonetic_map = PhoneticTruthMap()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -29,10 +33,29 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def _mood_descriptor(self) -> str:
+        """Provide a short textual description of the agent's emotional intensity."""
+        if self.emotion > 0.7:
+            return "strastno"
+        if self.emotion > 0.4:
+            return "vznemirjeno"
+        return "mirno"
+
+    def interpret_phoneme(self, phoneme: str) -> str:
+        """Map phonetic input to a philosophical term."""
+        return self._phonetic_map.map_phonetic_input(phoneme)
+
+    def respond(self, question: str, phoneme: str | None = None) -> str:
+        """Return a philosophical answer influenced by state, emotion and phonetic input."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        mood = self._mood_descriptor()
+        if phoneme:
+            meaning = self.interpret_phoneme(phoneme)
+            return f"({phoneme} → {meaning}) {base} Agent je {mood}."
+        return f"{base} Agent je {mood}."
