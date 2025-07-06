@@ -36,3 +36,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def resolve_conflict(self) -> str:
+        """Return a phrase describing conflict resolution for the current state."""
+        if self.state == "Ego":
+            return f"{self.name}: Konflikt je prilo\u017enost za sinergijo."
+        if self.state == "Jaz":
+            return f"{self.name}: Konflikt je pot do harmonizacije."
+        return f"{self.name}: Konflikt je razre\u0161en, vse resnice so eno."
