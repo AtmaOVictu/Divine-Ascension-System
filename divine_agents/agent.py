@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Agent identifier.
+    state: str, optional
+        Initial ontological state (``"Ego"`` by default).
+    tension: float, optional
+        Current tension level.
+    emotion: float, optional
+        Current emotional intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -20,7 +32,11 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        The agent moves from ``Ego`` to ``Jaz`` or from ``Jaz`` to ``Enotnost``
+        when ``tension`` is greater than ``0.7`` or ``emotion`` exceeds ``0.5``.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +46,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The response also reflects the agent's emotional intensity.
+        """
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5:
+            answer += f" Čustva so močna ({self.emotion:.2f})."
+
+        return answer
