@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,10 +8,20 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotions = {}
         self.history = [state]
 
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set an emotion with the given intensity and update tension."""
+        self.emotions[name] = intensity
+        self.emotion = intensity
+        if name in ("fear", "anger"):
+            self.tension += intensity
+        elif name == "joy":
+            self.tension = max(0.0, self.tension - intensity / 2)
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Maintain backwards compatibility for updating emotion."""
         self.emotion = value
         self.tension += value
 
@@ -32,7 +42,20 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        emotion_phrase = ""
+        if self.emotions:
+            last, intensity = max(self.emotions.items(), key=lambda e: e[1])
+            if intensity > 0:
+                if last == "fear":
+                    emotion_phrase = "S strahom verjamem, da "
+                elif last == "anger":
+                    emotion_phrase = "Z jezo trdim, da "
+                elif last == "joy":
+                    emotion_phrase = "Z veseljem pravim, da "
+        return f"{emotion_phrase}{base}"
