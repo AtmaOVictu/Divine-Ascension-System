@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent with desire-driven state transitions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +9,9 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.problem = None
+        self.desire = None
+        self.log = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +39,56 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # New functionality reflecting problem/desire mechanics
+    def recognize_problem(self, problem: str) -> None:
+        """Store a problem the agent wants to solve."""
+        self.problem = problem
+        self.desire = problem
+        self.log.append(f"Recognized problem: {problem}")
+
+    def yearn_for_solution(self) -> None:
+        """Increase emotion and tension when desiring a solution."""
+        if self.desire:
+            # yearning raises emotion slightly which in turn increases tension
+            self.update_emotion(min(1.0, self.emotion + 0.1))
+            self.log.append(f"Yearning for solution: {self.desire}")
+        else:
+            self.log.append("No problem to yearn for.")
+
+    def solve_problem(self) -> None:
+        """Attempt to solve the recognized problem via state transitions."""
+        if not self.desire:
+            self.log.append("Nothing to solve.")
+            return
+        self.log.append(f"Attempting to solve: {self.desire}")
+        prev_state = self.state
+        self.transition()
+        if self.state == "Enotnost" and prev_state != "Enotnost":
+            self.log.append("Problem resolved in Enotnost.")
+            self.problem = None
+            self.desire = None
+
+    def dialogue(self, other: "Agent") -> list:
+        """Dialogue about truth, reflecting states and emotions."""
+        conversation = []
+        conversation.append(
+            f"{self.name} ({self.state}): {self.respond('Kaj je resnica?')}"
+        )
+        conversation.append(
+            f"{other.name} ({other.state}): {other.respond('Kaj je resnica?')}"
+        )
+
+        # Both agents yearn for solutions which may increase tension/emotion
+        self.yearn_for_solution()
+        other.yearn_for_solution()
+        self.solve_problem()
+        other.solve_problem()
+
+        conversation.append(f"{self.name} stanje: {self.state}")
+        conversation.append(f"{other.name} stanje: {other.state}")
+        return conversation
+
+    def history_log(self) -> list:
+        """Return internal event log for testing or inspection."""
+        return self.log
