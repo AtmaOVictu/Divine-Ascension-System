@@ -1,19 +1,31 @@
 from typing import List
+
 from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+    """Simulate a short philosophical dialogue influenced by coincidences."""
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    lines: List[str] = []
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    # Initial positions on truth
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
 
+    # Each agent experiences a happy coincidence during interaction
+    event1 = agent1.interact_with(agent2)
+    event2 = agent2.interact_with(agent1)
+    lines.append(f"Coincidence for {agent1.name}: {event1}")
+    lines.append(f"Coincidence for {agent2.name}: {event2}")
+
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.state}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.state}")
+
+    # Responses after the coincidences influence their states
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
