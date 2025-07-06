@@ -3,6 +3,18 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+class TestAgentMathMusic(unittest.TestCase):
+    def test_math_evaluation(self):
+        agent = Agent("M")
+        result = agent.interpret_equation("sin(pi / 2)")
+        self.assertAlmostEqual(result, 1.0, places=5)
+
+    def test_music_generation(self):
+        agent = Agent("N", state="Jaz")
+        notes = agent.ontological_notes(4)
+        self.assertEqual(notes, ["D", "E", "F", "G"])
+
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
