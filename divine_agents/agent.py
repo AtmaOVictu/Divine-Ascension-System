@@ -3,7 +3,14 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    #: Mapping of ontological states to philosophical principles.
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -13,6 +20,7 @@ class Agent:
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        # Emotions naturally raise tension which may trigger transitions
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -31,8 +39,6 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = self.PHILOSOPHY.get(self.state, "")
+        emotional_note = " [čustveno]" if self.emotion > 0.5 else ""
+        return f"{base}{emotional_note}"
