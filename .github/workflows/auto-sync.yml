@@ -1,0 +1,20 @@
+name: Auto-sync with GitHub
+on:
+  push:
+    branches:
+      - main
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Configure Git
+        run: |
+          git config --global user.name "Auto Sync"
+          git config --global user.email "auto@sync"
+      - name: Push changes
+        run: |
+          git add .
+          git commit -m "Auto-sync commit" || echo "No changes to commit"
+          git push origin main
