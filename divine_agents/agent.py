@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning between states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -11,13 +11,27 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Set emotion to ``value`` and adjust tension accordingly."""
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = max(0.0, min(1.0, self.tension + value))
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+    def feel(self, delta: float) -> None:
+        """Increment emotion by ``delta`` and update tension gradually."""
+        self.emotion = max(0.0, min(1.0, self.emotion + delta))
+        self.update_tension()
+
+    def update_tension(self, value: float | None = None) -> None:
+        """Update tension directly or evolve it from current emotion.
+
+        If ``value`` is provided, tension is set to that value. Otherwise the
+        tension slowly increases based on the current emotion, simulating a
+        feedback loop from past interactions.
+        """
+        if value is not None:
+            self.tension = value
+        else:
+            self.tension += (self.emotion / 10) * 0.9
+        self.tension = max(0.0, min(1.0, self.tension))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
