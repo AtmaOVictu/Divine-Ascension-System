@@ -3,17 +3,27 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        emotions: dict | None = None,
+        tension: float = 0.0,
+    ) -> None:
         self.name = name
         self.state = state
+        self.emotions = emotions or {"anger": 0.0, "joy": 0.0, "fear": 0.0}
         self.tension = tension
-        self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: str, value: float) -> None:
+        """Update the value of a specific emotion and recalculate tension."""
+        self.emotions[emotion_type] = value
+        self.calculate_tension()
+
+    def calculate_tension(self) -> None:
+        """Calculate tension as the average of all emotion values."""
+        self.tension = sum(self.emotions.values()) / len(self.emotions)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,7 +31,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > 0.7 or any(v > 0.5 for v in self.emotions.values()):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -36,3 +46,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def interact(self, other: "Agent") -> None:
+        """Simple interaction affecting emotions based on different states."""
+        if self.state != other.state:
+            self.update_emotion("anger", self.emotions.get("anger", 0.0) + 0.1)
+            other.update_emotion("fear", other.emotions.get("fear", 0.0) + 0.1)

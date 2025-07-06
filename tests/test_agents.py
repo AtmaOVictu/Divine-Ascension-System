@@ -1,4 +1,9 @@
 import unittest
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -6,7 +11,7 @@ from divine_agents.dialogue import philosophical_dialogue
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        agent.update_emotion("anger", 0.6)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
