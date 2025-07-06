@@ -1,5 +1,10 @@
+"""Agent module defining the basic ontological agent class."""
+
+from .decision_maker import DecisionMaker
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +14,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.decision_maker = DecisionMaker(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,12 +26,10 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        """Perform state transition if decision-maker determines a change."""
+        new_state = self.decision_maker.decide_transition()
+        if new_state != self.state:
+            self.state = new_state
         self.history.append(self.state)
         return self.state
 
