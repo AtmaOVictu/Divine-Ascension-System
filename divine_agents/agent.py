@@ -36,3 +36,17 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def make_moral_decision(self, situation: str) -> str:
+        """Make a simple moral decision influenced by state and emotion."""
+        if self.emotion > 0.5 or self.tension > 0.7:
+            if self.state == "Ego":
+                decision = f"{self.name} sledi absolutni dolznosti v {situation}."
+            elif self.state == "Jaz":
+                decision = f"{self.name} uposteva odnose v {situation}."
+            else:
+                decision = f"{self.name} isce enotnost v {situation}."
+        else:
+            decision = f"{self.name} ostaja neodlocen v {situation}."
+        self.history.append(decision)
+        return decision

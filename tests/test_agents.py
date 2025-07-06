@@ -1,6 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, group_task
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +20,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_moral_decision(self):
+        agent = Agent("M", state="Ego")
+        agent.update_emotion(0.6)
+        decision = agent.make_moral_decision("preizkus")
+        self.assertIn("absolutni", decision)
+
+    def test_group_task(self):
+        a1 = Agent("A1", state="Enotnost")
+        a2 = Agent("A2", state="Enotnost")
+        result = group_task([a1, a2])
+        self.assertIn("uspesno", result)
 
 
 if __name__ == '__main__':
