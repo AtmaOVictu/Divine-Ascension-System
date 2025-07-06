@@ -3,17 +3,31 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self,
+                 name: str,
+                 state: str = "Ego",
+                 tension: float = 0.0,
+                 emotion: float = 0.0,
+                 emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Update emotion type and intensity, adjusting tension."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        self.tension = intensity
+
+    def display_state(self) -> str:
+        """Return a string representing the current state."""
+        return (
+            f"Agent {self.name} je v stanju {self.state} "
+            f"z napetostjo {self.tension:.2f}."
+        )
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -26,6 +40,8 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            else:
+                self.state = "Ego"
         self.history.append(self.state)
         return self.state
 
