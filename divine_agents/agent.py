@@ -1,14 +1,31 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can transition between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_label: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
+
+    # ------------------------------------------------------------------
+    # Emotion and tension handling
+    # ------------------------------------------------------------------
+
+    def set_emotion(self, label: str, intensity: float) -> None:
+        """Set an emotion and update internal tension."""
+        self.emotion_label = label
+        self.update_emotion(intensity)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -32,7 +49,12 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            response = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            response = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            response = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_label:
+            response += f" Občutim {self.emotion_label}."
+        return response
