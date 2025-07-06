@@ -10,6 +10,12 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_feel_triggers_transition(self):
+        agent = Agent("B")
+        agent.feel("fear", 0.6)
+        agent.transition()
+        self.assertEqual(agent.state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
