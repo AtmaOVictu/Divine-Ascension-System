@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_interaction_creates_transition(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        with patch("divine_agents.agent.random.choice", return_value="happy"):
+            feedback = a1.interact_with(a2)
+        self.assertEqual(feedback, "happy")
+        self.assertEqual(a1.state, "Jaz")
 
 
 if __name__ == '__main__':
