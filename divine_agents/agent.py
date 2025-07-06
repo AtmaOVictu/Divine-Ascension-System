@@ -3,11 +3,14 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 loyalty: float = 0.5, experiences: list | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.loyalty = loyalty
+        self.experiences = experiences or []
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +21,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def add_experience(self, experience: str) -> None:
+        """Record an experience that may influence future decisions."""
+        self.experiences.append(experience)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
