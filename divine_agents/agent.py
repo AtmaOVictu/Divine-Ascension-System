@@ -1,14 +1,28 @@
+from __future__ import annotations
+
+from .metaparadox import MetaparadoxicalModule
+from .relative_absolutes import RelativeAbsoluteLibrary
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.metaparadox = MetaparadoxicalModule(self)
+        self.absolutes = RelativeAbsoluteLibrary()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
