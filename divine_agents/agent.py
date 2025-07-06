@@ -1,14 +1,22 @@
+from __future__ import annotations
+
+"""Ontological agent capable of transitioning philosophical states."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+from .symbolic import check_transition
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,7 +29,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if check_transition(self.tension, self.emotion):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -29,10 +37,17 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def principle(self) -> str:
+        """Return the philosophical principle of the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical response influenced by emotion."""
+        base = self.principle()
+        if self.emotion > 0.5:
+            return f"{base} (odziv z visokimi čustvi)"
+        return base
