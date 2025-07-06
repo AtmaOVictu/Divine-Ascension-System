@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure src is on the path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
