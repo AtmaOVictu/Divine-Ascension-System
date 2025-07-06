@@ -20,6 +20,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertEqual(a1.state, "Jaz")
+        self.assertIn(a2.state, ["Jaz", "Enotnost"])
+
+    def test_influence(self):
+        a1 = Agent("A1", tension=0.1, emotion=0.5)
+        a2 = Agent("A2", tension=0.1, emotion=0.0)
+        a1.influence(a2)
+        self.assertGreater(a2.emotion, 0.0)
 
 
 if __name__ == '__main__':
