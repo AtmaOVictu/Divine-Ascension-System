@@ -8,6 +8,7 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        # Keep a record of all states the agent has been in
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -28,6 +29,14 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def describe_state(self) -> str:
+        """Return the philosophical principle associated with the current state."""
+        if self.state == "Ego":
+            return "Truth is absolute and independent of others."
+        if self.state == "Jaz":
+            return "Truth is relative, shaped by relationships."
+        return "All truths are one and interconnected."
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
