@@ -36,3 +36,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class AgentWithHistory(Agent):
+    """Agent that stores its transition history."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, history=None):
+        super().__init__(name, state, tension, emotion)
+        self.history = history if history is not None else []
+
+    def transition(self) -> str:
+        result = super().transition()
+        self.history.append(result)
+        return result
