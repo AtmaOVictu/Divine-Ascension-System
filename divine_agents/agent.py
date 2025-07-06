@@ -1,5 +1,13 @@
+from .memory import Memory
+from .language import LanguageModule
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Each agent holds an internal memory and uses a language module to
+    formulate responses based on its ontological state.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,15 +17,19 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.memory = Memory()
+        self.language = LanguageModule()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.memory.remember(f"emotion:{value}")
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.memory.remember(f"tension:{value}")
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,12 +39,11 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.memory.remember(f"state:{self.state}")
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        response = self.language.formulate_response(self.state)
+        self.memory.remember(response)
+        return response

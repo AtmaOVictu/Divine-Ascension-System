@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.language import LanguageModule
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_memory_records_responses(self):
+        agent = Agent("M")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn(reply, agent.memory.log)
+
+    def test_language_module_output(self):
+        lm = LanguageModule()
+        self.assertIn("relativna", lm.formulate_response("Jaz"))
 
 
 if __name__ == '__main__':
