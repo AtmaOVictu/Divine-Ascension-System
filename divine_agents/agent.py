@@ -19,13 +19,16 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
+    def transition(self, logger=None) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous_state = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        if logger and previous_state != self.state:
+            logger.log_version_change(1.0, f"{self.name} transitioned to {self.state}")
         self.history.append(self.state)
         return self.state
 
