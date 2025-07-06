@@ -1,18 +1,35 @@
+"""Core classes for the Divine Ascension system."""
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+
+    #: emotion and tension thresholds for state transitions
+    TENSION_THRESHOLD = 0.7
+    EMOTION_THRESHOLD = 0.5
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = ""
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str = "") -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            Intensity of the emotion in range ``0.0``-``1.0``.
+        emotion_type: str, optional
+            Descriptive name of the emotion (e.g. ``"fear"``).
+        """
+
         self.emotion = value
+        self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -21,7 +38,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > self.TENSION_THRESHOLD or self.emotion > self.EMOTION_THRESHOLD:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
