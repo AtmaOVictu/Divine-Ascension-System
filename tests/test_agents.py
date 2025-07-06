@@ -11,15 +11,20 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):
-        agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        ego = Agent("E")
+        jaz = Agent("J", state="Jaz")
+        enotnost = Agent("N", state="Enotnost")
+
+        self.assertIn("absolutna", ego.respond("?"))
+        self.assertIn("relativna", jaz.respond("?"))
+        self.assertIn("eno", enotnost.respond("?"))
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
 
 
 if __name__ == '__main__':
