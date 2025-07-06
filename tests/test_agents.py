@@ -21,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_error_transfer(self):
+        sender = Agent("A", tension=0.8, emotion=0.6)
+        receiver = Agent("B", tension=0.8, emotion=0.6)
+        sender.transfer_error(receiver)
+        self.assertIsNotNone(receiver.error_signal)
+        self.assertLess(receiver.tension, 0.8)
+        self.assertLess(receiver.emotion, 0.6)
+
 
 if __name__ == '__main__':
     unittest.main()
