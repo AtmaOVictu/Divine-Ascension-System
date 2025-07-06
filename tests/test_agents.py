@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_resolve_conflict(self):
+        agent = Agent("A")
+        agent.update_tension(0.8)
+        agent.transition()
+        msg = agent.resolve_conflict()
+        self.assertIn("harmonizacije", msg)
+
 
 if __name__ == '__main__':
     unittest.main()
