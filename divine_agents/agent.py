@@ -36,3 +36,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Compose a dialogue line with the agent's perspective."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}): {answer}"
