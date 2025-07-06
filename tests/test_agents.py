@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.transistor_agent import TransistorAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -10,16 +11,41 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_no_transition_below_threshold(self):
+        agent = Agent("A")
+        agent.update_emotion(0.3)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_emotional_response(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6, name="strah")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("strah", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+class TestTransistorAgent(unittest.TestCase):
+    def test_switch_on(self):
+        t = TransistorAgent("T1")
+        output = t.transition(1.2)
+        self.assertEqual(t.state, "on")
+        self.assertEqual(output, 5)
+
+    def test_switch_off(self):
+        t = TransistorAgent("T2", state="on")
+        output = t.transition(0)
+        self.assertEqual(t.state, "off")
+        self.assertEqual(output, 0)
 
 
 if __name__ == '__main__':
