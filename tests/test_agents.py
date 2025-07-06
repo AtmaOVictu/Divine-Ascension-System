@@ -1,6 +1,8 @@
 import unittest
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.debate import ontological_debate
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestOntologicalDebate(unittest.TestCase):
+    def test_debate_transitions(self):
+        a1 = Agent("Alpha")
+        a2 = Agent("Beta", state="Jaz")
+        lines = ontological_debate(a1, a2)
+        # At least one agent should reach Enotnost
+        self.assertIn("Enotnost", {a1.state, a2.state})
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
