@@ -1,17 +1,24 @@
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional transitions."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=list)
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set emotion intensity and increase tension accordingly."""
         self.emotion = value
         self.tension += value
 
@@ -20,7 +27,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if emotion or tension exceed thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +37,15 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by current emotion."""
+        intensity = ""
+        if self.emotion > 0.7:
+            intensity = " z močno strastjo"
+        elif self.emotion > 0.3:
+            intensity = " s pridihom čustev"
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"Verjamem{intensity}, da je resnica absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"Spoznal sem{intensity}, da je resnica relativna, oblikovana z našimi odnosi."
+        return f"Uvidel sem{intensity}, da so vse resnice eno, medsebojno povezane."
