@@ -3,12 +3,36 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        opposites: dict | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.origin = "O"
+        self.opposites: dict[str, str] = opposites or {}
         self.history = [state]
+
+    def set_opposite(self, state: str, opposite: str) -> None:
+        """Assign an opposite concept for a given state."""
+        self.opposites[state] = opposite
+
+    def get_opposite(self) -> str:
+        """Return opposite concept for the current state if defined."""
+        return self.opposites.get(self.state, "None")
+
+    def display_state(self) -> str:
+        """Return a textual representation of current state and its opposite."""
+        return (
+            f"{self.name} is in state {self.state} (origin {self.origin}) with "
+            f"opposite {self.get_opposite()}."
+        )
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
