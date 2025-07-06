@@ -3,17 +3,24 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, mass: float = 1.0, gravity: float = 9.81):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.mass = mass
+        self.gravity = gravity
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def calculate_weight(self) -> float:
+        """Return the agent's weight based on mass and gravity."""
+        return self.mass * self.gravity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
