@@ -1,18 +1,26 @@
+"""Core agent model for the divine ascension system."""
+
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional state transitions."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_kind: Optional[str] = None
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
-
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, kind: Optional[str] = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_kind = kind
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +38,14 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5 and self.emotion_kind:
+            base = f"{base} Čutim {self.emotion_kind}."
+        return base
