@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.decisions_history = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -31,8 +32,24 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+
+        self.decisions_history.append(answer)
+        return answer
+
+    def make_moral_decision(self, situation: str) -> str:
+        """Make a simple moral decision influenced by emotion."""
+        if self.emotion < 0.3:
+            decision = f"{self.name} remains cautious in {situation}."
+        elif self.emotion > 0.7:
+            decision = f"{self.name} acts boldly in {situation}."
+        else:
+            decision = f"{self.name} considers carefully in {situation}."
+        self.decisions_history.append(decision)
+        return decision
