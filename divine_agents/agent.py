@@ -1,5 +1,10 @@
+from __future__ import annotations
+
+from datetime import datetime
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,7 +13,10 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        # store only state names in history for backwards compatibility
         self.history = [state]
+        # detailed transition history including time information
+        self.transition_history: list[tuple[str, str, datetime]] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,12 +28,18 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        Records transition time and stores it in ``transition_history``.
+        """
+        previous = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        if previous != self.state:
+            self.transition_history.append((previous, self.state, datetime.utcnow()))
         self.history.append(self.state)
         return self.state
 
