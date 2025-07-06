@@ -3,12 +3,22 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, experiences=None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.experiences = experiences or []
+
+    def update_history(self) -> None:
+        """Record the current state in history."""
+        self.history.append(self.state)
+
+    def add_experience(self, experience: str) -> None:
+        """Add an experience to the agent's past."""
+        self.experiences.append(experience)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,13 +30,19 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition when conditions are met."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+
+        if "self-preservation" in self.experiences and self.state == "Ego":
+            self.state = "Jaz"
+        elif "altruistic" in self.experiences and self.state == "Jaz":
+            self.state = "Enotnost"
+
+        self.update_history()
         return self.state
 
     def respond(self, question: str) -> str:
