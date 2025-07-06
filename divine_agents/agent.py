@@ -1,5 +1,13 @@
+import random
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Agents can interact with one another which may result in a *happy
+    coincidence*. Such coincidences influence the agent's emotional
+    intensity and can trigger state transitions.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -36,3 +44,33 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # ------------------------------------------------------------------
+    # Happy coincidence helpers
+    # ------------------------------------------------------------------
+    def create_happy_coincidence(self) -> str:
+        """Generate a random coincidence event."""
+        return random.choice(
+            ["positive", "neutral", "conflict", "surprise", "happy"]
+        )
+
+    def interact_with(self, other_agent: "Agent") -> str:
+        """Interact with another agent and adjust emotions.
+
+        The interaction results in a *happy coincidence* that influences
+        the agent's emotional state which may cause a state transition.
+        """
+
+        event = self.create_happy_coincidence()
+
+        emotion_map = {
+            "positive": 0.4,
+            "neutral": 0.2,
+            "conflict": 0.6,
+            "surprise": 0.5,
+            "happy": 0.8,
+        }
+
+        self.update_emotion(emotion_map.get(event, 0.0))
+        self.transition()
+        return event
