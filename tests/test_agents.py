@@ -22,5 +22,23 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+
+class TestMeditationAndMediation(unittest.TestCase):
+    def test_meditation_triggers_transition(self):
+        agent = Agent("M")
+        from divine_agents.processes import Meditacija
+        med = Meditacija(agent)
+        new_state = med.meditate()
+        self.assertEqual(new_state, "Jaz")
+
+    def test_mediation_forces_transition(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        from divine_agents.processes import Mediator
+        mediator = Mediator("Med")
+        result_state = mediator.mediate(a1, a2)
+        self.assertEqual(result_state, "Jaz")
+
+if __name__ == "__main__":
     unittest.main()
+
