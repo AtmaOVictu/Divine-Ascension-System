@@ -1,19 +1,33 @@
+"""Core primitives for ontological agents."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=list)
+
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def adjust_emotion(self, delta: float) -> None:
+        """Increment emotion by ``delta`` and adjust tension."""
+        self.emotion += delta
+        self.tension += delta
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -31,8 +45,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_note = f"(čustva: {self.emotion:.2f})"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"Resnica je absolutna in neodvisna od drugih. {emotion_note}"
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"Resnica je relativna, oblikovana z našimi odnosi. {emotion_note}"
+        return f"Vse resnice so eno, medsebojno povezane. {emotion_note}"
