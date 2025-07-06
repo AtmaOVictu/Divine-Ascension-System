@@ -3,7 +3,9 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0
+    ):
         self.name = name
         self.state = state
         self.tension = tension
@@ -11,12 +13,22 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Increase emotion by ``value`` and mirror it to tension.
+
+        The emotional intensity is accumulated and the resulting value is also
+        used as the current tension level.  This tight coupling reflects how
+        strong feelings directly manifest as internal tension which can trigger
+        state transitions.
+        """
+        self.emotion += value
+        self.tension = self.emotion
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Set the agent's tension to ``value``.
+
+        This method allows external events to directly influence the agent's
+        tension without altering its emotional state.
+        """
         self.tension = value
 
     def transition(self) -> str:
