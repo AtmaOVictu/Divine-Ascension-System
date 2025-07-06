@@ -1,14 +1,34 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states.
 
+    The agent maintains an optional mapping of opposite concepts and keeps
+    a connection to the base ontological element ``O`` which represents a
+    stable starting point for all transitions.
+    """
+
+    O = "O"  # base state representing stability
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, opposites=None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.opposites = opposites or {}
+
+    def set_opposite(self, opposite: str) -> None:
+        """Assign an opposite concept for the agent's current state."""
+        self.opposites[self.state] = opposite
+
+    def get_opposite(self) -> str:
+        """Return the opposite concept for the current state if available."""
+        return self.opposites.get(self.state, "None")
+
+    def display_state(self) -> str:
+        """Return a human readable description of the current state."""
+        opposite = self.get_opposite()
+        return f"{self.name} is in state {self.state} with opposite {opposite}."
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
