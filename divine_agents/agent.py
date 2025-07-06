@@ -1,9 +1,13 @@
+"""Agent module implementing ontological state transitions and responses."""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
+        """Initialize an agent with a name, ontological state and emotional data."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -14,6 +18,11 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion(self, delta: float) -> None:
+        """Modify emotion by `delta` and adjust tension accordingly."""
+        self.emotion += delta
+        self.tension += delta
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
