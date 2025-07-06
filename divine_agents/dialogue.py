@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .opposite import OppositeAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,12 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def opposite_debate(agent: Agent, opposite: OppositeAgent) -> List[str]:
+    """Engage an agent in debate with its opposite concept."""
+    agent.define_opposite(opposite)
+    lines = [f"{agent.name} ({agent.state}) za\u010dna debato z nasprotjem {opposite.name}."]
+    lines.extend(agent.debate())
     return lines
