@@ -16,4 +16,8 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Demonstrate error transfer after the dialogue
+    agent1.transfer_error(agent2)
+    lines.append(f"{agent2.name} corrected error: Tension={agent2.tension}, Emotion={agent2.emotion}")
     return lines
