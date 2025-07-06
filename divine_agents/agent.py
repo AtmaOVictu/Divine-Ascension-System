@@ -3,17 +3,36 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotional_state: str = "neutral",
+        loyalty: float = 0.0,
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotional_state = emotional_state
+        self.loyalty = loyalty
+        self.experiences: list[str] = []
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def set_emotional_state(self, state: str) -> None:
+        """Set a descriptive emotional state (e.g., 'happy', 'fearful')."""
+        self.emotional_state = state
+
+    def record_experience(self, experience: str) -> None:
+        """Add an experience to the agent's memory."""
+        self.experiences.append(experience)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
