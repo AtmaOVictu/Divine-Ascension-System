@@ -1,3 +1,12 @@
+"""Agent module for ontological state transitions.
+
+This module defines :class:`Agent` used in philosophical dialogues.  An
+``Agent`` tracks its emotional intensity and tension level.  When either value
+exceeds predefined thresholds the agent progresses through the ontological
+states ``Ego`` -> ``Jaz`` -> ``Enotnost``.
+"""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,11 +18,20 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.emotion_type = "neutral"
 
-    def update_emotion(self, value: float) -> None:
+    EMOTION_IMPACT = {
+        "fear": 0.6,
+        "anger": 0.7,
+        "joy": 0.3,
+        "neutral": 0.0,
+    }
+
+    def update_emotion(self, value: float, emotion_type: str = "neutral") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
-        self.tension += value
+        self.emotion_type = emotion_type
+        self.tension += value * self.EMOTION_IMPACT.get(emotion_type, 0.0)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -36,3 +54,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def express_truth(self) -> str:
+        """Compose a dialogue line reflecting state and emotion."""
+        base = self.respond("Kaj je resnica?")
+        if self.emotion_type == "anger":
+            tone = "z jezo izjavi"
+        elif self.emotion_type == "fear":
+            tone = "prestavljeno s strahom"
+        elif self.emotion_type == "joy":
+            tone = "radostno pove"
+        else:
+            tone = "pove"
+        return f"{self.name} ({self.state}) {tone}: {base}"
