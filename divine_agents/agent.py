@@ -1,13 +1,21 @@
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
+    SYMBOLS = ["▲", "■", "●"]
+    _symbol_counter = 0
+
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, symbol: str | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        if symbol is not None:
+            self.symbol = symbol
+        else:
+            self.symbol = Agent.SYMBOLS[Agent._symbol_counter % len(Agent.SYMBOLS)]
+            Agent._symbol_counter += 1
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
