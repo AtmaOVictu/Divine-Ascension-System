@@ -1,6 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, philosophical_debate
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +20,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_debate_transitions(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_debate(a1, a2)
+        # Ensure that at least one agent reached Enotnost
+        self.assertIn("Enotnost", a1.state + a2.state)
+        self.assertTrue(any("Resnica" in line for line in lines))
 
 
 if __name__ == '__main__':
