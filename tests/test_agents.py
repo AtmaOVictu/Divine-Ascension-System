@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.language import PhilosophyLanguage, MathematicalLanguage
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_language_modules(self):
+        agent = Agent("B")
+        plang = PhilosophyLanguage("Philo", {"pravilo": "Ego -> Jaz"}, agent)
+        new_state = plang.transition(0.6, 0.8)
+        self.assertEqual(new_state, "Jaz")
+        self.assertEqual(plang.interpret("resnica"), "Filozofska razlaga: resnica")
+        mlang = MathematicalLanguage("Math", {}, agent)
+        self.assertEqual(mlang.interpret("1 + 1"), 2)
 
 
 if __name__ == '__main__':
