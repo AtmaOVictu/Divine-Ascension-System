@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, MultiLayerTransitionSystem
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -21,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_multi_layer_transition(self):
+        agent = Agent("A")
+        mts = MultiLayerTransitionSystem(agent)
+        agent.set_emotion("fear", 0.6)
+        mts.multi_layer_transition()
+        self.assertEqual(agent.state, "Jaz")
+
 
 if __name__ == '__main__':
     unittest.main()
+
