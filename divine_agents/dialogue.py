@@ -16,4 +16,9 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    decision1 = agent1.make_moral_decision('diskusiji')
+    decision2 = agent2.make_moral_decision('diskusiji')
+    lines.append(decision1)
+    lines.append(decision2)
     return lines

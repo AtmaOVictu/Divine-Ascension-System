@@ -3,12 +3,21 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        loyalty: float = 0.5,
+    ):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.loyalty = loyalty
         self.history = [state]
+        self.decision_history = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +45,18 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def make_moral_decision(self, situation: str) -> str:
+        """Make a decision influenced by emotion, tension and loyalty."""
+        decision = ""
+        if self.emotion < 0.3 and self.tension < 0.3:
+            decision = f"{self.name} izbere samozaščito v {situation}."
+        elif self.state == "Enotnost" or self.loyalty > 0.7:
+            decision = f"{self.name} pomaga drugim v {situation}."
+        elif self.state == "Jaz":
+            decision = f"{self.name} uravnoteži lastne in skupne potrebe v {situation}."
+        else:
+            decision = f"{self.name} daje prednost sebi v {situation}."
+
+        self.decision_history.append(decision)
+        return decision
