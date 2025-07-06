@@ -1,3 +1,6 @@
+from .numerology import numerological_value
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -36,3 +39,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def numerology(self) -> dict:
+        """Return numerological interpretations for emotion, tension and history."""
+        return {
+            "emotion": numerological_value(self.emotion),
+            "tension": numerological_value(self.tension),
+            "history": numerological_value(len(self.history)),
+        }
