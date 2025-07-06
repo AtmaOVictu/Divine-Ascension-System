@@ -1,6 +1,13 @@
+import os
+import sys
 import unittest
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, DialogueManager
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +27,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dialogue_manager(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        mgr = DialogueManager(a1, a2)
+        transcript = mgr.run_dialogue([0.2, 0.9], [0.1, 0.6])
+        self.assertIn("Jaz", a1.state)
+        self.assertIn("Enotnost", a2.state)
+        self.assertTrue(any("absolutna" in line for line in transcript))
 
 
 if __name__ == '__main__':
