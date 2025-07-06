@@ -3,15 +3,30 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    EMOTION_EFFECTS = {
+        "fear": 0.4,
+        "anger": 0.5,
+        "joy": -0.3,
+        "neutral": 0.0,
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
+    def set_emotion(self, name: str, intensity: float) -> None:
+        """Set the current emotion and adjust tension accordingly."""
+        self.emotion_name = name
+        self.emotion = intensity
+        delta = intensity * self.EMOTION_EFFECTS.get(name, 0.0)
+        self.tension += delta
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity numerically and adjust tension."""
         self.emotion = value
         self.tension += value
 
