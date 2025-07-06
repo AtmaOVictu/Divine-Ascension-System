@@ -1,4 +1,9 @@
+import os
+import sys
 import unittest
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +25,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestUnityCommand(unittest.TestCase):
+    def test_enforce_unity(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        from divine_agents.unity import UnityCommand
+        uc = UnityCommand([a1, a2])
+        final_state = uc.enforce_unity()
+        self.assertEqual(final_state, "Enotnost")
+        self.assertTrue(all(agent.state == "Enotnost" for agent in [a1, a2]))
 
 
 if __name__ == '__main__':
