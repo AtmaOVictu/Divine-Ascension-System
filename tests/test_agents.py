@@ -1,6 +1,16 @@
+import sys
+from pathlib import Path
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+
+# Ensure package root is on path
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from divine_agents import (
+    Agent,
+    philosophical_dialogue,
+    AutomatskiPrehodi,
+    QLearningAgent,
+)
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -22,5 +32,19 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+class TestAutomation(unittest.TestCase):
+    def test_automatic_transition(self):
+        agent = Agent("A")
+        agent.update_tension(0.8)
+        auto = AutomatskiPrehodi(agent)
+        state = auto.preveri_pogoje_za_prehod()
+        self.assertEqual(state, "Jaz")
+
+    def test_q_learning_update(self):
+        qa = QLearningAgent("Q", actions=["a", "b"])
+        qa.update_q_value("s", "a", reward=1.0, next_state="s2")
+        self.assertIn("a", qa.q_table["s"])
+
+
+if __name__ == "__main__":
     unittest.main()
