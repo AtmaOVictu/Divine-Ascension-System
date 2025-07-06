@@ -29,6 +29,10 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    async def transition_async(self) -> str:
+        """Asynchronous variant of :meth:`transition`."""
+        return self.transition()
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
@@ -36,3 +40,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    async def respond_async(self, question: str) -> str:
+        """Asynchronously return a philosophical response."""
+        return self.respond(question)

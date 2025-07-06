@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, philosophical_dialogue_async
+import asyncio
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -8,6 +9,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_async_transition(self):
+        agent = Agent("A")
+        agent.update_tension(0.8)
+        state = asyncio.run(agent.transition_async())
         self.assertEqual(state, "Jaz")
 
     def test_responses(self):
@@ -19,6 +26,12 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_async_dialogue(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = asyncio.run(philosophical_dialogue_async(a1, a2))
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
