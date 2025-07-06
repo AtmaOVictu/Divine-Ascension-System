@@ -1,19 +1,22 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of state transitions and philosophical dialogue."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_label: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, label: str | None = None) -> None:
+        """Update emotion intensity and optionally set the emotion label."""
         self.emotion = value
         self.tension += value
+        if label is not None:
+            self.emotion_label = label
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -36,3 +39,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Compose a dialogue line reflecting ontological state and emotion."""
+        response = self.respond(question)
+        emotion_note = f" ({self.emotion_label})" if self.emotion_label != "neutral" else ""
+        return f"{self.name} ({self.state}){emotion_note}: {response}"

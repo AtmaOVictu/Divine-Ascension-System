@@ -3,17 +3,28 @@ from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+    """Simulate a philosophical debate between two agents."""
+    lines: List[str] = []
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    # Initial statements based on current states
+    lines.append(agent1.speak("Kaj je resnica?"))
+    lines.append(agent2.speak("Kaj je resnica?"))
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    # Emotions rise during debate triggering possible transitions
+    agent1.update_emotion(0.6, label="anger")
+    agent2.update_emotion(0.8, label="joy")
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    previous_state_a1 = agent1.state
+    previous_state_a2 = agent2.state
+    agent1.transition()
+    agent2.transition()
+    if agent1.state != previous_state_a1:
+        lines.append(f"{agent1.name} prehaja v stanje: {agent1.state}")
+    if agent2.state != previous_state_a2:
+        lines.append(f"{agent2.name} prehaja v stanje: {agent2.state}")
+
+    # Agents respond again from new perspectives
+    lines.append(agent1.speak("Kaj je resnica?"))
+    lines.append(agent2.speak("Kaj je resnica?"))
+
     return lines
