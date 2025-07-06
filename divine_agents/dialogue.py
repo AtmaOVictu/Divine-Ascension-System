@@ -16,4 +16,11 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Replicate truths and break the ring of tension
+    lines.append(agent1.replicate_truth())
+    lines.append(agent2.replicate_truth())
+    agent1.break_ring()
+    agent2.break_ring()
+
     return lines
