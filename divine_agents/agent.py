@@ -19,6 +19,14 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def emotion_descriptor(self) -> str:
+        """Return a text descriptor for the current emotion intensity."""
+        if self.emotion > 0.7:
+            return "z velikim čustvenim nabojem"
+        if self.emotion > 0.4:
+            return "mirno"
+        return "brez posebnih čustev"
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -31,8 +39,11 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_text = self.emotion_descriptor()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} ({emotion_text})"
