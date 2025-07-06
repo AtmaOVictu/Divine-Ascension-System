@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .tracker import OntologicalTracker
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -13,6 +14,25 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def tracked_philosophical_dialogue(
+    agent1: Agent, agent2: Agent, tracker: OntologicalTracker
+) -> List[str]:
+    """Dialogue that records transitions using an OntologicalTracker."""
+    lines = []
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    tracker.update_agent(agent1.name, emotion=0.8)
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.state}")
+
+    tracker.update_agent(agent2.name, emotion=0.6)
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.state}")
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
