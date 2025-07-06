@@ -1,6 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, forced_usage_demo
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +9,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_no_transition_without_threshold(self):
+        agent = Agent("B")
+        agent.update_tension(0.5)
+        agent.update_emotion(0.2)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
@@ -20,6 +27,10 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_forced_usage_demo(self):
+        lines = forced_usage_demo()
+        self.assertIn("Awareness state: active", lines[0])
 
 
 if __name__ == '__main__':
