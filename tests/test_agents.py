@@ -22,5 +22,16 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestAgentPhysics(unittest.TestCase):
+    def test_weight_calculation(self):
+        agent = Agent("A", mass=2.0, gravity=10.0)
+        self.assertEqual(agent.calculate_weight(), 20.0)
+
+    def test_emotional_response(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6)
+        self.assertTrue(agent.respond("Kaj?").endswith("!"))
+
+
 if __name__ == '__main__':
     unittest.main()
