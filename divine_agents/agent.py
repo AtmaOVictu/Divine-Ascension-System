@@ -1,3 +1,12 @@
+"""Ontological agent implementation.
+
+Agents hold an ontological state (``Ego``, ``Jaz`` or ``Enotnost``) and
+transition between them when their emotional intensity or internal tension
+exceeds a predefined threshold. The philosophical view expressed in responses
+depends on the current state as well as the emotional charge behind it.
+"""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -30,9 +39,14 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by the agent's state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            base += " Čutim to zelo močno!"
+        return base
