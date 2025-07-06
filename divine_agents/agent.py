@@ -36,3 +36,22 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class ConflictAgent(Agent):
+    """Agent capable of handling internal conflicts influencing transitions."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, conflict: str | None = None):
+        super().__init__(name, state, tension, emotion)
+        self.conflict = conflict
+
+    def choose_path(self) -> str:
+        """Resolve conflict and move to a new state based on the type."""
+        if self.conflict == "moralna dilema":
+            self.update_emotion(self.emotion + 0.3)
+            self.state = "Jaz"
+        elif self.conflict == "filozofska dilema":
+            self.update_emotion(self.emotion + 0.5)
+            self.state = "Enotnost"
+        self.history.append(self.state)
+        return self.state
