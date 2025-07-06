@@ -1,7 +1,7 @@
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    STATES = ("Ego", "Jaz", "Enotnost", "Praznina")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -21,7 +21,10 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        # Highest threshold check for transition into the ultimate state
+        if self.state == "Enotnost" and (self.tension > 0.9 or self.emotion > 0.9):
+            self.state = "Praznina"
+        elif self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -35,4 +38,6 @@ class Agent:
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        if self.state == "Enotnost":
+            return "Vse resnice so eno, medsebojno povezane."
+        return "Resnica je praznina, ki presega vse pojme."
