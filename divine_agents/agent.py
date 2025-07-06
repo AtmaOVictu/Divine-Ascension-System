@@ -8,6 +8,7 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = "neutral"
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,12 +16,22 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def feel(self, emotion_type: str, intensity: float) -> None:
+        """Set the current emotion and modify tension."""
+        self.emotion_type = emotion_type
+        self.update_emotion(intensity)
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        Transition rules:
+        - Ego -> Jaz when tension > 0.7 or emotion > 0.5
+        - Jaz -> Enotnost when tension > 0.7 or emotion > 0.5
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -30,9 +41,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by current state and emotion."""
+        prefix = f"(čustvo: {self.emotion_type}, jakost: {self.emotion:.1f})"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        return f"{prefix} {answer}"
