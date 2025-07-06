@@ -1,6 +1,9 @@
+import random
 import unittest
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.metaparadox import RelativeAbsoluteLibrary
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -13,13 +16,19 @@ class TestAgentTransitions(unittest.TestCase):
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("ena", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_relative_absolute_library(self):
+        random.seed(0)
+        lib = RelativeAbsoluteLibrary()
+        value = lib.get_absolute("truth")
+        self.assertNotEqual(value, 1.0)
 
 
 if __name__ == '__main__':

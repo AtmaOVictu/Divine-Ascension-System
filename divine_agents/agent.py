@@ -1,14 +1,28 @@
+from typing import Optional
+
+from .metaparadox import MetaparadoxicalModule, RelativeAbsoluteLibrary
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        library: Optional[RelativeAbsoluteLibrary] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.library = library or RelativeAbsoluteLibrary()
+        self.paradox = MetaparadoxicalModule(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,12 +41,21 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        # highlight paradoxical awareness without altering final state
+        self.paradox.paradoxical_transition()
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        truth_factor = self.library.get_absolute("truth")
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                f"Resnica ({truth_factor:.2f}) je absolutna in neodvisna od drugih."
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"Resnica ({truth_factor:.2f}) je relativna, oblikovana z našimi odnosi."
+            )
+        return (
+            f"Resnica ({truth_factor:.2f}) je ena, medsebojno povezana z vsem."
+        )
