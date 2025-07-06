@@ -21,13 +21,23 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        transitioned = False
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
+                transitioned = True
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+                transitioned = True
+        if transitioned:
+            self.reset_after_transition()
         self.history.append(self.state)
         return self.state
+
+    def reset_after_transition(self) -> None:
+        """Reset tension and emotion when a transition occurs."""
+        self.tension = 0.0
+        self.emotion = 0.0
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
