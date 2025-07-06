@@ -1,3 +1,6 @@
+"""Ontological agents capable of emotional transitions and dialogue."""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -32,7 +35,14 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} (čustvo={self.emotion:.2f})"
+
+    def speak(self, question: str) -> str:
+        """Convenience wrapper returning formatted response."""
+        return self.respond(question)
+
