@@ -1,14 +1,32 @@
+"""Core primitives for modelling ontological agents."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import List
+
+
+class State(Enum):
+    """Possible ontological states for an agent."""
+
+    EGO = "Ego"
+    JAZ = "Jaz"
+    ENOTNOST = "Enotnost"
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an agent capable of changing ontological states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: State = State.EGO
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[State] = field(default_factory=lambda: [State.EGO])
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    TRANSITION_TENSION: float = 0.7
+    TRANSITION_EMOTION: float = 0.5
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,20 +37,20 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
+    def transition(self) -> State:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        if self.tension > self.TRANSITION_TENSION or self.emotion > self.TRANSITION_EMOTION:
+            if self.state == State.EGO:
+                self.state = State.JAZ
+            elif self.state == State.JAZ:
+                self.state = State.ENOTNOST
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
+        if self.state == State.EGO:
             return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
+        if self.state == State.JAZ:
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
