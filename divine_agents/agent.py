@@ -1,13 +1,25 @@
+from typing import Optional
+from .groups import AgentGroup
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        group: Optional[AgentGroup] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.group = group
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
