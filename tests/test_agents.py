@@ -1,3 +1,5 @@
+import os, sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
@@ -9,6 +11,24 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_emotion_only_transition(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_threshold_not_exceeded(self):
+        agent = Agent("A")
+        agent.update_tension(0.7)
+        agent.emotion = 0.5
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+    def test_history_updates(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6)
+        agent.transition()
+        self.assertEqual(agent.history, ["Ego", "Jaz"])
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
