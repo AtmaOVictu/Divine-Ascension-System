@@ -1,18 +1,27 @@
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion_level: float = 0.0
+    emotion_name: str = "neutral"
+    history: List[str] = field(default_factory=list)
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    def update_emotion(self, name: str, value: float) -> None:
+        """Update emotion type and intensity, adjusting tension."""
+        self.emotion_name = name
+        self.emotion_level = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -20,8 +29,8 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Change ontological state based on emotion and tension."""
+        if self.tension > 0.7 or self.emotion_level > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -30,9 +39,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        prefix = {
+            "fear": "Z bojaznijo trdim:",
+            "anger": "Z jezo izrečem:",
+            "joy": "Z veseljem povem:",
+        }.get(self.emotion_name, "").strip()
+
+        return f"{prefix} {base}".strip()
