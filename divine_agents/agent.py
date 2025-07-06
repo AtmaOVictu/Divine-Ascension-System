@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Generate a philosophical response influenced by the agent's emotion."""
+        base = self.respond(question)
+        if self.emotion > 0.5:
+            return f"{base} Moja čustva so intenzivna."
+        return base
