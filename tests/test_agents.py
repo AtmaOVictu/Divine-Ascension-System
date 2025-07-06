@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.alphabet import create_alphabet_agents, alphabet_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +20,16 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestAlphabetAgents(unittest.TestCase):
+    def test_alphabet_count(self):
+        agents = create_alphabet_agents()
+        self.assertEqual(len(agents), 26)
+
+    def test_alphabet_dialogue(self):
+        lines = alphabet_dialogue()
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
