@@ -11,7 +11,12 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and adjust tension accordingly.
+
+        The provided value represents the new emotional level.  Whenever the
+        emotion changes the agent's tension increases by the same amount which
+        can later trigger a state transition.
+        """
         self.emotion = value
         self.tension += value
 
