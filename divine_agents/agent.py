@@ -9,6 +9,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.problem: str | None = None
+        self.dialogue_history: list[tuple[str, str]] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +38,27 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # -------------------------- Extended Functionality --------------------------
+    def perceive_problem(self, problem: str) -> None:
+        """Store a problem the agent wants to solve."""
+        self.problem = problem
+        self.history.append(f"Problem: {problem}")
+
+    def solve_problem(self) -> str:
+        """Attempt to solve a problem, updating emotion and transitioning."""
+        if self.problem:
+            # Increase emotion which indirectly raises tension
+            self.update_emotion(0.6)
+            state = self.transition()
+            self.history.append(f"Solving: {self.problem}")
+            if state == "Enotnost":
+                self.problem = None
+            return state
+        return self.state
+
+    def speak(self, question: str) -> str:
+        """Answer a question and remember the exchange."""
+        answer = self.respond(question)
+        self.dialogue_history.append((question, answer))
+        return answer
