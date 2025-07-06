@@ -1,4 +1,13 @@
 import unittest
+import os
+import sys
+
+# Ensure the project root is on the Python path when tests are executed
+TEST_DIR = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.join(TEST_DIR, os.pardir))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +29,11 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_emotion_prefix(self):
+        agent = Agent("B", emotion_type="fear")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertTrue(reply.startswith("(v strahu)"))
 
 
 if __name__ == '__main__':
