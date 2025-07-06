@@ -1,3 +1,6 @@
+from .numerology import numerological_value
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -18,6 +21,14 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def numerology(self) -> dict:
+        """Return numerological interpretation of current values."""
+        return {
+            "emotion": numerological_value(self.emotion),
+            "tension": numerological_value(self.tension),
+            "history": numerological_value(len(self.history), scale=10),
+        }
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
