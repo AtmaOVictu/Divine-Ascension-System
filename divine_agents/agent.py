@@ -36,3 +36,13 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def inspire_other(self, other: "Agent") -> str:
+        """Encourage another agent to evolve if this agent has reached Enotnost."""
+        if self.state == "Enotnost":
+            other.update_emotion(other.emotion + 0.5)
+            message = (
+                f"{self.name} spodbuja {other.name} s pogledom, da so vse resnice eno."
+            )
+            return message
+        return f"{self.name} ni pripravljen spodbujati drugega agenta."
