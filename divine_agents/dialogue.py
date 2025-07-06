@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .utils import evaluate_equation
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,11 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Demonstrate equation evaluation and ontological scale
+    result = evaluate_equation('sin(pi/2)')
+    lines.append(f"Matematicni rezultat: {result}")
+    scale1 = ','.join(agent1.ontological_scale())
+    lines.append(f"{agent1.name} igra lestvico: {scale1}")
+
     return lines

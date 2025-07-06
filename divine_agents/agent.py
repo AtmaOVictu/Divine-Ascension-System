@@ -10,6 +10,18 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def ontological_scale(self):
+        """Return a musical scale that reflects the agent's current state."""
+        from .utils import generate_major_scale
+
+        mapping = {
+            "Ego": "C",
+            "Jaz": "D",
+            "Enotnost": "E",
+        }
+        key = mapping.get(self.state, "C")
+        return generate_major_scale(key)
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
