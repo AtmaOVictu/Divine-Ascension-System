@@ -1,5 +1,14 @@
+"""Ontology based agent implementation."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent holds an emotional state and a tension level. When either the
+    tension exceeds ``0.7`` or the emotion exceeds ``0.5`` the agent will
+    transition from ``Ego`` -> ``Jaz`` or ``Jaz`` -> ``Enotnost``.  The history
+    of states is kept for inspection and testing.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -14,6 +23,14 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def emotional_descriptor(self) -> str:
+        """Return a textual representation of the current emotional intensity."""
+        if self.emotion >= 0.7:
+            return "z velikim čustvenim nabojem"
+        if self.emotion >= 0.3:
+            return "s srednjo mero čustev"
+        return "mirno"
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +47,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{base} ({self.emotional_descriptor()})"
