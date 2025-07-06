@@ -10,6 +10,14 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def emotion_descriptor(self) -> str:
+        """Return a textual description of the current emotional intensity."""
+        if self.emotion > 0.7:
+            return "intenzivno"
+        if self.emotion > 0.4:
+            return "zmerno"
+        return "mirno"
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
@@ -30,9 +38,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on the current state and emotion."""
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+        return f"{base} (čustvo: {self.emotion_descriptor()})"
