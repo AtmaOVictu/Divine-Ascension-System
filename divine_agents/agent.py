@@ -1,17 +1,41 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Attributes
+    ----------
+    name: str
+        Agent identifier.
+    state: str
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension: float
+        Accumulated tension influencing transitions.
+    emotion: float
+        Intensity of the current emotion.
+    emotion_type: str
+        Descriptor of the emotion (e.g. ``fear``, ``joy``).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion_type: str, value: float) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        emotion_type:
+            Name of the emotion being experienced.
+        value:
+            Intensity between 0 and 1.
+        """
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
 
