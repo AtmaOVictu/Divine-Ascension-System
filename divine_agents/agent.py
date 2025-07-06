@@ -1,19 +1,35 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions through philosophical states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Starting ontological state. Defaults to ``"Ego"``.
+    tension:
+        Initial tension level.
+    emotion:
+        Initial emotion intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+        self.name: str = name
+        self.state: str = state
+        self.tension: float = tension
+        self.emotion: float = emotion
+        self.history: list[str] = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_influence(self, delta: float) -> None:
+        """Increment emotion and tension by a given amount."""
+        self.update_emotion(min(1.0, self.emotion + delta))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
