@@ -2,18 +2,30 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTION_MAP = {
+        "fear": 0.6,
+        "joy": 0.4,
+        "anger": 0.7,
+        "sorrow": 0.5,
+    }
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = "neutral"
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def apply_emotion(self, emotion: str) -> None:
+        """Apply a named emotion, updating internal state."""
+        self.emotion_name = emotion
+        self.update_emotion(self.EMOTION_MAP.get(emotion, 0.0))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
