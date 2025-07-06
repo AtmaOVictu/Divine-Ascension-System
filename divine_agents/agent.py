@@ -10,6 +10,14 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def emotion_descriptor(self) -> str:
+        """Return a simple descriptor for the current emotion level."""
+        if self.emotion > 0.7:
+            return "močna čustva"
+        if self.emotion > 0.3:
+            return "rahla čustva"
+        return "mirnost"
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
@@ -32,7 +40,14 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} Moja občutja: {self.emotion_descriptor()}."
+
+    def introspect(self) -> str:
+        """Return a summary of the agent's journey."""
+        states = " -> ".join(self.history)
+        return f"{self.name} je prešel faze: {states}. Trenutna napetost: {self.tension:.2f}."

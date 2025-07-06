@@ -1,2 +1,2 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Simple ontological agent system with philosophical dialogue.
