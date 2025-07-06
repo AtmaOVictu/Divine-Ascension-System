@@ -10,6 +10,10 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_weight_calculation(self):
+        agent = Agent("A", mass=75)
+        self.assertAlmostEqual(agent.calculate_weight(), 75 * 9.81, places=2)
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
@@ -20,6 +24,7 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("teža" in line for line in lines))
 
 
 if __name__ == '__main__':
