@@ -1,9 +1,19 @@
+"""Utility helpers for generating short philosophical dialogues."""
+
 from typing import List
 from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Simulate a short philosophical dialogue between two agents.
+
+    Args:
+        agent1: First participating agent.
+        agent2: Second participating agent.
+
+    Returns:
+        List[str]: Lines of dialogue describing the interaction.
+    """
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
