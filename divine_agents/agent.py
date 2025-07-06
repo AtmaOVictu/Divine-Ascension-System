@@ -1,5 +1,8 @@
+import random
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +21,28 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def interact(self, other: "Agent") -> str:
+        """Interact with another agent producing a 'happy coincidence'."""
+        outcome = random.choice([
+            "positive",
+            "neutral",
+            "conflict",
+            "surprise",
+            "happy",
+        ])
+
+        mapping = {
+            "positive": 0.6,
+            "neutral": 0.3,
+            "conflict": 0.8,
+            "surprise": 0.5,
+            "happy": 0.6,
+        }
+
+        self.update_emotion(mapping[outcome])
+        other.update_emotion(mapping[outcome])
+        return outcome
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
