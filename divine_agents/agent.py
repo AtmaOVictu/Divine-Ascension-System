@@ -3,15 +3,42 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
+
+    EMOTION_TENSION = {
+        "fear": 0.6,
+        "joy": 0.6,
+        "anger": 0.8,
+        "neutral": 0.0,
+    }
+
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_state: str = "neutral",
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_state = emotion_state
         self.history = [state]
 
+    def change_emotion(self, emotion: str) -> None:
+        """Change emotional state and update tension accordingly."""
+        self.emotion_state = emotion
+        level = self.EMOTION_TENSION.get(emotion, 0.0)
+        self.update_emotion(level)
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Update emotion intensity and adjust tension."""
         self.emotion = value
         self.tension += value
 
@@ -30,9 +57,8 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on state and emotion."""
+        base = self.PHILOSOPHY[self.state]
+        if self.emotion_state != "neutral":
+            return f"{base} Čutim {self.emotion_state}."
+        return base
