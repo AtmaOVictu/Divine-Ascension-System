@@ -17,3 +17,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def group_task(agents: List[Agent]) -> str:
+    """Simple evaluation of group alignment for a task."""
+    if all(agent.state == "Enotnost" for agent in agents):
+        return "Naloga je bila uspesno opravljena."
+    return "Skupina potrebuje vec usklajevanja."
