@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.simulation import run_simulation
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_apply_influence(self):
+        agent = Agent("Inf")
+        starting_energy = agent.energy
+        agent.apply_influence(1.0)
+        self.assertNotEqual(agent.energy, starting_energy)
+
+    def test_run_simulation_shapes(self):
+        agents = [Agent("A"), Agent("B")]
+        energy, tension = run_simulation(agents, 5)
+        self.assertEqual(len(energy), 5)
+        self.assertEqual(len(energy[0]), 2)
+        self.assertEqual(len(tension), 5)
+        self.assertEqual(len(tension[0]), 2)
 
 
 if __name__ == '__main__':
