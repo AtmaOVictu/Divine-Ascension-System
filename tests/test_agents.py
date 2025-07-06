@@ -21,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_opposites(self):
+        agent = Agent("B")
+        agent.set_opposite("Negacija")
+        self.assertEqual(agent.get_opposite(), "Negacija")
+
+    def test_base_state(self):
+        self.assertEqual(Agent.O, "O")
+
 
 if __name__ == '__main__':
     unittest.main()
