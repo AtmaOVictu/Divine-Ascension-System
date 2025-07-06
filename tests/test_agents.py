@@ -1,5 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
+from divine_agents.decision import DecisionMaker
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -9,6 +10,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_decision_maker_history(self):
+        agent = Agent("B")
+        agent.history = ["Ego", "Ego", "Ego"]
+        decision = DecisionMaker(agent).decide_transition()
+        self.assertEqual(decision, "Jaz")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
