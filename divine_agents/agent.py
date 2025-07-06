@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent with emotional and tension based state."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -29,10 +29,20 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _tone(self) -> str:
+        """Return a short descriptor of emotional tone."""
+        if self.emotion > 0.7:
+            return "strastno"
+        if self.emotion > 0.4:
+            return "z občutkom"
+        return "mirno"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer based on state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} ({self._tone()})"
