@@ -1,23 +1,44 @@
+from typing import List, Optional
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotional_state: str = "neutral",
+        loyalty: float = 0.5,
+        experiences: Optional[List[str]] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotional_state = emotional_state
+        self.loyalty = loyalty
+        self.experiences = experiences or []
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_name: str = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        if emotion_name:
+            self.emotional_state = emotion_name
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def add_experience(self, experience: str) -> None:
+        """Record a new experience."""
+        self.experiences.append(experience)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
