@@ -3,15 +3,24 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_type: str = "neutral",
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion_type: str, value: float) -> None:
+        """Update emotion type and intensity and adjust tension accordingly."""
+        self.emotion_type = emotion_type
         self.emotion = value
         self.tension += value
 
@@ -29,10 +38,22 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _emotion_phrase(self) -> str:
+        """Return a short phrase describing the current emotional state."""
+        if self.emotion_type == "neutral":
+            return ""
+        return f"Čutim {self.emotion_type}."
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        emotion_phrase = self._emotion_phrase()
+        if emotion_phrase:
+            return f"{base} {emotion_phrase}"
+        return base
