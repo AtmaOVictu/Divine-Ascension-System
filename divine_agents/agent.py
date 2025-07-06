@@ -29,10 +29,15 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def philosophical_principle(self) -> str:
+        """Return the philosophical principle for the current state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical answer including emotion and tension."""
+        principle = self.philosophical_principle()
+        return f"{principle} (čustvo={self.emotion:.2f}, napetost={self.tension:.2f})"
