@@ -17,3 +17,21 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def philosophical_debate(agent1: Agent, agent2: Agent, rounds: int = 3) -> List[str]:
+    """Engage two agents in a multi-round debate with emotional escalation."""
+    dialogue: List[str] = []
+
+    for _ in range(rounds):
+        dialogue.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        dialogue.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+        # escalate emotions which may lead to state transitions
+        agent1.update_emotion(0.6)
+        agent2.update_emotion(0.6)
+
+        dialogue.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+        dialogue.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    return dialogue
