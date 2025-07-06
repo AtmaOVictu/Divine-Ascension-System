@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.memory = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +19,14 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def remember(self, text: str) -> None:
+        """Store a line of dialogue or event in memory."""
+        self.memory.append(text)
+
+    def recall(self) -> list:
+        """Return the stored memory."""
+        return self.memory
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -32,7 +41,10 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        self.remember(f"Q: {question} A: {answer}")
+        return answer
