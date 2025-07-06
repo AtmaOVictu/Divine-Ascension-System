@@ -1,0 +1,17 @@
+name: Full System Sync and Test
+on:
+  push:
+    branches:
+      - main
+jobs:
+  sync_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Docker Compose
+        run: |
+          docker-compose up --build -d
+      - name: Run tests
+        run: |
+          docker-compose exec -T app pytest tests/
