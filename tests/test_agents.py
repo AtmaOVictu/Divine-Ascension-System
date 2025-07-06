@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.logger import ChangeLogger
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_logger_records_changes(self):
+        logger = ChangeLogger()
+        agent = Agent("L", logger=logger)
+        agent.update_emotion(0.9)
+        agent.transition()
+        self.assertTrue(any(c["type"] == "state_transition" for c in logger.get_changes()))
 
 
 if __name__ == '__main__':
