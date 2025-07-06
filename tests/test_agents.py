@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.phonetics import PhoneticTruthMap
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -12,8 +13,14 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
-        reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        agent.update_emotion(0.6)
+        reply = agent.respond("Kaj je resnica?", phoneme="ba")
+        self.assertIn("ba", reply)
+        self.assertIn("Enotnost", agent.state)
+
+    def test_phonetic_mapping(self):
+        mapper = PhoneticTruthMap()
+        self.assertEqual(mapper.map_phonetic_input("ka"), "negation")
 
     def test_dialogue(self):
         a1 = Agent("A1")
