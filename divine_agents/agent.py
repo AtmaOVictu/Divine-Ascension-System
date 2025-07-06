@@ -1,27 +1,34 @@
+from dataclasses import dataclass, field
+from typing import Dict, List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotions: Dict[str, float] = field(default_factory=dict)
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
-
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    def update_emotion(self, emotion: str, value: float) -> None:
+        """Set an emotion intensity and adjust tension."""
+        self.emotions[emotion] = value
         self.tension += value
 
-    def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+    def set_tension(self, value: float) -> None:
+        """Directly set the agent's tension level."""
         self.tension = value
 
+    def _emotion_threshold(self) -> bool:
+        return any(level > 0.5 for level in self.emotions.values())
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Transition to the next state if thresholds are met."""
+        if self.tension > 0.7 or self._emotion_threshold():
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -29,10 +36,20 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def philosophical_principle(self) -> str:
+        """Return the principle for the current ontological state."""
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical response influenced by emotions."""
+        base = self.philosophical_principle()
+        if self.emotions:
+            strongest = max(self.emotions, key=self.emotions.get)
+            intensity = self.emotions[strongest]
+            if intensity > 0.5:
+                return f"{base} Moje {strongest} je izrazito."
+        return base
