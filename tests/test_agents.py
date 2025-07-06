@@ -21,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_dynamic_tension(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        a1.add_teammate(a2)
+        a2.update_emotion(0.9)
+        a1.update_tension_dynamic()
+        self.assertGreater(a1.tension, 0)
+
+    def test_moral_decision(self):
+        agent = Agent("A", tension=0.8, emotional_state="fearful")
+        decision = agent.make_moral_decision("test")
+        self.assertIn("selfishly", decision)
+
 
 if __name__ == '__main__':
     unittest.main()
