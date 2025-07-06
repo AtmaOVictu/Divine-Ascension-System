@@ -8,16 +8,17 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        # keep a history of all visited states
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, change: float) -> None:
+        """Increase or decrease emotion and update tension accordingly."""
+        self.emotion = max(0.0, min(1.0, self.emotion + change))
+        self.update_tension(self.tension + self.emotion / 10)
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level clamped between 0 and 1."""
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -26,6 +27,7 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        # record every state after evaluation
         self.history.append(self.state)
         return self.state
 
