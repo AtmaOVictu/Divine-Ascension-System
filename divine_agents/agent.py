@@ -20,7 +20,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition when tension or emotion exceed thresholds."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -36,3 +36,14 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return a dialogue line influenced by current emotion."""
+        base = self.respond(question)
+        if self.emotion > 0.5:
+            tone = "z močno čustveno noto"
+        elif self.emotion > 0.2:
+            tone = "s čustvenim pridihom"
+        else:
+            tone = "mirno"
+        return f"{base} ({tone})"
