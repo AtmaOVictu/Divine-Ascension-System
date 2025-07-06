@@ -1,6 +1,8 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.multilayer import MultiLayerTransitionSystem
+from divine_agents.eternal_agent import EternalAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +22,24 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_multi_layer_transition(self):
+        agent = Agent(
+            "M",
+            state="Jaz",
+            tension=0.8,
+            emotional_state="fearful",
+            loyalty=0.9,
+            experiences=["selfish act"],
+        )
+        mts = MultiLayerTransitionSystem(agent)
+        state = mts.multi_layer_transition()
+        self.assertEqual(state, "Enotnost")
+
+    def test_eternal_agent_motivation(self):
+        ea = EternalAgent("E")
+        ea.self_motivation(max_iter=1, event_delay=0)
+        self.assertTrue(len(ea.kronika) > 0)
 
 
 if __name__ == '__main__':
