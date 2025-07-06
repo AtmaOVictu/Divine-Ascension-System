@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.categorizer import Categorizer
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,9 +19,12 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        cat = Categorizer()
+        cat.add_term("resnica", "filozofija", "iskanje pomena")
+        lines = philosophical_dialogue(a1, a2, categorizer=cat)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Konotacija" in line for line in lines))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
