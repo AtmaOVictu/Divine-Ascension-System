@@ -2,18 +2,27 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTION_EFFECT = {
+        "fear": 1.0,
+        "anger": 1.0,
+        "joy": -0.5,
+        "neutral": 0.0,
+    }
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Update emotion type and intensity, adjusting tension accordingly."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        effect = self.EMOTION_EFFECT.get(emotion_type, 0.0)
+        self.tension = max(0.0, self.tension + intensity * effect)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +39,10 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        emotion_note = f" Občutim {self.emotion_type}." if self.emotion_type != "neutral" else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
