@@ -21,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_emotional_prefix(self):
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        reply = agent.respond("Kaj je resnica?")
+        self.assertTrue(reply.startswith("Jezen"))
+
 
 if __name__ == '__main__':
     unittest.main()
