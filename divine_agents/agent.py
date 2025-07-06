@@ -1,18 +1,39 @@
+"""Ontological agents capable of philosophical state transitions."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an agent that can move through ontological states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_name: str = "neutral"
+    key: Optional[str] = None
+    history: List[str] = field(default_factory=list)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    #: Mapping of activation keys to ontological states
+    ACTIVATION_MAP: Dict[str, str] = field(
+        default_factory=lambda: {
+            "truth": "Ego",
+            "negation": "Jaz",
+            "wisdom": "Enotnost",
+        }
+    )
 
-    def update_emotion(self, value: float) -> None:
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
+
+    def update_emotion(self, value: float, name: str = "neutral") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -29,10 +50,22 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def set_key(self, key: str) -> None:
+        """Activate a state change based on a symbolic key."""
+        self.key = key
+        self.state = self.ACTIVATION_MAP.get(key, self.state)
+        self.history.append(self.state)
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by ontological state."""
+        emotion_note = (
+            "mirno" if self.emotion <= 0.5 else f"v čustvu {self.emotion_name}"
+        )
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            answer = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            answer = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            answer = "Vse resnice so eno, medsebojno povezane."
+        return f"{self.name} ({self.state}, {emotion_note}): {answer}"
