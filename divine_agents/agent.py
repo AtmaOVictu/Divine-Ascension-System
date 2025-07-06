@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.error_signal = None
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +37,24 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def transfer_error(self, target_agent: "Agent") -> None:
+        """Transfer an error signal to another agent for correction."""
+        self.error_signal = (
+            f"Error at {self.state}: Tension = {self.tension}, Emotion = {self.emotion}"
+        )
+        target_agent.receive_error(self.error_signal)
+
+    def receive_error(self, error_info: str) -> None:
+        """Receive error information from another agent and attempt correction."""
+        self.error_signal = error_info
+        # Simple print used here for demonstration; in practice this could log
+        print(f"{self.name} received error: {error_info}")
+        self.correct_error()
+
+    def correct_error(self) -> None:
+        """Adjust emotion and tension to mitigate error conditions."""
+        if self.tension > 0.7:
+            self.tension -= 0.1
+        if self.emotion > 0.5:
+            self.emotion -= 0.1
