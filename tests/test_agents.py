@@ -1,6 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import Agent, DecisionMaker, philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -14,6 +13,12 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_decision_maker_evolve_beliefs(self):
+        agent = Agent("B")
+        dm = DecisionMaker(agent)
+        belief = dm.evolve_beliefs()
+        self.assertIn(belief, agent.belief_system)
 
     def test_dialogue(self):
         a1 = Agent("A1")
