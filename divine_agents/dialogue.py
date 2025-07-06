@@ -17,3 +17,18 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def emotional_philosophical_dialogue(agent1: Agent, agent2: Agent, emotions1: List[tuple], emotions2: List[tuple]) -> List[str]:
+    """Simulate dialogue with explicit emotional changes for each round."""
+    lines: List[str] = []
+    for (e1, name1), (e2, name2) in zip(emotions1, emotions2):
+        lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        agent1.update_emotion(e1, name1)
+        lines.append(f"{agent1.name} občuti {name1} in prehaja v stanje: {agent1.transition()}")
+
+        lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+        agent2.update_emotion(e2, name2)
+        lines.append(f"{agent2.name} občuti {name2} in prehaja v stanje: {agent2.transition()}")
+
+    return lines
