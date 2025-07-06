@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.rhythm import create_rhythm
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -12,14 +13,24 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.set_emotion("radost", 0.6)
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("radost", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_emotion_transition(self):
+        agent = Agent("B")
+        agent.set_emotion("strah", 0.9)
+        self.assertEqual(agent.transition(), "Jaz")
+
+    def test_rhythm_creation(self):
+        seq = create_rhythm(["Ego", "Jaz", "Enotnost"])
+        self.assertEqual(seq[0], "E-G-O")
 
 
 if __name__ == '__main__':
