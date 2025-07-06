@@ -1,13 +1,24 @@
+import random
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        environment: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.environment = environment or "harmonious"
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +29,20 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def simulate_environment(self) -> str:
+        """Update internal state based on the configured environment."""
+        if self.environment == "harmonious":
+            self.update_emotion(0.3)
+            self.update_tension(self.tension + 0.4)
+        elif self.environment == "disharmonious":
+            self.update_emotion(0.7)
+            self.update_tension(self.tension + 1.2)
+        else:
+            self.update_emotion(random.uniform(0.1, 0.5))
+            self.update_tension(self.tension + random.uniform(0.1, 0.5))
+
+        return self.transition()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""

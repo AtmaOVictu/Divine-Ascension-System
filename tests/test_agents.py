@@ -16,10 +16,16 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertIn("eno", reply)
 
     def test_dialogue(self):
-        a1 = Agent("A1")
-        a2 = Agent("A2", state="Jaz")
+        a1 = Agent("A1", environment="disharmonious")
+        a2 = Agent("A2", state="Jaz", environment="disharmonious")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_environment_simulation(self):
+        agent = Agent("Env", environment="disharmonious")
+        state = agent.simulate_environment()
+        self.assertIn(state, Agent.STATES)
+        self.assertNotEqual(state, "Ego")
 
 
 if __name__ == '__main__':
