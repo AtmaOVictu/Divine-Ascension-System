@@ -14,10 +14,14 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        # Clamp tension within [0.0, 1.0]
+        self.tension = min(max(self.tension, 0.0), 1.0)
+        assert 0.0 <= self.tension <= 1.0
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = min(max(value, 0.0), 1.0)
+        assert 0.0 <= self.tension <= 1.0
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
