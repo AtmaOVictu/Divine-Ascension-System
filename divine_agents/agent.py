@@ -36,3 +36,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def make_decision(self, topic: str) -> str:
+        """Return a simple decision phrase based on the given topic."""
+        if topic == "self-preservation":
+            return f"{self.name} želi ohraniti sebe."
+        if topic == "help_group":
+            return f"{self.name} želi pomagati skupini."
+        return f"{self.name} ostaja nevtralen."
