@@ -1,13 +1,20 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The ``context`` attribute differentiates whether the agent operates in a
+    personal (``"zase"``) or system (``"zame"``) perspective. This distinction
+    influences how the agent articulates philosophical responses.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, context: str = "zase"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.context = context
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -30,9 +37,13 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer based on state and perspective."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        prefix = "Zase" if self.context == "zase" else "Zame"
+        return f"{prefix}: {base}"
