@@ -1,6 +1,11 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, transition_to_symbol
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +25,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_symbol_mapping(self):
+        agent = Agent("A")
+        self.assertEqual(agent.symbol, "⊘")
+
+    def test_transition_to_symbol(self):
+        symbol = transition_to_symbol(0.8, 0.4)
+        self.assertIn("Transcendence", symbol)
+
+    def test_emotional_response(self):
+        agent = Agent("A")
+        agent.update_emotion(0.6)
+        self.assertIn("čustveno", agent.respond("Kaj je resnica?"))
 
 
 if __name__ == '__main__':
