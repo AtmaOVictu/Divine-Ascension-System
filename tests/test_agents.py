@@ -1,6 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import Agent, philosophical_dialogue, phonetic_dialogue, process_sound
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +19,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_phonetic_process(self):
+        agent = Agent("B")
+        new_state = process_sound(agent, "ba")
+        self.assertEqual(new_state, "Jaz")
+
+    def test_phonetic_dialogue(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        sounds = ["ba", "ka", "ba"]
+        lines = phonetic_dialogue(a1, a2, sounds)
+        self.assertIn("Enotnost", " ".join(lines))
 
 
 if __name__ == '__main__':

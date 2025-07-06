@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .phonetics import process_sound
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,17 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def phonetic_dialogue(agent1: Agent, agent2: Agent, sounds: List[str]) -> List[str]:
+    """Simulate dialogue driven by phonetic sounds."""
+    lines: List[str] = []
+    agents = [agent1, agent2]
+    for i, sound in enumerate(sounds):
+        speaker = agents[i % 2]
+        lines.append(f"{speaker.name} izgovori '{sound}'")
+        new_state = process_sound(speaker, sound)
+        lines.append(f"{speaker.name} prehaja v stanje: {new_state}")
+        lines.append(f"{speaker.name} ({speaker.state}): {speaker.respond('Kaj je resnica?')}")
     return lines
