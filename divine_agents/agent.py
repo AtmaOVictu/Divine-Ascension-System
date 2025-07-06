@@ -1,5 +1,18 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of state transitions.
+
+    Parameters
+    ----------
+    name:
+        Display name of the agent.
+    state:
+        Current ontological state (``Ego``, ``Jaz`` or ``Enotnost``).
+    tension:
+        Current tension level. Values above ``0.7`` may trigger a state change.
+    emotion:
+        Current emotion intensity. Values above ``0.5`` may also trigger a
+        state change.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,12 +21,18 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = "neutral"
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def feel(self, emotion: str, intensity: float) -> None:
+        """Set a named emotion and update internal tension."""
+        self.emotion_type = emotion
+        self.update_emotion(intensity)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +49,13 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The response is slightly affected by the current emotional tone.
+        """
+        prefix = f"[{self.emotion_type}] " if self.emotion_type != "neutral" else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "Resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "Vse resnice so eno, medsebojno povezane."
