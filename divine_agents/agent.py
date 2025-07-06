@@ -1,3 +1,7 @@
+from typing import List
+from .decision import DecisionMaker
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -21,11 +25,8 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        decision = DecisionMaker(self)
+        self.state = decision.decide_transition()
         self.history.append(self.state)
         return self.state
 

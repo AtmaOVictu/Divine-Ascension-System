@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, dynamic_dialogue
+from divine_agents.decision import DecisionMaker
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_decision_maker(self):
+        agent = Agent("B")
+        agent.update_tension(0.8)
+        decision = DecisionMaker(agent).decide_transition()
+        self.assertEqual(decision, "Jaz")
+
+    def test_dynamic_dialogue(self):
+        a1 = Agent("X")
+        a2 = Agent("Y")
+        script = dynamic_dialogue(a1, a2, turns=3)
+        self.assertTrue(any("Jaz" in line or "Enotnost" in line for line in script))
 
 
 if __name__ == '__main__':
