@@ -36,3 +36,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def dialogue_line(self, question: str) -> str:
+        """Return a line of dialogue influenced by emotion."""
+        base = self.respond(question)
+        mood = "Čustveno" if self.emotion > 0.5 else "Mirno"
+        return f"{mood} odgovori: {base}"
