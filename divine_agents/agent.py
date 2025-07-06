@@ -1,5 +1,12 @@
+import asyncio
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent holds its current ontological ``state`` together with the
+    ``tension`` and ``emotion`` levels that may trigger a transition.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +25,13 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    async def apply_emotion(self, value: float) -> str:
+        """Asynchronously apply emotion change and perform a transition."""
+        self.update_emotion(value)
+        # yield control to simulate asynchronous processing
+        await asyncio.sleep(0)
+        return self.transition()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""

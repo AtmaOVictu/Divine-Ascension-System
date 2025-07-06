@@ -1,6 +1,12 @@
 import unittest
+import asyncio
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, philosophical_dialogue_async
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +25,13 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_async_dialogue(self):
+        a1 = Agent("Async1")
+        a2 = Agent("Async2", state="Jaz")
+        lines = asyncio.run(philosophical_dialogue_async(a1, a2))
+        self.assertIn("Jaz", lines[2])
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
