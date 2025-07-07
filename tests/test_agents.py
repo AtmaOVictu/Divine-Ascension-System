@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.box import ExtraSymbolicBox
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+class TestExtraBox(unittest.TestCase):
+    def test_box_protection(self):
+        box = ExtraSymbolicBox(stage="∴", data={"a": 1})
+        box.set_protection(True)
+        with self.assertRaises(PermissionError):
+            box.update_data({"b": 2})
+
+    def test_no_transition_below_threshold(self):
+        agent = Agent("B")
+        agent.update_emotion(0.4)
+        agent.update_tension(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
 
 
 if __name__ == '__main__':
