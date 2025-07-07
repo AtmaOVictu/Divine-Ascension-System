@@ -1,6 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import Agent, Log, Flow, philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +19,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_logging_and_flow(self):
+        log = Log()
+        flow = Flow("main")
+        agent = Agent("L", log=log, flow=flow)
+        agent.update_tension(0.9)
+        agent.transition()
+        self.assertIn("transitioned", log.last())
+        self.assertEqual(flow.current, agent.state)
 
 
 if __name__ == '__main__':
