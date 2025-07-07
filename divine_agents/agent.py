@@ -36,3 +36,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def mood(self) -> str:
+        """Return a textual representation of the current emotional mood."""
+        if self.emotion > 0.7:
+            return "vznemirjeno"
+        if self.emotion > 0.4:
+            return "čustveno"
+        return "mirno"
+
+    def speak(self, question: str) -> str:
+        """Respond to a question including ontological state and mood."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}, {self.mood()}): {answer}"
