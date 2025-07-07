@@ -12,11 +12,15 @@ class Agent:
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
+        if not 0.0 <= value <= 1.0:
+            raise ValueError("Emotion value must be between 0.0 and 1.0")
         self.emotion = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
+        if not 0.0 <= value <= 1.0:
+            raise ValueError("Tension value must be between 0.0 and 1.0")
         self.tension = value
 
     def transition(self) -> str:
