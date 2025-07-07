@@ -29,10 +29,21 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _emotion_descriptor(self) -> str:
+        """Return a short descriptor based on the current emotional intensity."""
+        if self.emotion > 0.7:
+            return "strastno"
+        if self.emotion > 0.3:
+            return "čustveno"
+        return "mirno"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        base: str
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{self._emotion_descriptor()} {base}"
