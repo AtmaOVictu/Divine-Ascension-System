@@ -22,5 +22,21 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestEmotionalProcessing(unittest.TestCase):
+    def test_emotional_box_positive(self):
+        from divine_agents.emotion import EmotionalBox, MainTaskAgent
+        box = EmotionalBox("joy")
+        agent = MainTaskAgent()
+        result = agent.handle_task("Analyze", box)
+        self.assertIn("completed", result)
+
+    def test_emotional_box_negative(self):
+        from divine_agents.emotion import EmotionalBox, MainTaskAgent
+        box = EmotionalBox("anger")
+        agent = MainTaskAgent()
+        result = agent.handle_task("Analyze", box)
+        self.assertIn("halted", result)
+
+
 if __name__ == '__main__':
     unittest.main()
