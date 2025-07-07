@@ -1,5 +1,5 @@
 from typing import List
-from .agent import Agent
+from .agent import Agent, EtnegA
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +16,21 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def reflective_dialogue(agent: Agent) -> List[str]:
+    """Generate dialogue between an agent and its reflective counterpart."""
+    mirror = EtnegA(agent)
+    lines = []
+    lines.append(f"{agent.name} ({agent.state}): {agent.respond('Kaj je resnica?')}")
+    lines.append(f"{mirror.name} ({mirror.state}): {mirror.respond('Kaj je resnica?')}")
+
+    agent.update_emotion(0.8)
+    mirror.update_emotion(agent.emotion)
+    lines.append(f"{agent.name} prehaja v stanje: {agent.transition()}")
+    lines.append(f"{mirror.name} prehaja v stanje: {mirror.transition()}")
+
+    lines.append(f"{agent.name}: {agent.respond('Kaj je resnica?')}")
+    lines.append(f"{mirror.name}: {mirror.respond('Kaj je resnica?')}")
     return lines

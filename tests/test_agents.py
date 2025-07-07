@@ -1,6 +1,11 @@
+import os
+import sys
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from divine_agents.agent import Agent, EtnegA
+from divine_agents.dialogue import philosophical_dialogue, reflective_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +25,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestEtnegA(unittest.TestCase):
+    def test_mirror_response(self):
+        agent = Agent("A")
+        mirror = EtnegA(agent)
+        self.assertIn("relativna", mirror.respond("Kaj je resnica?"))
+
+    def test_reflective_dialogue(self):
+        agent = Agent("B")
+        lines = reflective_dialogue(agent)
+        self.assertEqual(len(lines), 6)
 
 
 if __name__ == '__main__':
