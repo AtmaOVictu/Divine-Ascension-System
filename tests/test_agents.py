@@ -3,17 +3,25 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
-class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
-        agent = Agent("A")
-        agent.update_tension(0.8)
-        state = agent.transition()
-        self.assertEqual(state, "Jaz")
+class TestSelfAwareness(unittest.TestCase):
+    def test_emotional_transition(self):
+        agent = Agent("Agent1", emotion="joy")
+        agent.transition()
+        self.assertEqual(agent.state, "Jaz")
+        self.assertTrue(any("transitioned to Jaz" in log for log in agent.logs))
 
-    def test_responses(self):
-        agent = Agent("A", state="Enotnost")
+    def test_emotional_response(self):
+        agent = Agent("Agent2", state="Jaz", emotion="anger")
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("relativna", reply)
+        self.assertIn("anger", reply)
+
+    def test_update_emotion(self):
+        agent = Agent("Agent3", emotion="fear")
+        agent.update_emotion("joy")
+        self.assertEqual(agent.emotion, "joy")
+        agent.transition()
+        self.assertEqual(agent.state, "Jaz")
 
     def test_dialogue(self):
         a1 = Agent("A1")
@@ -22,5 +30,5 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
