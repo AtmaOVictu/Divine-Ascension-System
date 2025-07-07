@@ -12,12 +12,13 @@ class Agent:
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = max(0.0, min(value, 1.0))
+        # emotion influences tension directly
+        self.tension = min(1.0, self.tension + self.emotion)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = max(0.0, min(value, 1.0))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -29,10 +30,20 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def _base_truth(self) -> str:
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def _emotion_prefix(self) -> str:
+        if self.emotion > 0.7:
+            return "Strastno"
+        if self.emotion > 0.3:
+            return "Premišljeno"
+        return "Mirno"
+
+    def respond(self, question: str) -> str:
+        """Return a philosophical answer influenced by emotion."""
+        return f"{self._emotion_prefix()}: {self._base_truth()}"
