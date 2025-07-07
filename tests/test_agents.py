@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_affirmation_history(self):
+        agent = Agent("A")
+        agent.update_tension(0.8)
+        agent.transition()
+        agent.respond("Kaj je resnica?")
+        self.assertTrue(any(msg.startswith("Affirmation") for msg in agent.history))
+
 
 if __name__ == '__main__':
     unittest.main()
