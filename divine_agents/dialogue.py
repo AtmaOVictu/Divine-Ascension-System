@@ -1,10 +1,11 @@
 from typing import List
 from .agent import Agent
+from .security import generate_ephemeral_token
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
-    lines = []
+    lines = [f"Session token: {generate_ephemeral_token()}"]
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
