@@ -1,5 +1,11 @@
+from __future__ import annotations
+
+from typing import List
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and
+    interacting with optional sub-agents."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +15,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.sub_agents: List["SubAgent"] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -29,10 +36,20 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def add_sub_agent(self, sub_agent: "SubAgent") -> None:
+        """Attach a sub-agent that assists this agent."""
+        self.sub_agents.append(sub_agent)
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            response = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            response = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            response = "Vse resnice so eno, medsebojno povezane."
+
+        for sub_agent in self.sub_agents:
+            sub_agent.log_action(f"Agent {self.name} responded with: {response}")
+
+        return response
