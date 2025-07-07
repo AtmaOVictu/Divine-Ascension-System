@@ -1,5 +1,9 @@
+from typing import List
+from .krak import Krak
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and tasks."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +13,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.kraks: List[Krak] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,7 +32,14 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        for krak in self.kraks:
+            if not krak.completed and krak.check_condition(self):
+                krak.activate()
         return self.state
+
+    def add_krak(self, krak: Krak) -> None:
+        """Attach a krak (task) that may activate during transitions."""
+        self.kraks.append(krak)
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
