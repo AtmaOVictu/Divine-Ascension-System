@@ -4,6 +4,8 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        if state not in self.STATES:
+            raise ValueError(f"Neveljavno začetno stanje: {state}")
         self.name = name
         self.state = state
         self.tension = tension
@@ -31,6 +33,8 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        if self.state not in self.STATES:
+            raise ValueError(f"Neveljavno stanje: {self.state}")
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
