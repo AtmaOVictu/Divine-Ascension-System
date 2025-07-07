@@ -3,6 +3,15 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+class TestAgentExtraBox(unittest.TestCase):
+    def test_extra_box_mirrors_state(self):
+        agent = Agent("B")
+        agent.update_tension(0.9)
+        agent.transition()
+        self.assertEqual(agent.extra_box.stage, agent.state)
+        self.assertEqual(agent.extra_box.get_data()["prev_state"], "Ego")
+
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
@@ -20,6 +29,8 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        # ensure emotional annotation is present
+        self.assertTrue(any("čustveni naboj" in line for line in lines))
 
 
 if __name__ == '__main__':
