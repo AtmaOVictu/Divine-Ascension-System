@@ -10,6 +10,14 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_tension_decay_prevents_immediate_transition(self):
+        agent = Agent("B")
+        agent.update_tension(0.8)
+        first = agent.transition()
+        self.assertEqual(first, "Jaz")
+        second = agent.transition()
+        self.assertEqual(second, "Jaz")  # no further transition due to decay
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")

@@ -3,6 +3,8 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
+    TENSION_DECAY = 0.5
+
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
         self.state = state
@@ -20,12 +22,21 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        Once a transition occurs the agent's tension decays by ``TENSION_DECAY``
+        to avoid repeated immediate transitions.
+        """
+        changed = False
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
+                changed = True
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+                changed = True
+        if changed:
+            self.tension *= self.TENSION_DECAY
         self.history.append(self.state)
         return self.state
 
