@@ -1,3 +1,8 @@
+from typing import List
+
+from .lock import Lock, Key
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +14,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.locks: List[Lock] = []
+        self.keys: List[Key] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,8 +26,29 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def add_lock(self, lock: Lock) -> None:
+        """Associate a lock with the agent."""
+        self.locks.append(lock)
+
+    def add_key(self, key: Key) -> None:
+        """Give the agent a key it can use to unlock locks."""
+        self.keys.append(key)
+
+    def attempt_unlock(self) -> None:
+        """Attempt to unlock all locks with available keys."""
+        for lock in self.locks:
+            if lock.is_locked():
+                for key in self.keys:
+                    if key.use(lock):
+                        break
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded and not locked."""
+        self.attempt_unlock()
+        if any(lock.is_locked() for lock in self.locks):
+            self.history.append(self.state)
+            return self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
