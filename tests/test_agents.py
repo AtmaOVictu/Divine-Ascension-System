@@ -21,6 +21,15 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_reward_and_level_up(self):
+        agent = Agent("A")
+        for _ in range(10):
+            agent.reward(True)
+        self.assertGreaterEqual(agent.xp, 100)
+        leveled = agent.level_up()
+        self.assertTrue(leveled)
+        self.assertEqual(agent.xp, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,11 +3,13 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, xp: int = 0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.xp = xp
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +20,36 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def reward(self, result: bool) -> None:
+        """Adjust emotion and XP based on the result of an action."""
+        if result:
+            self.emotion += 0.1
+            self.xp += 10
+        else:
+            self.emotion -= 0.1
+            self.xp -= 5
+        self.history.append(("reward", self.state, self.tension, self.emotion))
+
+    def level_up(self) -> bool:
+        """Upgrade agent when enough XP is accumulated."""
+        if self.xp >= 100:
+            self.xp = 0
+            if self.state == "Ego":
+                self.state = "Jaz"
+            elif self.state == "Jaz":
+                self.state = "Enotnost"
+            self.history.append(("level_up", self.state))
+            return True
+        return False
+
+    def complete_task(self, task: str) -> None:
+        """Grant XP for completed tasks."""
+        if task == "philosophical_question":
+            self.xp += 15
+        elif task == "transition":
+            self.xp += 20
+        self.history.append(("task_completed", task, self.xp))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
