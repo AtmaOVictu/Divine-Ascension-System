@@ -3,15 +3,18 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_label: str | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, label: str, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
+        self.emotion_label = label
         self.emotion = value
         self.tension += value
 
@@ -31,8 +34,20 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        emotion_phrases = {
+            "fear": "Občutim strah.",
+            "joy": "Napolnjuje me radost.",
+            "anger": "Čutim jezo.",
+        }
+
+        if self.emotion_label:
+            phrase = emotion_phrases.get(self.emotion_label, "")
+            if phrase:
+                base = f"{base} {phrase}"
+        return base
