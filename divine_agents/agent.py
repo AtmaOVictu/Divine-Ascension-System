@@ -1,5 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states.
+
+    State changes occur when ``tension`` is above ``0.7`` or ``emotion`` is
+    above ``0.5``. Emotional intensity also influences the wording of
+    responses.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -30,9 +35,23 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        return self._apply_emotion_influence(base)
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+    def _apply_emotion_influence(self, response: str) -> str:
+        """Prefix response based on the current emotion level."""
+        if self.emotion > 0.7:
+            return f"Z veseljem: {response}"
+        if self.emotion < 0.3:
+            return f"S strahom: {response}"
+        return response
