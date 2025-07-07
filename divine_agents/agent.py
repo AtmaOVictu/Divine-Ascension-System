@@ -10,14 +10,33 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    def _clamp(self, val: float) -> float:
+        """Clamp a numeric value between 0 and 1."""
+        return max(0.0, min(1.0, val))
+
+    def update_emotion(self, value: float, accumulate: bool = False) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value: float
+            New emotion value or increment when ``accumulate`` is ``True``.
+        accumulate: bool, optional
+            When ``True``, ``value`` is added to the current emotion instead of
+            replacing it.
+        """
+        if accumulate:
+            self.emotion += value
+        else:
+            self.emotion = value
+        self.emotion = self._clamp(self.emotion)
+
         self.tension += value
+        self.tension = self._clamp(self.tension)
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level clamped between 0 and 1."""
+        self.tension = self._clamp(value)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
