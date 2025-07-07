@@ -32,7 +32,17 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return self.apply_emotion_influence(base)
+
+    def apply_emotion_influence(self, response: str) -> str:
+        """Influence a response with an emotional tone."""
+        if self.emotion > 0.7:
+            return f"Z veseljem: {response}"
+        if self.emotion < 0.3:
+            return f"S strahom: {response}"
+        return response
