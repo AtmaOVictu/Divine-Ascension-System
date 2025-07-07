@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, MultiDimensionalAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +20,12 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_multidimensional_transition(self):
+        agent = MultiDimensionalAgent("M")
+        agent.update_dimension("emotion", 0.9)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
 
 
 if __name__ == '__main__':
