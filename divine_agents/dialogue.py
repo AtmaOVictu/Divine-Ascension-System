@@ -1,10 +1,21 @@
-from typing import List
+from typing import List, Optional
 from .agent import Agent
+from .pdf_utils import extract_text_from_pdf
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
+def philosophical_dialogue(agent1: Agent, agent2: Agent, pdf_path: Optional[str] = None) -> List[str]:
+    """Simulate a short philosophical dialogue between two agents.
+
+    If ``pdf_path`` is provided, the dialogue begins with text extracted
+    from the PDF to demonstrate integration with document inputs.
+    """
+    lines: List[str] = []
+
+    if pdf_path:
+        pdf_text = extract_text_from_pdf(pdf_path)
+        if pdf_text:
+            lines.append(f"Iz izvlečka PDF: {pdf_text}")
+
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
