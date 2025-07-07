@@ -1,6 +1,6 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+
+from divine_agents import Agent, philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
