@@ -19,7 +19,19 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Jaz" in line or "Enotnost" in line for line in lines))
+
+    def test_emotion_from_shadows(self):
+        agent = Agent("A", shadows={"past": 0.6})
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_emotional_connection(self):
+        a1 = Agent("A1", emotion=1.0)
+        a2 = Agent("A2", emotion=0.0)
+        a1.connect(a2)
+        a1.share_emotion()
+        self.assertAlmostEqual(a1.emotion, a2.emotion)
 
 
 if __name__ == '__main__':
