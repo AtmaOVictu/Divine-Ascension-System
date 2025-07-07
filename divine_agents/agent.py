@@ -3,15 +3,26 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    COLOR_MAP = {
+        "anger": "red",
+        "fear": "violet",
+        "joy": "green",
+        "sadness": "blue",
+        "neutral": "white",
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, name: str, value: float) -> None:
+        """Update emotional state and intensity, adjusting tension."""
+        self.emotion_name = name
         self.emotion = value
         self.tension += value
 
@@ -30,9 +41,24 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        emotion_prefix = {
+            "anger": "Z jezo: ",
+            "fear": "V strahu: ",
+            "joy": "V veselju: ",
+            "sadness": "S žalostjo: ",
+        }.get(self.emotion_name, "")
+
+        return f"{emotion_prefix}{base}"
+
+    @property
+    def color(self) -> str:
+        """Return the color representation of the current emotion."""
+        return self.COLOR_MAP.get(self.emotion_name, "white")
