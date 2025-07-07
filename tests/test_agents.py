@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.reflective import EtnegA
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_etnega_mirrors_agent(self):
+        agent = Agent("A")
+        mirror = EtnegA(agent)
+        self.assertIn("relativna", mirror.respond("Kaj je resnica?"))
+
+    def test_etnega_transition(self):
+        agent = Agent("A")
+        mirror = EtnegA(agent)
+        agent.update_tension(0.8)
+        agent.transition()
+        mirror.transition()
+        self.assertEqual(mirror.state, agent.state)
 
 
 if __name__ == '__main__':
