@@ -15,6 +15,12 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
+    def test_emotion_prefix(self):
+        agent = Agent("A")
+        agent.update_emotion(0.9, "fear")
+        reply = agent.respond("Kaj je resnica?")
+        self.assertIn("strahom", reply)
+
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
