@@ -11,13 +11,27 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Update emotion intensity and adjust tension.
+
+        Parameters
+        ----------
+        value: float
+            Desired emotion intensity. Values outside ``[0.0, 1.0]`` are
+            clamped. The agent's tension is increased by the same normalized
+            amount but will never exceed ``1.0``.
+        """
+
+        normalized = max(0.0, min(1.0, value))
+        self.emotion = normalized
+        self.tension = min(1.0, self.tension + normalized)
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level.
+
+        Any value outside ``[0.0, 1.0]`` is clamped to ensure tension remains
+        within valid bounds.
+        """
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
