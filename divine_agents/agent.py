@@ -1,3 +1,14 @@
+from enum import Enum
+
+
+class Emotion(Enum):
+    """Basic emotion types influencing agent tension."""
+
+    FEAR = "fear"
+    JOY = "joy"
+    ANGER = "anger"
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -14,6 +25,14 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def experience_emotion(self, emotion: Emotion, intensity: float) -> None:
+        """Set an emotion and modify tension based on its type."""
+        self.emotion = intensity
+        if emotion in (Emotion.FEAR, Emotion.ANGER):
+            self.tension += intensity
+        else:
+            self.tension += intensity / 2
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
