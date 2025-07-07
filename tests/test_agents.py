@@ -12,14 +12,18 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion(0.2, kind="joy")
         reply = agent.respond("Kaj je resnica?")
+        self.assertIn("radostjo", reply.lower())
         self.assertIn("eno", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        # Ensure transitions occurred and dialogues reflect new states
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Jaz" in line for line in lines[2:]))
 
 
 if __name__ == '__main__':
