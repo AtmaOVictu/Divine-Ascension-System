@@ -1,17 +1,28 @@
+"""Ontological agent implementation with emotion based transitions."""
+
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_type: Optional[str] = None
+    history: List[str] = field(default_factory=list)
+
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion: str, value: float) -> None:
+        """Update emotion type and intensity, adjusting tension accordingly."""
+        self.emotion_type = emotion
         self.emotion = value
         self.tension += value
 
@@ -30,9 +41,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current ontological state."""
+        emotion_note = (
+            f" Trenutno čustvo je {self.emotion_type}." if self.emotion_type else ""
+        )
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_note
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_note
+        return "Vse resnice so eno, medsebojno povezane." + emotion_note
