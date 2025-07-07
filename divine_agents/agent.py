@@ -1,5 +1,8 @@
+from .xp import XPSystem
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning states and gaining XP."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,11 +12,16 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.xp = XPSystem()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def gain_xp(self, amount: int) -> None:
+        """Gain experience points."""
+        self.xp.add_xp(amount)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -36,3 +44,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def xp_progress(self) -> str:
+        """Return textual progress bar for current XP."""
+        return self.xp.progress_bar()

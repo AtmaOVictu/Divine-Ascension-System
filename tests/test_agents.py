@@ -20,6 +20,12 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("XP" in line for line in lines))
+
+    def test_xp_progress(self):
+        agent = Agent("A")
+        agent.gain_xp(50)
+        self.assertIn("50.0%", agent.xp_progress())
 
 
 if __name__ == '__main__':
