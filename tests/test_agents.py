@@ -19,7 +19,8 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertIn("A2 prehaja v stanje: Enotnost", lines)
+        self.assertEqual(a1.state, "Jaz")
 
 
 if __name__ == '__main__':
