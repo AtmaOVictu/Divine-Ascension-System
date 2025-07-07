@@ -10,6 +10,14 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_custom_thresholds(self):
+        thresholds = [i / 10 for i in range(1, 11)]
+        agent = Agent("B", thresholds=thresholds)
+        agent.update_tension(0.6)
+        self.assertEqual(agent.transition(), "Ego")
+        agent.update_tension(0.8)
+        self.assertEqual(agent.transition(), "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
