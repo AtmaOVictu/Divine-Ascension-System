@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, EtnegA
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +20,15 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_etnega_response(self):
+        original = Agent("B")
+        mirror = EtnegA(original)
+        self.assertIn("relativna", mirror.respond("Kaj je resnica?"))
+        original.update_emotion(0.9)
+        mirror.transition()
+        self.assertEqual(mirror.state, original.state)
+        self.assertIn("absolutna", mirror.respond("Kaj je resnica?"))
 
 
 if __name__ == '__main__':
