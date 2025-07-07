@@ -1,9 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of emotional state transitions."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Create an agent with the given initial state, tension and emotion."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -29,10 +30,22 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def state_principle(self) -> str:
+        """Return the philosophical principle of the current state."""
+        principles = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }
+        return principles[self.state]
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by emotion."""
+        base = self.state_principle()
+        if self.emotion > 0.6:
+            suffix = " (čustveno odziven)"
+        elif self.emotion > 0.2:
+            suffix = " (rahlo čustven)"
+        else:
+            suffix = ""
+        return base + suffix
