@@ -1,5 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent holds an ontological ``state`` (``Ego``, ``Jaz`` or ``Enotnost``),
+    an ``emotion`` intensity and a ``tension`` level.  Tension is influenced by
+    emotions and both values determine when a state transition occurs.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -14,6 +19,15 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    #
+    def emotion_descriptor(self) -> str:
+        """Return a human readable description of the current emotion level."""
+        if self.emotion > 0.6:
+            return "vznemirjeno"
+        if self.emotion > 0.3:
+            return "nezadovoljno"
+        return "mirno"
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +44,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} (odziv {self.emotion_descriptor()})"
+
+    def speak(self, question: str) -> str:
+        """Generate a dialogue line and attempt a state transition."""
+        line = f"{self.name} ({self.state}): {self.respond(question)}"
+        self.transition()
+        return line
