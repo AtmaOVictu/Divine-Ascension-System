@@ -1,5 +1,9 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Agents can attach sub-agents that log actions and assist with
+    philosophical debates.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +13,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.sub_agents = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -29,10 +34,20 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def add_sub_agent(self, sub_agent: 'SubAgent') -> None:
+        """Attach a sub-agent to this agent."""
+        self.sub_agents.append(sub_agent)
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            response = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            response = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            response = "Vse resnice so eno, medsebojno povezane."
+
+        for helper in self.sub_agents:
+            helper.log_action(f"{self.name} responded: {response}")
+
+        return response
