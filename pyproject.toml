@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "divine-ascension-system"
+version = "0.1.0"
+description = "Dynamic agent-based system exploring philosophical state transitions"
+authors = [{name = "Divine Team", email = "maintainers@example.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["divine_agents*"]
