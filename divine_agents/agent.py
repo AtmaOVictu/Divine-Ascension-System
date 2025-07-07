@@ -1,5 +1,14 @@
+from typing import List
+from .keylock import Key, Lock
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent can hold keys and locks. State transitions are triggered when
+    tension or emotion thresholds are exceeded and, if locks are present,
+    at least one lock has been unlocked with a corresponding key.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,20 +17,46 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history: List[str] = [state]
+        self.keys: List[Key] = []
+        self.locks: List[Lock] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
 
+    def add_key(self, key: Key) -> None:
+        """Add a key to the agent's collection."""
+        self.keys.append(key)
+
+    def add_lock(self, lock: Lock) -> None:
+        """Add a lock the agent must unlock before transitioning."""
+        self.locks.append(lock)
+
+    def attempt_unlock(self) -> bool:
+        """Try to unlock locks with available keys."""
+        unlocked = False
+        for lock in self.locks:
+            if lock.is_locked():
+                for key in self.keys:
+                    if key.unlock(lock):
+                        self.history.append(f"{self.name} unlocked {lock.name}")
+                        unlocked = True
+                        break
+        return unlocked
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Perform state transition when conditions and locks allow it."""
+        can_transition = True
+        if self.locks:
+            can_transition = self.attempt_unlock()
+
+        if can_transition and (self.tension > 0.7 or self.emotion > 0.5):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
