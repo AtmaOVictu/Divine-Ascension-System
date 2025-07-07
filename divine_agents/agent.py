@@ -3,11 +3,13 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, rationality: float = 1.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.rationality = rationality
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +20,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def update_rationality(self, value: float) -> None:
+        """Set the rational consideration level."""
+        self.rationality = value
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -36,3 +42,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def reflect_opposites(self) -> str:
+        """Reflect on opposites based on the current state."""
+        if self.state == "Ego":
+            return f"{self.name}: Jaz sem neodvisen, a se soočam z drugimi."
+        if self.state == "Jaz":
+            return f"{self.name}: Odnos me oblikuje, a želim ohraniti sebe."
+        return f"{self.name}: V meni je enotnost, a dvojnost ostaja."
