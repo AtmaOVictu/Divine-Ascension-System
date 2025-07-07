@@ -19,7 +19,13 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        # verify state transition to Enotnost is mentioned
         self.assertTrue(any("Enotnost" in line for line in lines))
+        # tension should increase due to disagreement
+        self.assertGreater(a1.tension, 0.3)
+        self.assertGreater(a2.tension, 0.3)
+        # dialogue should record rising tension
+        self.assertTrue(any("Napetost" in line for line in lines))
 
 
 if __name__ == '__main__':
