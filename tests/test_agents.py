@@ -1,5 +1,11 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
+from divine_agents.sub_agent import SubAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +26,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestSubAgents(unittest.TestCase):
+    def test_sub_agent_logging(self):
+        agent = Agent("A")
+        sa = SubAgent("SA", agent)
+        agent.add_sub_agent(sa)
+        agent.update_emotion(0.9)
+        agent.transition()
+        self.assertTrue(any("Emotion" in log for log in sa.logs))
+        self.assertTrue(any("State transitioned" in log for log in sa.logs))
+        # ensure logs remain sorted after calling sort_logs
+        sorted_logs = sa.sort_logs()
+        self.assertEqual(sorted_logs, sa.logs)
 
 
 if __name__ == '__main__':
