@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.lock import Lock, Key
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_lock_unlock(self):
+        agent = Agent("Locked")
+        lock = Lock("state lock", condition="emotion")
+        agent.add_lock(lock)
+        agent.update_emotion(0.9)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")  # still locked
+
+        key = Key("joy", key_type="emotion")
+        agent.add_key(key)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
 
 
 if __name__ == '__main__':
