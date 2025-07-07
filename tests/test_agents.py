@@ -6,7 +6,7 @@ from divine_agents.dialogue import philosophical_dialogue
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        agent.update_emotion("fear", 0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
