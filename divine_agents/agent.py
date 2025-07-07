@@ -1,3 +1,6 @@
+from typing import Callable, List
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -36,3 +39,32 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class InsertionAgent(Agent):
+    """Agent with dynamic insertion capabilities."""
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        super().__init__(name, state, tension, emotion)
+        self.knowledge: List[str] = []
+        self.behavior: Callable[[str], str] | None = None
+
+    def insert_knowledge(self, fact: str) -> None:
+        """Dynamically add knowledge that influences responses."""
+        self.knowledge.append(fact)
+
+    def insert_state(self, state: str) -> None:
+        """Directly set a new ontological state."""
+        self.state = state
+
+    def insert_behavior(self, behavior: Callable[[str], str]) -> None:
+        """Set a callable that transforms responses."""
+        self.behavior = behavior
+
+    def respond(self, question: str) -> str:
+        response = super().respond(question)
+        if self.behavior:
+            response = self.behavior(response)
+        if self.knowledge:
+            response = f"{response} {' '.join(self.knowledge)}"
+        return response
