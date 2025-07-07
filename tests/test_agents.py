@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.recorder import ShortEgoRecorder
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,9 +19,17 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        recorder = ShortEgoRecorder()
+        lines = philosophical_dialogue(a1, a2, recorder)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertEqual(len(recorder.get_records()), 2)
+
+    def test_recorder_limitations(self):
+        agent = Agent("Lim", tension=0.2, emotion=0.2)
+        recorder = ShortEgoRecorder()
+        recorder.record_transition(agent)
+        self.assertTrue(recorder.get_limitations())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
