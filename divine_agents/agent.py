@@ -1,7 +1,7 @@
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    STATES = ("Ego", "Jaz", "Enotnost", "Meditative")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self._previous_state = None
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,8 +20,28 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def enter_meditative(self) -> None:
+        """Enter a temporary meditative state reducing tension and emotion."""
+        if self.state != "Meditative":
+            self._previous_state = self.state
+            self.state = "Meditative"
+            self.history.append(self.state)
+
+    def meditative_step(self, reduction: float = 0.1) -> str:
+        """Reduce tension and emotion while in meditative state."""
+        if self.state == "Meditative":
+            self.tension = max(0.0, self.tension - reduction)
+            self.emotion = max(0.0, self.emotion - reduction)
+            if self.tension == 0.0 and self.emotion == 0.0:
+                self.state = self._previous_state or "Ego"
+                self._previous_state = None
+                self.history.append(self.state)
+        return self.state
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        if self.state == "Meditative":
+            return self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
