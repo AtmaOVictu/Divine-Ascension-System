@@ -3,12 +3,12 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history: list[str] = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +36,12 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def express_truth(self) -> str:
+        """Return a statement about truth influenced by emotion."""
+        mood = "mirno"
+        if self.emotion >= 0.7:
+            mood = "strastno"
+        elif self.emotion >= 0.3:
+            mood = "umirjeno"
+        return f"{mood}: {self.respond('Kaj je resnica?')}"
