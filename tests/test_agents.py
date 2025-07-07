@@ -1,5 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
+from divine_agents.krak import Krak
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -21,6 +22,23 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_krak_activation_high_emotion(self):
+        agent = Agent("A")
+        krak = Krak("Test", "high_emotion")
+        agent.add_krak(krak)
+        agent.update_emotion(0.8)
+        agent.transition()
+        self.assertTrue(krak.completed)
+
+    def test_krak_activation_state_transition(self):
+        agent = Agent("A")
+        krak = Krak("Transition", "state_transition")
+        agent.add_krak(krak)
+        agent.update_tension(0.8)
+        agent.transition()
+        self.assertTrue(krak.completed)
+
 
 if __name__ == '__main__':
     unittest.main()
+
