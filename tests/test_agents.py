@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.symbolic_box import SymbolicBox
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,17 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        # ensure symbolic box completed
+        self.assertTrue(any("Box at ⊘" in line for line in lines))
+
+
+class TestSymbolicBox(unittest.TestCase):
+    def test_box_transitions(self):
+        box = SymbolicBox(stage="∴", data={"task": "demo"})
+        box.transition("∆", {"progress": True})
+        self.assertEqual(box.stage, "∆")
+        box.transition("⊘", {"status": "done"})
+        self.assertEqual(box.stage, "⊘")
 
 
 if __name__ == '__main__':
