@@ -1,9 +1,13 @@
+"""Ontological agents and their state transitions."""
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Create a new agent with an initial ontological state."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -32,7 +36,17 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            reply = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            reply = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            reply = "Vse resnice so eno, medsebojno povezane."
+        return self.apply_emotion_influence(reply)
+
+    def apply_emotion_influence(self, response: str) -> str:
+        """Influence the response based on the agent's emotion."""
+        if self.emotion > 0.7:
+            return f"Z veseljem: {response}"
+        if self.emotion < 0.3:
+            return f"S strahom: {response}"
+        return response
