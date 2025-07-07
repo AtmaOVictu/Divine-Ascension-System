@@ -1,5 +1,8 @@
+import time
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning ontological states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +21,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def transition_time(self) -> float:
+        """Return the timestamp used for transition recording."""
+        return time.time()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
