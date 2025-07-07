@@ -11,9 +11,13 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+        """Set emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def adjust_emotion(self, delta: float) -> None:
+        """Increment emotion by ``delta`` and update tension."""
+        self.update_emotion(self.emotion + delta)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
