@@ -1,18 +1,40 @@
+from typing import Optional
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Each agent keeps track of an ``emotion`` intensity and ``emotion_type``.
+    These attributes influence both the agent's tension and its responses
+    in dialogue.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, kind: Optional[str] = None) -> None:
+        """Update emotion intensity and adjust tension accordingly.
+
+        Parameters
+        ----------
+        value:
+            Intensity of the emotion in the ``[0.0, 1.0]`` range.
+        kind:
+            Optional string describing the emotion type (e.g. ``"fear"`` or
+            ``"joy"``). If provided, ``emotion_type`` is updated.
+        """
         self.emotion = value
+        if kind is not None:
+            self.emotion_type = kind
+        # Higher emotions increase tension which may trigger transitions
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +52,22 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The returned text is influenced by the agent's ``emotion_type``. A
+        simple prefix communicates the emotional colour of the statement.
+        """
+        emotion_prefix = {
+            "fear": "S strahom, ",
+            "joy": "Z veseljem, ",
+            "anger": "Z jezo, ",
+        }.get(self.emotion_type, "")
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            core = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            core = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            core = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{emotion_prefix}{core}"
