@@ -1,3 +1,10 @@
+"""Module implementing an ontological agent with state transitions."""
+
+from __future__ import annotations
+
+from uuid import uuid4
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,7 +15,8 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.history = [f"Start state: {state}"]
+        self.id = self.generate_id()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +26,36 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    # ------------------------------------------------------------------
+    # Interaction methods
+    # ------------------------------------------------------------------
+
+    def reply(self, message: str) -> str:
+        """Return a reply and record it in history."""
+        answer = self.respond(message)
+        self.history.append(f"{self.name} ({self.state}): {answer}")
+        return answer
+
+    # ------------------------------------------------------------------
+    # Identity and history utilities
+    # ------------------------------------------------------------------
+
+    def generate_id(self) -> str:
+        """Return a unique identifier for the agent."""
+        return f"{self.name}-{uuid4()}"
+
+    def mark_with_tattoo(self, tattoo: str) -> None:
+        """Record a significant event in the agent's history."""
+        self.history.append(f"Tattoo: {tattoo}")
+
+    def copy_state(self) -> "Agent":
+        """Create a copy of the agent preserving current state."""
+        return Agent(self.name, self.state, self.tension, self.emotion)
+
+    def replay_history(self) -> str:
+        """Return the history log as a single string."""
+        return "\n".join(self.history)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
