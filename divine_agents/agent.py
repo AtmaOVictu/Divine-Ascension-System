@@ -2,12 +2,21 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    LEVEL_XP = 100
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        xp: int = 0,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.xp = xp
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -15,9 +24,29 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def reward(self, result: bool) -> None:
+        """Adjust emotion and XP based on result of an action."""
+        if result:
+            self.emotion += 0.1
+            self.xp += 10
+        else:
+            self.emotion -= 0.1
+            self.xp -= 5
+        self.history.append(("reward", self.state, self.tension, self.emotion))
+        self.level_up()
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def complete_task(self, task: str) -> None:
+        """Grant XP for completed tasks."""
+        if task == "philosophical_question":
+            self.xp += 15
+        elif task == "transition":
+            self.xp += 20
+        self.history.append(("task_completed", task, self.xp))
+        self.level_up()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -26,8 +55,15 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        self.level_up()
         self.history.append(self.state)
         return self.state
+
+    def level_up(self) -> None:
+        """Upgrade agent when enough XP is accumulated."""
+        if self.xp >= self.LEVEL_XP:
+            self.xp = 0
+            self.state = "Nov nivo"
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
