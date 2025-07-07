@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta:__legacy__"
+
+[project]
+name = "divine_agents"
+version = "0.1.0"
+description = "Dynamic ontological agent system"
+authors = [{ name = "Unknown" }]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://example.com"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["divine_agents*"]
+
