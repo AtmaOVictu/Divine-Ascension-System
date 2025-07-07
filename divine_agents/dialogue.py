@@ -4,16 +4,36 @@ from .agent import Agent
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+    lines: List[str] = []
 
-    agent1.update_emotion(0.8)
+    # Initial statements
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+
+    # Update emotions which in turn influences tension and possible transition
+    agent1.update_emotion(0.8, "jeza")
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    # Show emotion explicitly after transition
+    lines.append(
+        f"{agent1.name} trenutno čustvo: {agent1.get_emotion_label()['type']}"
+    )
 
-    agent2.update_emotion(0.6)
+    agent2.update_emotion(0.6, "radost")
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    lines.append(
+        f"{agent2.name} trenutno čustvo: {agent2.get_emotion_label()['type']}"
+    )
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    # Responses after emotional shift
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?', reveal_emotion=True)}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?', reveal_emotion=True)}"
+    )
+
     return lines
