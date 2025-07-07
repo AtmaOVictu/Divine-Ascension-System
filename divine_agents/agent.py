@@ -3,17 +3,20 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, name: str, intensity: float) -> None:
+        """Update emotion and adjust tension accordingly."""
+        self.emotion_name = name
+        self.emotion = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +35,16 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                f"Občutim {self.emotion_name}, zato verjamem, da je resnica absolutna "
+                "in neodvisna od drugih."
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"Čutim {self.emotion_name}; zame je resnica relativna in jo oblikujejo "
+                "naši odnosi."
+            )
+        return (
+            f"V občutku {self.emotion_name} vidim, da so vse resnice eno in "
+            "medsebojno povezane."
+        )
