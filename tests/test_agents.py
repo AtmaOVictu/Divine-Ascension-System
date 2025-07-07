@@ -22,5 +22,14 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestAffirmation(unittest.TestCase):
+    def test_affirmation_messages(self):
+        agent = Agent("Affirm")
+        self.assertIn("Affirmation: Affirm exists in state Ego.", agent.history)
+        agent.update_tension(0.8)
+        agent.transition()
+        self.assertIn("Affirmation: Affirm transitioned to Jaz.", agent.history)
+
+
 if __name__ == '__main__':
     unittest.main()

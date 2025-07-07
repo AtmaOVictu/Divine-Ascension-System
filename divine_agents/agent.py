@@ -1,5 +1,8 @@
+from .affirmation import Affirmation
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,6 +12,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        Affirmation.affirm_existence(self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,10 +31,12 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        Affirmation.affirm_transition(self)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        Affirmation.affirm_existence(self)
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
