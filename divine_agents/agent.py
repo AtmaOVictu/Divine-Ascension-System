@@ -1,14 +1,26 @@
+from .thresholds import SymbolicBox
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of state transitions based on tension and emotion."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
         self.name = name
-        self.state = state
+        self.box = SymbolicBox(stage=state, data={"agent": name})
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+
+    # expose state via property so external code can access current stage
+    @property
+    def state(self) -> str:
+        return self.box.stage
+
+    @state.setter
+    def state(self, value: str) -> None:
+        self.box.stage = value
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,12 +32,15 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition when thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
+            next_state = None
             if self.state == "Ego":
-                self.state = "Jaz"
+                next_state = "Jaz"
             elif self.state == "Jaz":
-                self.state = "Enotnost"
+                next_state = "Enotnost"
+            if next_state and self.box.is_valid_transition(next_state):
+                self.box.transition(next_state, {"trigger": "threshold"})
         self.history.append(self.state)
         return self.state
 
