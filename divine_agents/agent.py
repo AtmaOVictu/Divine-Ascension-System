@@ -1,23 +1,33 @@
+from __future__ import annotations
+
+from typing import List
+
+from .krak import Krak
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states and activating tasks."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, kraks: List[Krak] | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.kraks: List[Krak] = kraks or []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self._activate_kraks()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self._activate_kraks()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,6 +37,7 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self._activate_kraks()
         return self.state
 
     def respond(self, question: str) -> str:
@@ -36,3 +47,12 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def add_krak(self, krak: Krak) -> None:
+        """Register a krak to this agent."""
+        self.kraks.append(krak)
+
+    def _activate_kraks(self) -> None:
+        """Check all kraks and activate those whose conditions are met."""
+        for krak in self.kraks:
+            krak.check_and_activate(self)
