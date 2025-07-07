@@ -1,27 +1,45 @@
+from __future__ import annotations
+
+from enum import Enum
+from typing import Dict
+
+
+class Emotion(Enum):
+    """Basic emotional states that influence tension."""
+
+    FEAR = "fear"
+    JOY = "joy"
+    ANGER = "anger"
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego"):
         self.name = name
         self.state = state
-        self.tension = tension
-        self.emotion = emotion
+        self.emotions: Dict[Emotion, float] = {e: 0.0 for e in Emotion}
+        self.tension: float = 0.0
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def set_emotion(self, emotion: Emotion, intensity: float) -> None:
+        """Set an emotion's intensity and recalculate tension."""
+        intensity = max(0.0, min(1.0, intensity))
+        self.emotions[emotion] = intensity
+        self.tension = sum(self.emotions.values())
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
+    def _highest_emotion(self) -> float:
+        return max(self.emotions.values()) if self.emotions else 0.0
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > 0.7 or self._highest_emotion() > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
