@@ -36,3 +36,30 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class EtnegA(Agent):
+    """Reflective agent acting as a mirror of another agent."""
+
+    def __init__(self, agent: Agent):
+        super().__init__(name=f"EtnegA-{agent.name}", state=agent.state,
+                         tension=agent.tension, emotion=agent.emotion)
+        self.original_agent = agent
+
+    def transition(self) -> str:
+        """Mirror the transition of the original agent."""
+        new_state = self.original_agent.transition()
+        self.state = new_state
+        self.tension = self.original_agent.tension
+        self.emotion = self.original_agent.emotion
+        self.history.append(self.state)
+        return self.state
+
+    def respond(self, question: str) -> str:
+        """Return the mirrored response of the original agent."""
+        base_response = self.original_agent.respond(question)
+        if "absolutna" in base_response:
+            return base_response.replace("absolutna", "relativna")
+        if "relativna" in base_response:
+            return base_response.replace("relativna", "absolutna")
+        return base_response
