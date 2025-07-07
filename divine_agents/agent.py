@@ -1,18 +1,26 @@
+"""Ontological agents that shift states based on tension and emotion."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an agent capable of philosophical reasoning and state transitions."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_label: str = "neutral"
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
-
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, label: str) -> None:
+        """Update emotion intensity, label and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +38,12 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Truth is absolute and independent of others."
+        elif self.state == "Jaz":
+            base = "Truth is relative, shaped by our relationships."
+        else:
+            base = "All truths are one, interconnected."
+
+        return f"{base} (feeling {self.emotion_label})"
