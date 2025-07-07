@@ -1,2 +1,4 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Simple demonstration of agents transitioning between ontological states
+(`Ego`, `Jaz`, `Enotnost`) influenced by tension and emotion. Includes a
+dialogue simulator and unit tests.
