@@ -3,22 +3,35 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_label: str | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    # ------------------------------------------------------------------
+    # Emotion & Tension handling
+    # ------------------------------------------------------------------
+    def feel(self, label: str, value: float) -> None:
+        """Set an emotion and adjust tension accordingly."""
+        self.emotion_label = label
         self.emotion = value
         self.tension += value
+
+    def update_emotion(self, value: float) -> None:
+        """Backward compatibility wrapper for setting emotion intensity."""
+        self.feel(self.emotion_label or "", value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
 
+    # ------------------------------------------------------------------
+    # State management
+    # ------------------------------------------------------------------
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -29,10 +42,19 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    # ------------------------------------------------------------------
+    # Dialogue helper
+    # ------------------------------------------------------------------
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_label:
+            return f"({self.emotion_label}) {base}"
+        return base
+
