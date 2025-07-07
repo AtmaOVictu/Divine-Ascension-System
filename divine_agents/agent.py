@@ -1,18 +1,20 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotions: dict | None = None):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotions: dict[str, float] = emotions or {}
+        self.current_emotion: str | None = None
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    def update_emotion(self, name: str, value: float) -> None:
+        """Update an emotion and adjust tension accordingly."""
+        self.emotions[name] = value
+        self.current_emotion = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -21,7 +23,8 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        emotion_threshold = any(v > 0.5 for v in self.emotions.values())
+        if self.tension > 0.7 or emotion_threshold:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -31,8 +34,9 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_phrase = f" Čutim {self.current_emotion}." if self.current_emotion else ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_phrase
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_phrase
+        return "Vse resnice so eno, medsebojno povezane." + emotion_phrase
