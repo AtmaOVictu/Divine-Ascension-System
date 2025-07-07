@@ -1,14 +1,20 @@
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import List
+
+from .state import OntoState
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions between states based on emotion and tension."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    name: str
+    state: OntoState = OntoState.EGO
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[OntoState] = field(default_factory=lambda: [OntoState.EGO])
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,20 +25,16 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
-    def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+    def transition(self) -> OntoState:
+        """Transition to the next ontological state if thresholds are met."""
         if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+            if self.state is OntoState.EGO:
+                self.state = OntoState.JAZ
+            elif self.state is OntoState.JAZ:
+                self.state = OntoState.ENOTNOST
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer reflecting the current state."""
+        return self.state.philosophy()
