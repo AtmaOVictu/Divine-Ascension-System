@@ -1,19 +1,24 @@
 from typing import List
+import random
+
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+def dialogue_round(agent1: Agent, agent2: Agent, rounds: int) -> List[str]:
+    """Simulate a multi-round debate where emotions escalate."""
+    dialogue_log: List[str] = []
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    for _ in range(rounds):
+        agent1_response = agent1.respond("Kaj je resnica?")
+        agent2_response = agent2.respond("Kaj je resnica?")
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+        dialogue_log.append(f"{agent1.name}: {agent1_response}")
+        dialogue_log.append(f"{agent2.name}: {agent2_response}")
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
-    return lines
+        agent1.update_emotion("joy" if random.random() > 0.5 else "fear")
+        agent1.transition()
+
+        agent2.update_emotion("anger" if random.random() > 0.5 else "joy")
+        agent2.transition()
+
+    return dialogue_log
