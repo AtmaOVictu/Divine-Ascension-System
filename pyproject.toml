@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "divine-ascension-system"
+version = "0.1.0"
+description = "Dynamic agent-based system with philosophical dialogues"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Divine Ascension", email = "noreply@example.com"}]
+keywords = ["philosophy", "agents", "ontology"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
