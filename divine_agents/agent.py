@@ -1,23 +1,41 @@
+"""Ontological agents capable of state transitions based on emotion and tension."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+
+def _clamp(value: float, minimum: float = 0.0, maximum: float = 1.0) -> float:
+    """Clamp a numeric value to a fixed range."""
+    return max(minimum, min(maximum, value))
+
+
+@dataclass
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Agent that transitions between philosophical states."""
+
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: list[str] = field(default_factory=list)
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.tension = _clamp(self.tension)
+        self.emotion = _clamp(self.emotion)
+        if not self.history:
+            self.history.append(self.state)
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Update emotion and increase tension proportionally."""
+        self.emotion = _clamp(value)
+        self.tension = _clamp(self.tension + value * 0.5)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = _clamp(value)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
