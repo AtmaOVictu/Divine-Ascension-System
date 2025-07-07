@@ -1,3 +1,9 @@
+import os
+import sys
+
+# Ensure project root is on sys.path for local imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
