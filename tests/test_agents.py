@@ -1,6 +1,10 @@
 import unittest
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.conversation import philosophical_debate
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +24,21 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_speak_variations(self):
+        agent = Agent("B")
+        agent.update_emotion(0.8)
+        line = agent.speak("Kaj je resnica?")
+        self.assertIn("absolutna", line)
+        self.assertIn("strast", line)
+
+    def test_debate_progress(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_debate(a1, a2, rounds=2)
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Enotnost")
+        self.assertTrue(len(lines) > 0)
 
 
 if __name__ == '__main__':
