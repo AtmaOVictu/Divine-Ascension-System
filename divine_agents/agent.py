@@ -3,12 +3,29 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, thresholds: list = None):
+        """Create a new agent with optional custom thresholds.
+
+        Parameters
+        ----------
+        name: str
+            Identifier for the agent.
+        state: str
+            Initial ontological state. Defaults to "Ego".
+        tension: float
+            Initial tension level.
+        emotion: float
+            Initial emotion intensity.
+        thresholds: list, optional
+            Ordered list of threshold values between 0 and 1 that trigger
+            state transitions. If not provided, defaults to ``[0.1, ..., 1.0]``.
+        """
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.thresholds = thresholds or [i / 10 for i in range(1, 11)]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,12 +37,14 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        """Perform state transition if any threshold is exceeded."""
+        for threshold in self.thresholds:
+            if self.tension >= threshold or self.emotion >= threshold:
+                if self.state == "Ego":
+                    self.state = "Jaz"
+                elif self.state == "Jaz":
+                    self.state = "Enotnost"
+                break
         self.history.append(self.state)
         return self.state
 
