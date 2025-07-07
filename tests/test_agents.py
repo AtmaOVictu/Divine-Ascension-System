@@ -30,8 +30,14 @@ class TestAgentTransitions(unittest.TestCase):
     def test_emotional_response(self):
         agent = Agent("C")
         agent.update_emotion(0.3, "veselje")
-        response = agent.respond("Kaj je resnica?")
+        response = agent.respond("Kaj je resnica?", reveal_emotion=True)
         self.assertIn("veselje", response)
+
+    def test_hidden_emotion_default(self):
+        agent = Agent("D")
+        agent.update_emotion(0.4, "jeza")
+        response = agent.respond("Kaj je resnica?")
+        self.assertNotIn("jeza", response)
 
 
 if __name__ == '__main__':

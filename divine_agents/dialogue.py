@@ -23,10 +23,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     # Responses after emotional shift
     lines.append(
-        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?', reveal_emotion=True)}"
     )
     lines.append(
-        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?', reveal_emotion=True)}"
     )
 
     return lines

@@ -9,7 +9,11 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.emotion_type = emotion_type
+        self.emotion_label = {
+            "type": emotion_type,
+            "value": emotion,
+            "hidden": True,
+        }
         self.history = [state]
 
     def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
@@ -24,12 +28,18 @@ class Agent:
         """
         self.emotion = value
         if emotion_type is not None:
-            self.emotion_type = emotion_type
+            self.emotion_label["type"] = emotion_type
+        self.emotion_label["value"] = value
+        self.emotion_label["hidden"] = True
         self.tension += value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def get_emotion_label(self) -> str:
+        """Return the hidden emotion label."""
+        return self.emotion_label["type"]
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -41,8 +51,16 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
-    def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+    def respond(self, question: str, reveal_emotion: bool = False) -> str:
+        """Return a philosophical answer depending on the current state.
+
+        Parameters
+        ----------
+        question: str
+            Question posed to the agent (currently unused).
+        reveal_emotion: bool, optional
+            If True, include the hidden emotion label in the response.
+        """
         if self.state == "Ego":
             base = "Resnica je absolutna in neodvisna od drugih."
         elif self.state == "Jaz":
@@ -50,7 +68,6 @@ class Agent:
         else:
             base = "Vse resnice so eno, medsebojno povezane."
 
-        emotion = (
-            f" Čutim {self.emotion_type}." if self.emotion_type != "neutral" else ""
-        )
-        return base + emotion
+        if reveal_emotion and self.emotion_label["type"] != "neutral":
+            return f"{base} Čutim {self.emotion_label['type']}."
+        return base
