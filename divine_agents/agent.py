@@ -2,18 +2,24 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTIONS = ("neutral", "fear", "joy", "anger")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", *, tension: float = 0.0,
+                 emotion: float = 0.0, emotion_type: str = "neutral") -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str) -> None:
         """Update emotion intensity and adjust tension accordingly."""
+        if emotion_type not in self.EMOTIONS:
+            raise ValueError("Invalid emotion type")
         self.emotion = value
-        self.tension += value
+        self.emotion_type = emotion_type
+        self.tension = min(1.0, self.tension + value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -30,9 +36,21 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type == "fear":
+            emotion_phrase = "Čutim strah ob tem vprašanju."
+        elif self.emotion_type == "anger":
+            emotion_phrase = "Jeza mi zamegljuje misli."
+        elif self.emotion_type == "joy":
+            emotion_phrase = "Občutim veselje ob tej razpravi."
+        else:
+            emotion_phrase = ""
+
+        return f"{base} {emotion_phrase}".strip()
