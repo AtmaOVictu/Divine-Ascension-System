@@ -1,18 +1,21 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can transition between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, name: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if name is not None:
+            self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +33,18 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on state and emotion."""
+        prefix = {
+            "fear": "V strahu",
+            "joy": "Z radostjo",
+            "anger": "V jezi",
+            "neutral": "Mirno",
+        }.get(self.emotion_name, "Mirno")
+
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        return f"{prefix} povem: {base}"
