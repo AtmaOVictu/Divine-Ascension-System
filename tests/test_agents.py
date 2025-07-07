@@ -1,4 +1,9 @@
 import unittest
+from pathlib import Path
+import sys
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -10,10 +15,22 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_emotion_triggers_transition(self):
+        agent = Agent("B")
+        agent.update_emotion("strah", 0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_emotional_response_prefix(self):
+        agent = Agent("C")
+        agent.update_emotion("veselje", 0.3)
+        reply = agent.respond("Kaj je resnica?")
+        self.assertTrue(reply.startswith("(veselje)"))
 
     def test_dialogue(self):
         a1 = Agent("A1")
