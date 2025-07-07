@@ -17,3 +17,10 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def deep_thought_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+    """Run dialogue with both agents in deep thought mode."""
+    agent1.activate_deep_thought_mode()
+    agent2.activate_deep_thought_mode()
+    return philosophical_dialogue(agent1, agent2)
