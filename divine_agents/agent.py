@@ -1,3 +1,6 @@
+from .symbolic_box import SymbolicBox
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,15 +12,23 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        # Each agent starts with a symbolic box representing its ontological stage.
+        self.box = SymbolicBox(stage=state,
+                               data={"name": name,
+                                     "tension": tension,
+                                     "emotion": emotion,
+                                     "history": self.history.copy()})
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.box.update_data({"emotion": self.emotion, "tension": self.tension})
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.box.update_data({"tension": self.tension})
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,6 +38,7 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        self.box.transition(self.state, {"history": self.history.copy()})
         return self.state
 
     def respond(self, question: str) -> str:
