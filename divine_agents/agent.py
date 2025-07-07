@@ -1,18 +1,22 @@
+from dataclasses import dataclass, field
+from typing import Dict, List
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotions: Dict[str, float] | None = None):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+        self.emotions: Dict[str, float] = emotions or {"fear": 0.0, "joy": 0.0, "anger": 0.0}
+        self.history: List[str] = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, emotion: str, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+        self.emotions[emotion] = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -21,7 +25,8 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        max_emotion = max(self.emotions.values()) if self.emotions else 0.0
+        if self.tension > 0.7 or max_emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
