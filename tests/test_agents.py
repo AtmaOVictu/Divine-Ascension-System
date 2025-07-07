@@ -10,6 +10,14 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_emotion_triggered_transition(self):
+        """Agent should transition on high emotion even with low tension."""
+        agent = Agent("A")
+        agent.update_emotion(0.6)
+        self.assertLess(agent.tension, 0.7)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
