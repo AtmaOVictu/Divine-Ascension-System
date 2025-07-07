@@ -1,14 +1,32 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Agent identifier.
+    state: str, optional
+        Initial ontological state. Defaults to ``"Ego"``.
+    tension: float, optional
+        Initial tension level.
+    emotion: float, optional
+        Initial emotional intensity.
+    thresholds: list[float], optional
+        Ordered list of threshold values between ``0`` and ``1`` used for
+        evaluating transitions. If not provided thresholds from ``0.1`` to
+        ``1.0`` are used.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, thresholds: list | None = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.thresholds = thresholds or [i / 10 for i in range(1, 11)]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -20,12 +38,15 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        """Perform state transition if any threshold is exceeded."""
+        for threshold in self.thresholds:
+            if self.tension >= threshold or self.emotion >= threshold:
+                if self.tension > 0.7 or self.emotion > 0.5:
+                    if self.state == "Ego":
+                        self.state = "Jaz"
+                    elif self.state == "Jaz":
+                        self.state = "Enotnost"
+                break
         self.history.append(self.state)
         return self.state
 
