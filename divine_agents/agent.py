@@ -2,16 +2,25 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    EMOTION_COLORS = {
+        "fear": "violet",
+        "joy": "yellow",
+        "anger": "red",
+        "neutral": "grey",
+    }
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_name: str = "neutral") -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, name: str, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
+        self.emotion_name = name
         self.emotion = value
         self.tension += value
 
@@ -36,3 +45,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def emotion_color(self) -> str:
+        """Return color representation for the current emotion."""
+        return self.EMOTION_COLORS.get(self.emotion_name, "grey")
