@@ -1,19 +1,25 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, rationality: float = 1.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.rationality = rationality
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def update_rationality(self, value: float) -> None:
+        """Set rational consideration level."""
+        self.rationality = value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
