@@ -1,6 +1,12 @@
 import unittest
+import os
+import sys
+import random
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, segmented_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +26,28 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_state_transitions(self):
+        random.seed(0)
+        a1 = Agent("A1")
+        a2 = Agent("A2")
+        lines = segmented_dialogue(a1, a2, cycles=5)
+        self.assertTrue(any("Jaz" in line for line in lines))
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_transition_order(self):
+        random.seed(1)
+        agent = Agent("A")
+        segmented_dialogue(agent, agent, cycles=3)
+        self.assertIn("Ego", agent.history)
+        self.assertIn("Jaz", agent.history)
+        self.assertIn("Enotnost", agent.history)
+
+    def test_emotion_triggers_transition(self):
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
 
 
 if __name__ == '__main__':

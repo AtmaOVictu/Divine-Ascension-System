@@ -36,3 +36,7 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def print_history(self) -> None:
+        """Print the history of the agent's state transitions."""
+        print(f"State History for {self.name}: {self.history}")
