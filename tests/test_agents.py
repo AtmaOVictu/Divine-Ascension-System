@@ -1,6 +1,13 @@
+import os
+import sys
 import unittest
+
+# Ensure package root is on sys.path for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.affirmation import Affirmation
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +16,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_affirmation_recorded(self):
+        agent = Agent("B")
+        agent.update_tension(0.9)
+        agent.transition()
+        agent.respond("Kaj je resnica?")
+        self.assertTrue(any(msg.startswith("Affirmation") for msg in agent.history))
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
