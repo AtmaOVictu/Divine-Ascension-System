@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from datetime import datetime
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -29,10 +34,19 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def transition_time(self) -> datetime:
+        """Return current timestamp (placeholder for real scheduling)."""
+        return datetime.now()
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            reply = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            reply = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            reply = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            reply += " Čutim močna čustva, ki me vodijo." 
+        return reply
