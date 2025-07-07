@@ -1,9 +1,16 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions between Ego, Jaz and Enotnost.
+
+    The agent maintains an emotional intensity and a tension level. When
+    either ``emotion`` exceeds ``0.5`` or ``tension`` exceeds ``0.7`` the
+    agent moves to the next ontological state. The philosophical principle
+    behind each state is reflected in the responses returned by
+    :meth:`speak`.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -31,8 +38,15 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+
         if self.state == "Ego":
             return "Resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # New API
+    def speak(self) -> str:
+        """Return a philosophical statement influenced by emotion."""
+        principle = self.respond("Kaj je resnica?")
+        return f"{self.name} ({self.state}): {principle}"
