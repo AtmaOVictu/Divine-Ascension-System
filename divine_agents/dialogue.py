@@ -17,3 +17,24 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def dynamic_philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+    """Run a multi-turn dialogue with escalating emotions."""
+    lines: List[str] = []
+    updates = [(0.3, 0.3), (0.5, 0.4), (0.6, 0.6)]
+
+    for e1, e2 in updates:
+        lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+        lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+        agent1.update_emotion(e1, kind="anger" if e1 > 0.5 else "neutral")
+        agent2.update_emotion(e2, kind="joy" if e2 > 0.5 else "neutral")
+
+        lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+        lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    return lines
