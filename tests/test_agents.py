@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.task_manager import TaskManager
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -9,6 +10,13 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_emotion_triggers_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6, "fear")
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+        self.assertIn("strah", agent.respond("Kaj je resnica?"))
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
@@ -20,6 +28,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_task_manager(self):
+        tm = TaskManager()
+        bid = tm.add_open_branch("Naloga")
+        self.assertIn(bid, tm.open_branches)
+        tm.close_branch(bid)
+        self.assertEqual(tm.open_branches[bid]["status"], "closed")
 
 
 if __name__ == '__main__':
