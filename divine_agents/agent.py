@@ -3,16 +3,20 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_name: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_name = emotion_name
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, name: str | None = None) -> None:
+        """Update emotion intensity and optionally set the emotion name."""
         self.emotion = value
+        if name is not None:
+            self.emotion_name = name
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -29,10 +33,23 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    EMOTION_PREFIXES = {
+        "anger": "Z jezo",
+        "fear": "S strahom",
+        "joy": "Z veseljem",
+    }
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
+        prefix = self.EMOTION_PREFIXES.get(self.emotion_name, "")
+        if prefix:
+            prefix = f"{prefix} povem: "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            msg = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            msg = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            msg = "Vse resnice so eno, medsebojno povezane."
+
+        return f"{prefix}{msg}"
