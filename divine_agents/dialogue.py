@@ -17,3 +17,28 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
+
+
+def dynamic_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+    """Simulate dialogue where emotions drive state transitions."""
+    lines = []
+    question = "Kaj je resnica?"
+
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.speak(question)}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.speak(question)}")
+
+    agent1.update_emotion(0.8)
+    previous_state = agent1.state
+    agent1.transition()
+    if agent1.state != previous_state:
+        lines.append(f"{agent1.name} prehaja v stanje: {agent1.state}")
+
+    agent2.update_emotion(0.6)
+    previous_state = agent2.state
+    agent2.transition()
+    if agent2.state != previous_state:
+        lines.append(f"{agent2.name} prehaja v stanje: {agent2.state}")
+
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.speak(question)}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.speak(question)}")
+    return lines

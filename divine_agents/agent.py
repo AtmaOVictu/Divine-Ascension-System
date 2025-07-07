@@ -15,6 +15,12 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def speak(self, question: str) -> str:
+        """Return a philosophical statement influenced by emotion."""
+        response = self.respond(question)
+        prefix = "Mirno" if self.emotion <= 0.5 else "Čustveno"
+        return f"{prefix}: {response}"
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
