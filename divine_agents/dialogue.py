@@ -16,4 +16,6 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    lines.append(f"{agent1.name} zgodovina: {agent1.hexdump_history()}")
+    lines.append(f"{agent2.name} zgodovina: {agent2.hexdump_history()}")
     return lines
