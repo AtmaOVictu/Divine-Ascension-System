@@ -21,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_shadow_influence(self):
+        agent = Agent("S", shadows={"fear": 0.6})
+        agent.update_emotion(0.0)
+        agent.transition()
+        self.assertGreaterEqual(agent.emotion, 0.6)
+
+    def test_emotional_connection(self):
+        a1 = Agent("A1", emotion=0.8)
+        a2 = Agent("A2", emotion=0.0)
+        a1.connect(a2)
+        a1.transition()
+        self.assertNotEqual(a2.emotion, 0.0)
+
 
 if __name__ == '__main__':
     unittest.main()
