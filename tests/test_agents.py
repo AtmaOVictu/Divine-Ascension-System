@@ -4,11 +4,16 @@ from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
+    def test_evolve_transition(self):
         agent = Agent("A")
         agent.update_tension(0.8)
-        state = agent.transition()
+        state = agent.evolve()
         self.assertEqual(state, "Jaz")
+
+    def test_devolve_transition(self):
+        agent = Agent("A", state="Jaz", emotion=0.2)
+        state = agent.devolve()
+        self.assertEqual(state, "Ego")
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
