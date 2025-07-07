@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.batch import build_requests
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,8 +19,13 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, rounds=3)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_build_requests(self):
+        msgs = [[{"role": "user", "content": "Kaj je resnica?"}]]
+        lines = list(build_requests(msgs))
+        self.assertTrue(lines)
 
 
 if __name__ == '__main__':
