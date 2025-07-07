@@ -1,18 +1,24 @@
+"""Ontological agents used in philosophical simulations."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_type: str = "neutral"
+    history: List[str] = field(default_factory=lambda: ["Ego"])
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
-
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, emotion_type: str = "neutral") -> None:
+        """Update emotion intensity and type, adjusting tension accordingly."""
         self.emotion = value
+        self.emotion_type = emotion_type
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +36,17 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
+        emotion_prefix = {
+            "fear": "V strahu povem: ",
+            "joy": "Z veseljem povem: ",
+            "anger": "V jezi povem: ",
+        }.get(self.emotion_type, "")
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            core = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            core = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            core = "Vse resnice so eno, medsebojno povezane."
+        return emotion_prefix + core
