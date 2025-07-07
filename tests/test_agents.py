@@ -1,4 +1,11 @@
+import os
+import sys
 import unittest
+
+# Ensure the package root is on sys.path so tests can import the library when
+# executed directly from the ``tests`` directory.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +27,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_emotion_descriptor(self):
+        agent = Agent("B")
+        agent.update_emotion(0.7)
+        response = agent.respond("Kaj je resnica?")
+        self.assertIn("strastno", response)
+
+    def test_dialogue_transitions(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        philosophical_dialogue(a1, a2)
+        self.assertEqual(a1.state, "Jaz")
+        self.assertEqual(a2.state, "Enotnost")
 
 
 if __name__ == '__main__':
