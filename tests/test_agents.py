@@ -1,19 +1,31 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.thresholds import SymbolicBox
 
 
 class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
+    def test_transition_thresholds_tension(self):
         agent = Agent("A")
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
-    def test_responses(self):
-        agent = Agent("A", state="Enotnost")
+    def test_transition_thresholds_emotion(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6, "fear")
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_responses_with_emotion(self):
+        agent = Agent("A", state="Enotnost", emotion=0.6, emotion_label="joy")
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("Občutim joy", reply)
+
+    def test_symbolic_box_transition(self):
+        box = SymbolicBox("Ego")
+        box.transition("Jaz", {})
+        self.assertEqual(box.stage, "Jaz")
 
     def test_dialogue(self):
         a1 = Agent("A1")
