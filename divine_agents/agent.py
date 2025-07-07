@@ -36,3 +36,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def echo(self, phrase: str, internal: bool = False) -> str:
+        """Reflect a phrase externally or internally to provide orientation."""
+        if internal:
+            return f"{self.name} (notranji odmev): '{phrase}' -> stanje: {self.state}"
+        return f"{self.name} odmeva '{phrase}' iz stanja {self.state}"

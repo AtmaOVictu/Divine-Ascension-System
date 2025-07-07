@@ -16,4 +16,8 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    # Utilize echo as orientation and introspection
+    lines.append(agent1.echo("Kje sem?"))
+    lines.append(agent2.echo("Kje sem?", internal=True))
     return lines
