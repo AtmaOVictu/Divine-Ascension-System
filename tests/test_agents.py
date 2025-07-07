@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import Agent, SelfAwareAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +20,16 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestSelfAwareAgent(unittest.TestCase):
+    def test_logging_and_introspection(self):
+        agent = SelfAwareAgent("SA")
+        agent.update_tension(0.8)
+        agent.transition()
+        info = agent.introspect()
+        self.assertEqual(info["current_state"], "Jaz")
+        self.assertIn("Ego -> Jaz", info["transitions"])
 
 
 if __name__ == '__main__':
