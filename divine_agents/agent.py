@@ -19,6 +19,11 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def experience(self, emotion: float) -> str:
+        """Update emotion, adjust tension and attempt a state transition."""
+        self.update_emotion(emotion)
+        return self.transition()
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -36,3 +41,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return a response colored by the agent's emotion."""
+        mood = "mirno" if self.emotion <= 0.5 else "z močnimi čustvi"
+        return f"{self.respond(question)} ({mood})"
