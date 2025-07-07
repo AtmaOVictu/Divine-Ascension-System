@@ -1,19 +1,38 @@
+"""Core logic for ontological agents used in philosophical dialogues."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+
+TRANSITION_TENSION_THRESHOLD = 0.7
+TRANSITION_EMOTION_THRESHOLD = 0.5
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_type: str | None = None
+    history: list[str] = field(default_factory=list)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Update the current emotion and modify tension accordingly."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        if emotion_type in {"fear", "anger"}:
+            self.tension = min(1.0, self.tension + intensity)
+        elif emotion_type == "joy":
+            self.tension = max(0.0, self.tension - intensity)
+        else:
+            self.tension = min(1.0, self.tension + (intensity / 2))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,7 +40,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > TRANSITION_TENSION_THRESHOLD or self.emotion > TRANSITION_EMOTION_THRESHOLD:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
