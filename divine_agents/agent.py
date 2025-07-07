@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that transitions based on emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -20,7 +20,11 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds are exceeded.
+
+        A transition occurs when ``tension`` exceeds ``0.7`` or ``emotion``
+        exceeds ``0.5``.
+        """
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
