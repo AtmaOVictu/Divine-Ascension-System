@@ -1,3 +1,6 @@
+from .emotion import Emotion
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -15,6 +18,11 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def apply_emotion(self, emotion: Emotion) -> None:
+        """Apply an Emotion instance to the agent."""
+        self.emotion = emotion.intensity
+        self.tension += emotion.tension_effect()
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
@@ -31,8 +39,14 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        base = ""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.5:
+            return f"{base} (izrečeno z močnimi čustvi)"
+        return base
