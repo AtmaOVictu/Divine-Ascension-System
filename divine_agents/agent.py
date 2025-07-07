@@ -1,3 +1,8 @@
+"""Base agent implementation."""
+from __future__ import annotations
+from .constants import Constants
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -21,7 +26,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if Constants.is_tension_high(self.tension) or Constants.is_emotion_high(self.emotion):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
