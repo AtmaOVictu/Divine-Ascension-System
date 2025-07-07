@@ -22,5 +22,21 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
+class TestAgentValidation(unittest.TestCase):
+    def test_invalid_emotion_value(self):
+        agent = Agent("A")
+        with self.assertRaises(ValueError):
+            agent.update_emotion(1.5)
+        with self.assertRaises(ValueError):
+            agent.update_emotion(-0.2)
+
+    def test_invalid_tension_value(self):
+        agent = Agent("A")
+        with self.assertRaises(ValueError):
+            agent.update_tension(1.2)
+        with self.assertRaises(ValueError):
+            agent.update_tension(-0.1)
+
+
 if __name__ == '__main__':
     unittest.main()
