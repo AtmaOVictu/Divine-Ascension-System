@@ -1,6 +1,8 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.affirmation import Affirmation
+from divine_agents.negation import Negation
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +22,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_affirmation_and_negation(self):
+        agent = Agent("A")
+        msg = Affirmation.affirm_existence(agent)
+        self.assertIn("exists", msg)
+        agent.update_tension(0.8)
+        agent.transition()
+        msg2 = Affirmation.affirm_transition(agent)
+        self.assertIn("transitioned", msg2)
+        previous = agent.state
+        Negation.negate_state(agent)
+        self.assertNotEqual(agent.state, previous)
 
 
 if __name__ == '__main__':
