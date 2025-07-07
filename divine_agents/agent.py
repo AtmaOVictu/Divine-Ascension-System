@@ -1,3 +1,8 @@
+from typing import List
+
+from .lock import Lock, Key
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +14,8 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.locks: List[Lock] = []
+        self.keys: List[Key] = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -19,8 +26,31 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    # Lock/Key management -------------------------------------------------
+    def add_lock(self, lock: Lock) -> None:
+        """Attach a lock to the agent."""
+        self.locks.append(lock)
+
+    def add_key(self, key: Key) -> None:
+        """Give the agent a key."""
+        self.keys.append(key)
+
+    def attempt_unlock(self) -> None:
+        """Try unlocking all locks with the available keys."""
+        for lock in self.locks:
+            if lock.is_locked():
+                for key in self.keys:
+                    if key.key_type == lock.condition:
+                        key.use(lock)
+                        break
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition if thresholds and locks allow it."""
+        self.attempt_unlock()
+        if any(lock.is_locked() for lock in self.locks):
+            self.history.append(self.state)
+            return self.state
+
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -31,8 +61,10 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        emotion_info = f" Čustvo: {self.emotion:.2f}"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return "Resnica je absolutna in neodvisna od drugih." + emotion_info
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return "Resnica je relativna, oblikovana z našimi odnosi." + emotion_info
+        return "Vse resnice so eno, medsebojno povezane." + emotion_info
+
