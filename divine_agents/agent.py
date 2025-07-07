@@ -15,6 +15,27 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def apply_emotional_increment(self, emotion_type: str, increment: float) -> None:
+        """Apply a custom emotional increment based on emotion type.
+
+        Parameters
+        ----------
+        emotion_type: str
+            One of ``"fear"``, ``"anger"``, ``"joy"``.
+        increment: float
+            Amount by which to adjust emotion intensity.
+
+        Raises
+        ------
+        ValueError
+            If ``emotion_type`` is not supported.
+        """
+        if emotion_type not in {"fear", "anger", "joy"}:
+            raise ValueError("Unsupported emotion type")
+
+        self.emotion += increment
+        self.tension += increment
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
