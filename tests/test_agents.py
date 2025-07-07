@@ -18,8 +18,10 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        question = "Kakšna je narava resnice?"
+        lines = philosophical_dialogue(a1, a2, question=question, emotions=(0.8, 0.6))
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(all(question in line for line in lines[:2]))
 
 
 if __name__ == '__main__':
