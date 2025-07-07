@@ -10,6 +10,19 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_emotion_threshold_triggers(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_no_transition_below_thresholds(self):
+        agent = Agent("C")
+        agent.update_tension(0.2)
+        agent.update_emotion(0.4)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
@@ -22,5 +35,5 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
