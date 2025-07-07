@@ -1,6 +1,11 @@
 import unittest
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, segmented_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +25,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_segmented_dialogue(self):
+        a1 = Agent("B1")
+        a2 = Agent("B2")
+        lines = segmented_dialogue(a1, a2, cycles=3)
+        self.assertTrue(any(state in line for state in ("Jaz", "Enotnost") for line in lines))
+        self.assertGreater(len(a1.history), 1)
 
 
 if __name__ == '__main__':
