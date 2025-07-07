@@ -1,5 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Identifier for the agent.
+    state:
+        Ontological state (``"Ego"``, ``"Jaz"`` or ``"Enotnost"``).
+    tension:
+        Current level of inner tension.
+    emotion:
+        Intensity of the dominant emotion in range ``[0, 1]``.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -30,9 +42,20 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
+        prefix = self._emotion_prefix()
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{prefix}{base}".strip()
+
+    def _emotion_prefix(self) -> str:
+        """Return a short prefix describing the agent's emotional tone."""
+        if self.emotion > 0.7:
+            return "Strastno: "
+        if self.emotion < 0.3:
+            return "Mirno: "
+        return ""
