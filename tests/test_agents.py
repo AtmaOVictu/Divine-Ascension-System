@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, philosophical_debate
+from divine_agents.dynamic_system import DynamicSystem
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dynamic_system_update(self):
+        agent = Agent("Sys")
+        system = DynamicSystem(agent)
+        agent.update_emotion(0.6)
+        msgs = system.update()
+        self.assertTrue(any("transitioned" in m for m in msgs))
+
+    def test_philosophical_debate(self):
+        a1 = Agent("Deb1")
+        a2 = Agent("Deb2", state="Jaz")
+        lines = philosophical_debate(a1, a2, rounds=1)
+        self.assertTrue(any(state in line for state in ["Jaz", "Enotnost"] for line in lines))
 
 
 if __name__ == '__main__':
