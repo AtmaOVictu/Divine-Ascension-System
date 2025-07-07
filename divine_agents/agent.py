@@ -1,3 +1,6 @@
+from .box import Box
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,11 +11,14 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = ""
         self.history = [state]
+        self.state_box = Box(f"{name}_state", {"state": state})
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, label: str = "") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -26,13 +32,19 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+        self.state_box.update({"state": self.state})
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_label:
+            base += f" (občuteno kot {self.emotion_label})"
+        return base
