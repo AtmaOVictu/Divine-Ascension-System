@@ -1,22 +1,36 @@
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_label: Optional[str] = None
+    history: List[str] = field(default_factory=list)
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    PHILOSOPHY = {
+        "Ego": "Resnica je absolutna in neodvisna od drugih.",
+        "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+        "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+    }
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
+
+    def update_emotion(self, value: float, label: Optional[str] = None) -> None:
+        """Update emotion intensity, optionally setting its label and adjust tension."""
         self.emotion = value
+        if label:
+            self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Directly set the tension level."""
         self.tension = value
 
     def transition(self) -> str:
@@ -30,9 +44,13 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer influenced by ontological state and emotion."""
+        base = self.PHILOSOPHY.get(self.state, "")
+        mood = ""
+        if self.emotion_label == "anger":
+            mood = "Z jezo odgovarjam, da "
+        elif self.emotion_label == "fear":
+            mood = "V strahu povem, da "
+        elif self.emotion_label == "joy":
+            mood = "Z veseljem povem, da "
+        return f"{mood}{base}"
