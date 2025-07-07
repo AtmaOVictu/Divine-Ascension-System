@@ -1,6 +1,10 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import (
+    philosophical_dialogue,
+    deep_thought_dialogue,
+)
+from divine_agents.ontology import DEEP_THOUGHT_KEY, DEEP_THOUGHT_LANGUAGE
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -22,5 +26,19 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+class TestDeepThought(unittest.TestCase):
+    def test_key_setup(self):
+        self.assertEqual(DEEP_THOUGHT_KEY.ontological_key, "deep_thought_mode")
+        self.assertIn("philosophical_analysis", DEEP_THOUGHT_KEY.tools_enabled)
+
+    def test_deep_thought_dialogue(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = deep_thought_dialogue(a1, a2)
+        self.assertTrue(
+            any(DEEP_THOUGHT_LANGUAGE.symbolism["resolve"] in line for line in lines)
+        )
+
+
+if __name__ == "__main__":
     unittest.main()
