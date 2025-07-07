@@ -5,15 +5,20 @@ from .agent import Agent
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
     lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+    question = "Kaj je resnica?"
 
-    agent1.update_emotion(0.8)
+    # Initial viewpoints
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond(question)}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond(question)}")
+
+    # Emotional reactions influence state transitions
+    agent1.update_emotion(0.8, label="anger")
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
 
-    agent2.update_emotion(0.6)
+    agent2.update_emotion(0.6, label="curiosity")
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    # Responses from new states
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond(question)}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond(question)}")
     return lines
