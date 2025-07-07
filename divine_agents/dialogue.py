@@ -1,5 +1,7 @@
 from typing import List
+
 from .agent import Agent
+from .emotional_agent import EmotionalAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +18,25 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def emotional_philosophical_dialogue(agent1: EmotionalAgent, agent2: EmotionalAgent) -> List[str]:
+    """Dialogue where emotional state and colors are displayed."""
+    lines = []
+    color1 = agent1.COLOR_MAP.get(agent1.emotion_name, 'neutral')
+    color2 = agent2.COLOR_MAP.get(agent2.emotion_name, 'neutral')
+    lines.append(f"{agent1.name} ({agent1.state}, {color1}): {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name} ({agent2.state}, {color2}): {agent2.respond('Kaj je resnica?')}")
+
+    agent1.update_emotion(0.8, 'anger')
+    color1 = agent1.COLOR_MAP.get(agent1.emotion_name, 'neutral')
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()} ({color1})")
+
+    agent2.update_emotion(0.6, 'growth')
+    color2 = agent2.COLOR_MAP.get(agent2.emotion_name, 'neutral')
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()} ({color2})")
+
+    lines.append(f"{agent1.name}: {agent1.make_decision('Debate')}")
+    lines.append(f"{agent2.name}: {agent2.make_decision('Response')}")
     return lines
