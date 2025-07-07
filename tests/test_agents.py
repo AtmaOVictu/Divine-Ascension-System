@@ -1,6 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import Agent, OntoComputerUseAgent, philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -21,6 +20,19 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_emotion_based_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6, "strah")
+        new_state = agent.transition()
+        self.assertEqual(new_state, "Jaz")
+
+    def test_computer_use_agent(self):
+        cua = OntoComputerUseAgent("C")
+        result = cua.execute_action("click", {"x": 1, "y": 2})
+        self.assertIn("∴", result)
+        self.assertIn("⊘", result)
+
 
 if __name__ == '__main__':
     unittest.main()
+
