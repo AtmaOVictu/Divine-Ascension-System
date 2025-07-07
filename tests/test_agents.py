@@ -21,6 +21,14 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_hexdump_and_enum(self):
+        agent = Agent("HX")
+        agent.update_emotion(0.6)
+        agent.transition()
+        summary = agent.summary()
+        self.assertEqual(summary["enum_history"], [0, 1])
+        self.assertTrue(all(isinstance(h, str) for h in summary["hexdump"]))
+
 
 if __name__ == '__main__':
     unittest.main()
