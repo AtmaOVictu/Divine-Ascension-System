@@ -1,5 +1,13 @@
+from .box import SymbolicBox
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Each agent keeps a :class:`SymbolicBox` that mirrors its ontological stage
+    and stores relevant data. The box must always contain data, enforcing the
+    idea that tasks cannot proceed without proper context.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,15 +17,21 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.box = SymbolicBox(
+            stage=state,
+            data={"name": name, "state": state, "tension": tension, "emotion": emotion},
+        )
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.box.update_data({"emotion": self.emotion, "tension": self.tension})
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.box.update_data({"tension": self.tension})
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -26,6 +40,7 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
+            self.box.transition(self.state, {"state": self.state})
         self.history.append(self.state)
         return self.state
 
