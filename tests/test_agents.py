@@ -1,5 +1,5 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
