@@ -11,8 +11,12 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+        """Increase emotion intensity cumulatively and adjust tension.
+
+        Emotion is clamped to stay within the range [0.0, 1.0] to avoid
+        runaway values.
+        """
+        self.emotion = max(0.0, min(1.0, self.emotion + value))
         self.tension += value
 
     def update_tension(self, value: float) -> None:
