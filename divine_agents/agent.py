@@ -4,6 +4,8 @@ class Agent:
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        if state not in self.STATES:
+            raise ValueError(f"State '{state}' is invalid. Must be one of {self.STATES}.")
         self.name = name
         self.state = state
         self.tension = tension
