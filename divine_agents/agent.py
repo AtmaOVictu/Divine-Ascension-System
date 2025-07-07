@@ -1,14 +1,23 @@
+from dataclasses import dataclass, field
+from typing import List
+
+from .constants import EMOTION_THRESHOLD, TENSION_THRESHOLD
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: List[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -21,7 +30,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > TENSION_THRESHOLD or self.emotion > EMOTION_THRESHOLD:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
