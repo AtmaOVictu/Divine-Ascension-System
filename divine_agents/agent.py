@@ -1,18 +1,36 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Name of the agent.
+    state: str, optional
+        Ontological state of the agent. Defaults to ``"Ego"``.
+    tension: float, optional
+        Current tension level.
+    emotion: float, optional
+        Intensity of the current emotion.
+    emotion_type: str, optional
+        Type of emotion (e.g. ``"fear"``, ``"joy"``).
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", *, tension: float = 0.0, emotion: float = 0.0, emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if emotion_type is not None:
+            self.emotion_type = emotion_type
+        # Emotional surges increase tension.
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -31,8 +49,19 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = ""
+        if self.emotion_type == "fear":
+            prefix = "(Z zaskrbljenostjo) "
+        elif self.emotion_type == "joy":
+            prefix = "(Z radostjo) "
+        elif self.emotion_type == "anger":
+            prefix = "(Z jezo) "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            core = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            core = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            core = "Vse resnice so eno, medsebojno povezane."
+
+        return prefix + core
