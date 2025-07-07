@@ -1,6 +1,9 @@
+import os, sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.balality import BalalityAgent
+from divine_agents.dialogue import philosophical_dialogue, balality_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +23,16 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_balality_reflection(self):
+        agent = BalalityAgent("B")
+        self.assertIn("independent", agent.reflect_on_duality())
+
+    def test_balality_dialogue(self):
+        a1 = BalalityAgent("A1")
+        a2 = BalalityAgent("A2", state="Jaz")
+        lines = balality_dialogue(a1, a2)
+        self.assertTrue(any("prehaja v stanje" in line for line in lines))
 
 
 if __name__ == '__main__':
