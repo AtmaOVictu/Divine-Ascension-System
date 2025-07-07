@@ -1,2 +1,7 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+
+Simulation of philosophical agents that evolve through ontological states.
+
+## Running tests
+
+Use `python -m pytest -q` from the project root to run the unit tests.
