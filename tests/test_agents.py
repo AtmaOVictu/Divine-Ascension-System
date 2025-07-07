@@ -1,12 +1,13 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.cluster import Cluster
 
 
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        agent.update_emotion("fear", 0.6)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_cluster_dialogue(self):
+        agents = [Agent("A1", mood="anger"), Agent("A2", state="Jaz", mood="joy")]
+        cluster = Cluster(agents)
+        cluster.synchronize()
+        lines = cluster.dialogue("Kaj je resnica?")
+        self.assertEqual(len(lines), 2)
 
 
 if __name__ == '__main__':
