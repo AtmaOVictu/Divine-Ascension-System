@@ -1,18 +1,38 @@
+"""Ontological agent implementation.
+
+An :class:`Agent` can move between three philosophical states based on
+its emotional intensity and tension.  The states reflect different
+understandings of truth:
+
+``Ego``
+    Truth is absolute and independent of others.
+``Jaz``
+    Truth is relative and shaped by relationships.
+``Enotnost``
+    All truths are one and interconnected.
+"""
+
+from dataclasses import dataclass, field
+
+
+EMOTION_THRESHOLD = 0.5
+TENSION_THRESHOLD = 0.7
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    history: list[str] = field(default_factory=lambda: ["Ego"])
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        # emotion contributes to overall tension
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -21,7 +41,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > TENSION_THRESHOLD or self.emotion > EMOTION_THRESHOLD:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
