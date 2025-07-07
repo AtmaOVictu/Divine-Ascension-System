@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -20,7 +20,7 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Transition to the next ontological state if thresholds are met."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
@@ -36,3 +36,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def philosophical_principle(self) -> str:
+        """Return the guiding philosophical principle of the current state."""
+        if self.state == "Ego":
+            return "Truth is absolute and independent of others."
+        if self.state == "Jaz":
+            return "Truth is relative, shaped by relationships."
+        return "All truths are one and interconnected."
