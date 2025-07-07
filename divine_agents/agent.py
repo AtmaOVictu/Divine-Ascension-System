@@ -29,10 +29,23 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def _emotion_descriptor(self) -> str:
+        """Provide a simple textual description of the current emotion."""
+        if self.emotion < 0.3:
+            return "miren"
+        if self.emotion < 0.6:
+            return "zaskrbljen"
+        return "razburjen"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state.
+
+        The returned string references the passed-in question to show how the
+        agent interprets it within its current ontological phase.
+        """
+        prefix = f"({self._emotion_descriptor()}) Na vprašanje '{question}',"
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return f"{prefix} vidim resnico kot absolutno in neodvisno od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return f"{prefix} menim, da je resnica relativna in oblikovana z našimi odnosi."
+        return f"{prefix} spoznavam, da so vse resnice eno in medsebojno povezane."
