@@ -21,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_echo(self):
+        agent = Agent("Echoer")
+        external = agent.echo("halo")
+        internal = agent.echo("halo", internal=True)
+        self.assertIn(agent.state, external)
+        self.assertIn(agent.state, internal)
+
 
 if __name__ == '__main__':
     unittest.main()
