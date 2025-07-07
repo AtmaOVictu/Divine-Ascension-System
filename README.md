@@ -1,2 +1,2 @@
 # Divine-Ascension-System
-UX HUB FOR INTERACTIVE COMMAND/
+Minimal ontological framework for agent dialogues.

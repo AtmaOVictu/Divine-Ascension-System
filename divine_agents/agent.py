@@ -1,5 +1,5 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning ontological states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -29,10 +29,21 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def philosophical_principle(self) -> str:
+        """Return the guiding philosophical principle of the current state."""
+        if self.state == "Ego":
+            return "Truth is absolute and independent of others."
+        if self.state == "Jaz":
+            return "Truth is relative and shaped by our relationships."
+        return "All truths are one and interconnected."
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+        if self.emotion > 0.5:
+            base += f" (Čustvo:{self.emotion:.1f})"
+        return base
