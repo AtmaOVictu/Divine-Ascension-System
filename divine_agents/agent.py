@@ -3,11 +3,13 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, rationality: float = 1.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.rationality = rationality
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -19,8 +21,12 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def update_rationality(self, value: float) -> None:
+        """Update rationality level."""
+        self.rationality = value
+
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
+        """Perform state transition when tension or emotion thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
