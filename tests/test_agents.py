@@ -1,6 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, deep_thought_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +20,18 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_deep_thought_mode(self):
+        agent = Agent("A")
+        agent.activate_deep_thought_mode()
+        reply = agent.respond("Kaj je resnica?")
+        self.assertTrue(reply.startswith("∴") and reply.endswith("⊘"))
+
+    def test_deep_thought_dialogue(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = deep_thought_dialogue(a1, a2)
+        self.assertTrue(all(line.startswith("∴") or line.endswith("⊘") or line.startswith("A") for line in lines))
 
 
 if __name__ == '__main__':
