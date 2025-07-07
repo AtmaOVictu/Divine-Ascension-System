@@ -3,17 +3,31 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_state: str | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_state = emotion_state
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, emotion_state: str, value: float) -> None:
+        """Update emotion and adjust tension depending on emotion type."""
+        self.emotion_state = emotion_state
         self.emotion = value
-        self.tension += value
+        if emotion_state in {"fear", "anger"}:
+            self.tension += value
+        elif emotion_state == "joy":
+            self.tension = max(0.0, self.tension - value / 2)
+        else:
+            self.tension += value
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +46,16 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_state == "anger":
+            return base + " (govori jezno)"
+        if self.emotion_state == "fear":
+            return base + " (govori boječe)"
+        if self.emotion_state == "joy":
+            return base + " (govori radostno)"
+        return base
