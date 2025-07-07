@@ -3,17 +3,35 @@ from .agent import Agent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+    """Simulate a short philosophical dialogue influenced by emotions."""
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
+    # emotions rise during debate
     agent1.update_emotion(0.8)
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
 
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj pa zdaj?')}")
+    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj pa zdaj?')}")
     return lines
+
+
+def ontological_debate(agent1: Agent, agent2: Agent) -> List[str]:
+    """Run a debate where agents may change emotions and states multiple times."""
+    transcript = []
+    transcript.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
+    transcript.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    # increase tension and evaluate transitions
+    agent1.update_emotion(0.4)
+    transcript.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    agent2.update_emotion(0.5)
+    transcript.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    transcript.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kako vidiš resnico?')}")
+    transcript.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kako vidiš resnico?')}")
+    return transcript
