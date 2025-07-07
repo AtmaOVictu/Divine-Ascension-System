@@ -1,6 +1,8 @@
 import unittest
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.cluster import AgentCluster
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -18,8 +20,16 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, rounds=2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_cluster_debate(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        cluster = AgentCluster([a1, a2])
+        lines = cluster.debate(rounds=2)
+        self.assertTrue(lines)
+        self.assertEqual(a1.state, "Enotnost")
 
 
 if __name__ == '__main__':
