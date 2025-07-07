@@ -3,17 +3,24 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 emotion_type: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_type = emotion_type
         self.history = [state]
 
+    def set_emotion(self, emotion_type: str, intensity: float) -> None:
+        """Set emotion type and intensity, increasing tension accordingly."""
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        self.tension += intensity
+
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Backward compatible wrapper for setting neutral emotion."""
+        self.set_emotion("neutral", value)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -32,7 +39,16 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_type == "anger":
+            return f"Z jezo izjavljam: {base}"
+        if self.emotion_type == "fear":
+            return f"S strahom razmišljam: {base}"
+        if self.emotion_type == "joy":
+            return f"Z veseljem verjamem, da {base.lower()}"
+        return base
