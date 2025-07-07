@@ -2,8 +2,11 @@ class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    TENSION_THRESHOLD = 0.7
+    EMOTION_THRESHOLD = 0.5
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Initialize an agent with a given state, tension and emotion."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -21,7 +24,10 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if (
+            self.tension >= self.TENSION_THRESHOLD
+            or self.emotion >= self.EMOTION_THRESHOLD
+        ):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
