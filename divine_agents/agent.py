@@ -3,16 +3,18 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, emotion_label: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, label: str = "neutral") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +32,20 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current and emotional state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion_label == "fear":
+            emotion_comment = " Čutim strah glede te razprave."
+        elif self.emotion_label == "joy":
+            emotion_comment = " Občutim veselje ob tem razmišljanju."
+        elif self.emotion_label == "anger":
+            emotion_comment = " Ta debata me jezi."
+        else:
+            emotion_comment = ""
+        return base + emotion_comment
