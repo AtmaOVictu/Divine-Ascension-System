@@ -20,6 +20,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("slava" in line for line in lines))
+
+    def test_fame_participation(self):
+        agent = Agent("F")
+        agent.participate(0.2)
+        agent.adjust_fame(positive=0.1)
+        self.assertGreater(agent.fame, 0)
 
 
 if __name__ == '__main__':
