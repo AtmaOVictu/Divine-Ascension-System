@@ -1,5 +1,8 @@
+from .language import generate_anagram, create_amalgamation
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning ontological states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -31,8 +34,13 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        prefix = f"Moja čustva({self.emotion:.1f}) povedo, da "
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return prefix + "resnica je absolutna in neodvisna od drugih."
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return prefix + "resnica je relativna, oblikovana z našimi odnosi."
+        return prefix + "vse resnice so eno, medsebojno povezane."
+
+    def evolve_language(self, base1: str, base2: str):
+        """Generate an anagram and amalgamation from provided concepts."""
+        return generate_anagram(base1), create_amalgamation(base1, base2)

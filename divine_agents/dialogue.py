@@ -14,6 +14,13 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
+    # Generate new words based on emotional change
+    an1, amal1 = agent1.evolve_language("anger", "reflection")
+    lines.append(f"{agent1.name} ustvarja anagram '{an1}' in zlitje '{amal1}'")
+
+    an2, amal2 = agent2.evolve_language("fear", "unity")
+    lines.append(f"{agent2.name} ustvarja anagram '{an2}' in zlitje '{amal2}'")
+
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
     return lines
