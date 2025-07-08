@@ -1,3 +1,9 @@
+from . import (
+    TRANSITION_TENSION_THRESHOLD,
+    TRANSITION_EMOTION_THRESHOLD,
+)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -21,7 +27,10 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if (
+            self.tension > TRANSITION_TENSION_THRESHOLD
+            or self.emotion > TRANSITION_EMOTION_THRESHOLD
+        ):
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
