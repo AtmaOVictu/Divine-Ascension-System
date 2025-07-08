@@ -3,11 +3,13 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, fame: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.fame = fame
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -29,10 +31,25 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def update_fame(self, positive_actions: int, negative_actions: int,
+                    participation_score: int, positive_weight: float = 1.0,
+                    negative_weight: float = 1.0,
+                    participation_weight: float = 1.0) -> float:
+        """Update fame based on actions and participation."""
+        fame_change = (
+            positive_actions * positive_weight
+            - negative_actions * negative_weight
+            + participation_score * participation_weight
+        )
+        self.fame += fame_change
+        return self.fame
+
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        return f"{base} (čustvo: {self.emotion:.1f})"
