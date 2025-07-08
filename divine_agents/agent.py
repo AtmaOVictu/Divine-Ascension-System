@@ -15,6 +15,14 @@ class Agent:
         self.emotion = value
         self.tension += value
 
+    def feel_fear(self, intensity: float) -> None:
+        """Handle fear emotion by adjusting tension depending on state."""
+        self.emotion = intensity
+        if self.state in ("Ego", "Jaz"):
+            self.tension = min(1.0, self.tension + intensity)
+        else:
+            self.tension = max(0.0, self.tension - intensity)
+
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
