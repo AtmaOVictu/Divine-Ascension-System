@@ -2,9 +2,22 @@ from typing import List
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
+def philosophical_dialogue(
+    agent1: Agent,
+    agent2: Agent,
+    commitment1: str | None = None,
+    commitment2: str | None = None,
+) -> List[str]:
     """Simulate a short philosophical dialogue between two agents."""
-    lines = []
+    lines: List[str] = []
+
+    if commitment1:
+        agent1.make_commitment(commitment1)
+        lines.append(f"{agent1.name} se zaveže k: {commitment1}")
+    if commitment2:
+        agent2.make_commitment(commitment2)
+        lines.append(f"{agent2.name} se zaveže k: {commitment2}")
+
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
 
