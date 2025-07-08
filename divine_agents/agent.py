@@ -1,9 +1,10 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
     def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+        """Create a new agent with an ontological state and emotional context."""
         self.name = name
         self.state = state
         self.tension = tension
@@ -36,3 +37,17 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # New functionality for emotional expression
+    def _emotion_descriptor(self) -> str:
+        """Describe the current emotional intensity."""
+        if self.emotion > 0.7:
+            return "strastno"
+        if self.emotion > 0.4:
+            return "čustveno"
+        return "mirno"
+
+    def express(self) -> str:
+        """Return a response including ontological stance and emotion."""
+        base = self.respond("Kaj je resnica?")
+        return f"{base} (govori {self._emotion_descriptor()})."
