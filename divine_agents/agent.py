@@ -1,3 +1,10 @@
+from __future__ import annotations
+
+
+from .emotion import Emotion
+from .karma import Karma
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -8,12 +15,22 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_state = Emotion()
+        self.karma = Karma()
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self.emotion_state.joy = value
+        self.karma.update(self.emotion_state, 0.0)
+
+    def update_emotion_state(self, **kwargs: float) -> None:
+        """Update individual emotional components."""
+        for key, val in kwargs.items():
+            if hasattr(self.emotion_state, key):
+                setattr(self.emotion_state, key, val)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
