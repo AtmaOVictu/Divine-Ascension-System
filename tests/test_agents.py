@@ -13,13 +13,24 @@ class TestAgentTransitions(unittest.TestCase):
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("one", reply)
+
+    def test_language_response(self):
+        agent = Agent("B", language="Spanish")
+        reply = agent.respond("?")
+        self.assertIn("verdad", reply)
 
     def test_dialogue(self):
-        a1 = Agent("A1")
-        a2 = Agent("A2", state="Jaz")
+        a1 = Agent("A1", language="English")
+        a2 = Agent("A2", state="Jaz", language="German")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("transitions" in line for line in lines))
+
+    def test_evolve_transition(self):
+        agent = Agent("C", language="German")
+        agent.update_emotion(0.6)
+        new_state = agent.evolve()
+        self.assertEqual(new_state, "Jaz")
 
 
 if __name__ == '__main__':
