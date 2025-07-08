@@ -1,3 +1,6 @@
+import math
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -18,6 +21,12 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def decay_tension(self, decay_rate: float, time_step: float = 1.0) -> None:
+        """Reduce tension exponentially based on a decay rate and time step."""
+        self.tension *= math.exp(-decay_rate * time_step)
+        if self.tension < 0:
+            self.tension = 0
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
