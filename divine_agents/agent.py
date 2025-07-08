@@ -10,6 +10,23 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def reflect(self) -> str:
+        """Generate a reflection string based on current state and emotion."""
+        reflection = (
+            f"Agent {self.name} is {self.state} with emotion {self.emotion:.1f}."
+        )
+        self.history.append(reflection)
+        return reflection
+
+    def learn_from_others(self, reflections: list[str]) -> None:
+        """Adjust emotional state based on others' reflections."""
+        for ref in reflections:
+            if "angry" in ref or "fear" in ref:
+                # increase tension leading to possible transition
+                self.update_emotion(1.0)
+            elif "calm" in ref:
+                self.update_emotion(0.0)
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
