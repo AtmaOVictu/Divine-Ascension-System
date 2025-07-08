@@ -3,6 +3,14 @@ from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
 
+class TestTimeManager(unittest.TestCase):
+    def test_time_update(self):
+        agent = Agent("T")
+        agent.update_tension(0.2)
+        # meta_time should be >1 when tension is low
+        self.assertGreater(agent.time_manager.meta_time, 1)
+
+
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
