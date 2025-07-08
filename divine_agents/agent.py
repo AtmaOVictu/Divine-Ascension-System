@@ -3,11 +3,15 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, fame: float = 0.0,
+                 participation: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.fame = fame
+        self.participation = participation
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +22,26 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def update_fame(self, positive_actions: int, negative_actions: int,
+                    participation_score: float) -> float:
+        """Update the agent's fame based on actions and participation."""
+        positive_weight = 10
+        negative_weight = 5
+        participation_weight = 2
+
+        fame_change = (
+            positive_actions * positive_weight
+            - negative_actions * negative_weight
+            + participation_score * participation_weight
+        )
+        self.fame += fame_change
+        return self.fame
+
+    def update_participation(self, score: float) -> float:
+        """Update algorithmic participation score."""
+        self.participation = score
+        return self.participation
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
