@@ -1,9 +1,13 @@
+import math
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -18,6 +22,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def decay_tension(self, decay_rate: float, time: float = 1.0) -> None:
+        """Apply exponential decay to the current tension level."""
+        self.tension *= math.exp(-decay_rate * time)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
