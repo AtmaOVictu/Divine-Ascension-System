@@ -1,13 +1,17 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent tracks emotional state, tension and fame to influence behaviour.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, fame: float = 0.0):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.fame = fame
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +22,28 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def update_fame(self, positive_actions: int, negative_actions: int, participation_score: int) -> float:
+        """Update agent fame based on actions and participation."""
+        positive_weight = 1
+        negative_weight = 1
+        participation_weight = 1
+
+        fame_change = (
+            positive_actions * positive_weight
+            - negative_actions * negative_weight
+            + participation_score * participation_weight
+        )
+        self.fame += fame_change
+        return self.fame
+
+    def fame_based_behavior(self) -> str:
+        """Return text describing behavior based on fame level."""
+        if self.fame >= 10:
+            return f"{self.name} ima visoko stopnjo vpliva."
+        if self.fame <= 0:
+            return f"{self.name} se trudi pridobiti priznanje."
+        return f"{self.name} ima zmerno stopnjo vpliva."
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
