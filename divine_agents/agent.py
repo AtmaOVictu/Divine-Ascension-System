@@ -10,6 +10,18 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
+    def start_monologue(self) -> str:
+        """Return an introspective monologue based on state and emotion."""
+        if self.emotion > 0.7:
+            reflection = "My fear clouds my judgment... should I trust my perceptions or face reality as it is?"
+        elif self.state == "Jaz":
+            reflection = "What if truth isn't objective? Can I reconcile subjective truths with universal truth?"
+        elif self.state == "Enotnost":
+            reflection = "Everything is interconnected. Can I merge my self with the universal flow?"
+        else:
+            reflection = "Truth is absolute. But do I trust this certainty?"
+        return f"Agent {self.name} internal: '{reflection}'"
+
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value

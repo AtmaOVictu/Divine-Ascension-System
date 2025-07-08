@@ -20,6 +20,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("internal" in line for line in lines))
+
+    def test_monologue(self):
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        text = agent.start_monologue()
+        self.assertIn("fear", text.lower())
 
 
 if __name__ == '__main__':
