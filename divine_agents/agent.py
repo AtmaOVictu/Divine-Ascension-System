@@ -1,14 +1,53 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Initial ontological state, defaults to ``"Ego"``.
+    tension:
+        Initial tension level.
+    emotion:
+        Initial emotion intensity.
+    parent:
+        Optional parent :class:`Agent` from which to inherit beliefs and emotion.
+    beliefs:
+        Optional list of beliefs held by the agent.  Defaults to an empty list.
+
+    When ``parent`` is supplied the agent automatically calls
+    :meth:`inherit_from_parent` to copy the parent's beliefs and emotion.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, *, parent: "Agent | None" = None,
+                 beliefs: list[str] | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.beliefs = beliefs[:] if beliefs else []
+        self.parent: Agent | None = parent
+        self.children: list[Agent] = []
+        if parent is not None:
+            parent.children.append(self)
+            self.inherit_from_parent()
+
+    def inherit_from_parent(self) -> None:
+        """Copy parent's beliefs and emotion into this agent."""
+        if self.parent is None:
+            return
+        # copy beliefs and emotion
+        self.beliefs = self.parent.beliefs[:]
+        self.emotion = self.parent.emotion
+
+    def create_child(self, name: str) -> "Agent":
+        """Create a new child agent linked to this agent."""
+        return Agent(name, parent=self)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
