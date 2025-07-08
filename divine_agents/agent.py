@@ -10,10 +10,27 @@ class Agent:
         self.emotion = emotion
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, value: float, emotion_type: str | None = None) -> None:
+        """Increase emotion intensity and adjust tension.
+
+        Parameters
+        ----------
+        value: float
+            Amount to add to the current emotional intensity.
+        emotion_type: str | None
+            Optional emotion descriptor (e.g., ``"fear"`` or ``"joy"``). Each
+            emotion type can influence how much tension increases.
+        """
+
+        self.emotion += value
+
+        weights = {
+            "fear": 1.2,
+            "joy": 0.5,
+            "anger": 1.5,
+        }
+        weight = weights.get(emotion_type, 1.0)
+        self.tension += value * weight
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
