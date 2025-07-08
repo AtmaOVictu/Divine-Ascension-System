@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -30,9 +33,19 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer influenced by state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+
+        if self.emotion > 0.7:
+            feeling = " Čutim močna čustva, kar krepi moje besede."
+        elif self.emotion > 0.5:
+            feeling = " Moja čustva so napeta."
+        else:
+            feeling = ""
+
+        return base + feeling
