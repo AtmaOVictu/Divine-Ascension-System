@@ -20,11 +20,13 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
 
 class DialogueManager:
-    """Manage a dynamic conversation between two ontological agents."""
+    """Manage monologues and dialogues between ontological agents."""
 
-    def __init__(self, agent1: Agent, agent2: Agent) -> None:
+    def __init__(self, agent1: Agent, agent2: Agent | None = None) -> None:
         self.agent1 = agent1
         self.agent2 = agent2
+        self.dialogues: list[tuple[Agent, Agent]] = []
+        self.monologues: list[Agent] = []
 
     def _line(self, agent: Agent, question: str) -> str:
         """Return a formatted line based on the agent's current state."""
@@ -61,3 +63,26 @@ class DialogueManager:
         for q, emo1, emo2 in zip(questions, e1, e2):
             lines.extend(self.exchange(q, emo1, emo2))
         return lines
+
+    # --- New monologue and start methods ---
+
+    def monologue(self, questions: List[str], emotions: List[float]) -> List[str]:
+        """Run a self-reflective monologue for ``agent1``."""
+        lines: List[str] = []
+        for q, emo in zip(questions, emotions):
+            lines.append(self._line(self.agent1, q))
+            self.agent1.update_emotion(emo)
+            self.agent1.transition()
+        return lines
+
+    def start_dialogue(self, questions: List[str], e1: List[float], e2: List[float]) -> List[str]:
+        """Start and record a dialogue between ``agent1`` and ``agent2``."""
+        if self.agent2 is None:
+            raise ValueError("agent2 is required for a dialogue")
+        self.dialogues.append((self.agent1, self.agent2))
+        return self.conversation(questions, e1, e2)
+
+    def start_monologue(self, questions: List[str], emotions: List[float]) -> List[str]:
+        """Start a monologue sequence for ``agent1``."""
+        self.monologues.append(self.agent1)
+        return self.monologue(questions, emotions)
