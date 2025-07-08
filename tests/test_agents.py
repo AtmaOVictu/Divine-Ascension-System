@@ -21,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_memory_recall(self):
+        agent = Agent("M")
+        first = agent.respond("Kaj je resnica?")
+        second = agent.respond("Kaj je resnica?")
+        self.assertIn("Spomin", second)
+
 
 if __name__ == '__main__':
     unittest.main()
