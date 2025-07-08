@@ -1,14 +1,39 @@
+from typing import Dict
+
+from .emotion import EmotionalBox
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    PHRASES: Dict[str, Dict[str, str]] = {
+        "Ego": {
+            "English": "Truth is absolute and independent of others.",
+            "Spanish": "La verdad es absoluta e independiente de los dem\u00e1s.",
+            "German": "Die Wahrheit ist absolut und unabh\u00e4ngig von anderen.",
+        },
+        "Jaz": {
+            "English": "Truth is relative, shaped by our relationships.",
+            "Spanish": "La verdad es relativa y se forma a trav\u00e9s de nuestras relaciones.",
+            "German": "Wahrheit ist relativ und wird durch Beziehungen gestaltet.",
+        },
+        "Enotnost": {
+            "English": "All truths are one and interconnected.",
+            "Spanish": "Todas las verdades son una y est\u00e1n interconectadas.",
+            "German": "Alle Wahrheiten sind eins und miteinander verbunden.",
+        },
+    }
+
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, language: str = "English"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.language = language
         self.history = [state]
+        self.emotional_box = EmotionalBox(self, language)
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -31,8 +56,4 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return self.PHRASES[self.state][self.language]
