@@ -1,5 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
+from divine_agents.data_compliant_agent import DataCompliantAgent
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -20,6 +21,19 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestDataCompliance(unittest.TestCase):
+    def test_usage_logging_enabled(self):
+        agent = DataCompliantAgent("A", data_compliance="enabled")
+        agent.reflect()
+        self.assertEqual(len(agent.usage_log), 1)
+        self.assertEqual(agent.usage_log[0]["data_type"], "reflection")
+
+    def test_adapt_triggers_logging(self):
+        agent = DataCompliantAgent("A", data_compliance="enabled")
+        agent.adapt("external_source")
+        self.assertEqual(agent.usage_log[0]["data_source"], "external_source")
 
 
 if __name__ == '__main__':
