@@ -1,19 +1,34 @@
+from __future__ import annotations
+
+from .memory import Memory
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        memory: Memory | None = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.memory = memory
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        if self.memory is not None:
+            self.memory.history.append({"state": self.state, "emotion": value})
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -27,6 +42,8 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        if self.memory is not None:
+            self.memory.history.append({"state": self.state, "emotion": self.emotion})
         return self.state
 
     def respond(self, question: str) -> str:
