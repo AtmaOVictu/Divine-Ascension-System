@@ -21,6 +21,16 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_child_creation_and_inheritance(self):
+        parent = Agent("Parent")
+        parent.beliefs.append("Absolutna resnica")
+        parent.update_emotion(0.4)
+        child = parent.create_child("Child")
+        self.assertEqual(child.parent, parent)
+        self.assertIn("Absolutna resnica", child.beliefs)
+        self.assertEqual(child.emotion, parent.emotion)
+        self.assertIn(child, parent.children)
+
 
 if __name__ == '__main__':
     unittest.main()
