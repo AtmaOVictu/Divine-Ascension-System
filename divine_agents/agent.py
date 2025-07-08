@@ -1,19 +1,38 @@
+from .emotions import Emotion
+from .karma import Karma
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: Emotion | None = None):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotion_profile = emotion or Emotion()
+        self.karma = Karma()
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    @property
+    def emotion_level(self) -> float:
+        """Return the highest intensity among emotional states."""
+        return max(
+            self.emotion_profile.joy,
+            self.emotion_profile.anger,
+            self.emotion_profile.fear,
+            self.emotion_profile.sadness,
+            self.emotion_profile.guilt,
+            self.emotion_profile.hope,
+            self.emotion_profile.pride,
+            self.emotion_profile.despair,
+        )
+
+    def update_emotion(self, emotion: Emotion) -> None:
+        """Set a new emotional profile and adjust tension."""
+        self.emotion_profile = emotion
+        self.tension += self.emotion_level
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,7 +40,7 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        if self.tension > 0.7 or self.emotion_level > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
