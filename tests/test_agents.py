@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.time_manager import TimeManager
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_time_update(self):
+        agent = Agent("A", tension=0.8)
+        tm = agent.time_manager
+        tm.update_time(agent)
+        self.assertLess(tm.meta_time, 1.0)
+        self.assertGreater(tm.absolute_time, 0.0)
 
 
 if __name__ == '__main__':
