@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+# Ensure package import works when running tests directly with `pytest`
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -9,6 +15,11 @@ class TestAgentTransitions(unittest.TestCase):
         agent.update_tension(0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
+
+    def test_tension_decay(self):
+        agent = Agent("A", tension=1.0, decay_rate=0.5)
+        agent.decay_tension(time=1.0)
+        self.assertLess(agent.tension, 1.0)
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
