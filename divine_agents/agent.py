@@ -1,19 +1,30 @@
+"""Ontological agent model with emotional state and transitions."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_type: str = "neutral"
+    history: List[str] = field(default_factory=list)
+
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
+    def __post_init__(self) -> None:
+        self.history.append(self.state)
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, emotion_type: str, intensity: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion_type = emotion_type
+        self.emotion = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
