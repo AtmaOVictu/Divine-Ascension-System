@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import Agent as PkgAgent, philosophical_dialogue as pkg_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestPackageAPI(unittest.TestCase):
+    def test_reexports(self):
+        self.assertIs(PkgAgent, Agent)
+        self.assertIs(pkg_dialogue, philosophical_dialogue)
 
 
 if __name__ == '__main__':
