@@ -1,18 +1,31 @@
+"""Agent implementation for ontological state transitions and dialogue."""
+
+from .philosophy import State, PHILOSOPHICAL_TRUTHS
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
-    STATES = ("Ego", "Jaz", "Enotnost")
-
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: State = State.EGO,
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        emotion_label: str = "neutral",
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, label: str | None = None) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if label:
+            self.emotion_label = label
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -22,17 +35,18 @@ class Agent:
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+            if self.state == State.EGO:
+                self.state = State.JAZ
+            elif self.state == State.JAZ:
+                self.state = State.ENOTNOST
         self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        return PHILOSOPHICAL_TRUTHS[self.state]
+
+    def speak(self, question: str) -> str:
+        """Return dialogue line with current emotional and ontological state."""
+        response = self.respond(question)
+        return f"{self.name} ({self.state.value}, {self.emotion_label}): {response}"
