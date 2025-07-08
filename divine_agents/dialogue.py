@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .environment import Environment
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,18 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def environmental_dialogue(agent1: Agent, agent2: Agent, env: Environment) -> List[str]:
+    """Dialogue influenced by an external environment."""
+    lines = [agent1.speak('Kaj je resnica?'), agent2.speak('Kaj je resnica?')]
+    env.influence_agent(agent1)
+    env.influence_agent(agent2)
+    agent1.adapt_values(env)
+    agent2.adapt_values(env)
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+    lines.append(agent1.speak('Kaj je resnica?'))
+    lines.append(agent2.speak('Kaj je resnica?'))
     return lines

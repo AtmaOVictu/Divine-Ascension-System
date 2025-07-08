@@ -1,6 +1,12 @@
 import unittest
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, environmental_dialogue
+from divine_agents.environment import Environment
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +26,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_environmental_dialogue(self):
+        env = Environment("Test", societal_influence=0.6, natural_condition=0.8)
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = environmental_dialogue(a1, a2, env)
+        self.assertIn("Enotnost", " ".join(lines))
 
 
 if __name__ == '__main__':
