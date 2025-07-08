@@ -1,5 +1,12 @@
+"""Ontological agents capable of emotional state transitions."""
+
+from __future__ import annotations
+
+import math
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent with emotion and tension."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -19,6 +26,11 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def decay_tension(self, time_step: float = 1.0) -> None:
+        """Decay tension exponentially based on the current emotional level."""
+        decay_rate = 0.1 + self.emotion * 0.3
+        self.tension *= math.exp(-decay_rate * time_step)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
@@ -36,3 +48,14 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def philosophical_answer(self) -> str:
+        """Return an emotionally influenced philosophical answer."""
+        base = self.respond("Kaj je resnica?")
+        if self.emotion > 0.7:
+            prefix = "Z veliko strasti trdim: "
+        elif self.emotion < 0.3:
+            prefix = "Mirno pravim: "
+        else:
+            prefix = ""
+        return f"{prefix}{base}"
