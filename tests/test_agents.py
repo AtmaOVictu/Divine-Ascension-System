@@ -1,6 +1,13 @@
+import os
+import sys
 import unittest
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dictionary import OntologicalDictionary
+from divine_agents.writer import WritingAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -22,5 +29,18 @@ class TestAgentTransitions(unittest.TestCase):
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
-if __name__ == '__main__':
+class TestDictionaryAndWriter(unittest.TestCase):
+    def test_dictionary_lookup(self):
+        od = OntologicalDictionary()
+        meaning = od.get_word_meaning("anger")
+        self.assertEqual(meaning["emotion"], "negative")
+
+    def test_writer_summarize(self):
+        writer = WritingAgent("W")
+        writer.write_event("test", "calm", "reflection")
+        summary = writer.summarize_journey()
+        self.assertIn("test", summary)
+
+
+if __name__ == "__main__":
     unittest.main()
