@@ -1,14 +1,21 @@
+from typing import Optional
+
+from .knowledge import KnowledgeBase
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0,
+                 knowledge_base: Optional[KnowledgeBase] = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.knowledge_base = knowledge_base or KnowledgeBase()
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -18,6 +25,10 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def process_knowledge(self, item: str) -> bool:
+        """Store a new knowledge item if not seen before."""
+        return self.knowledge_base.add(item)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
