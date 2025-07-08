@@ -1,17 +1,25 @@
+"""Agent module defining ontological agents and their behaviour."""
+
+from dataclasses import dataclass, field
+from typing import List
+
+
+@dataclass
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
+    name: str
+    state: str = "Ego"
+    tension: float = 0.0
+    emotion: float = 0.0
+    emotion_label: str = "neutral"
+    history: List[str] = field(default_factory=lambda: ["Ego"])
+
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
-        self.name = name
-        self.state = state
-        self.tension = tension
-        self.emotion = emotion
-        self.history = [state]
-
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, label: str, value: float) -> None:
+        """Update emotion intensity and label, adjusting tension."""
+        self.emotion_label = label
         self.emotion = value
         self.tension += value
 
