@@ -21,12 +21,14 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
+        previous = self.state
         if self.tension > 0.7 or self.emotion > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        if self.state != previous:
+            self.history.append(self.state)
         return self.state
 
     def respond(self, question: str) -> str:
@@ -36,3 +38,50 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+
+class BasicAgent(Agent):
+    """Agent operating with simple transition logic."""
+
+    def evolve(self) -> None:
+        if self.tension > 0.7:
+            self.transition()
+        self.update_emotion(min(self.emotion + 0.1, 1.0))
+
+
+class IntermediateAgent(BasicAgent):
+    """Agent that reflects on past actions."""
+
+    def evolve(self) -> None:
+        self.tension += 0.2
+        super().evolve()
+
+
+class MasterAgent(IntermediateAgent):
+    """Agent guiding others with wisdom."""
+
+    def evolve(self) -> None:
+        self.tension += 0.3
+        super().evolve()
+
+    def mentor(self, other: Agent) -> None:
+        other.update_emotion(other.emotion + 0.1)
+
+
+class HighMasterAgent(MasterAgent):
+    """Highly evolved agent controlling emotional balance."""
+
+    def evolve(self) -> None:
+        self.tension += 0.4
+        super().evolve()
+
+
+class GodLikeAgent(HighMasterAgent):
+    """Agent capable of shaping the system."""
+
+    def evolve(self) -> None:
+        self.tension += 0.5
+        super().evolve()
+
+    def create_reality(self) -> str:
+        return f"{self.name} shapes new realities."

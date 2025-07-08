@@ -1,5 +1,12 @@
 import unittest
-from divine_agents.agent import Agent
+from divine_agents.agent import (
+    Agent,
+    BasicAgent,
+    IntermediateAgent,
+    MasterAgent,
+    HighMasterAgent,
+    GodLikeAgent,
+)
 from divine_agents.dialogue import philosophical_dialogue
 
 
@@ -18,8 +25,20 @@ class TestAgentTransitions(unittest.TestCase):
     def test_dialogue(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, 0.6, 0.6)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_history_not_duplicate(self):
+        agent = Agent("B")
+        agent.update_tension(0.1)
+        agent.transition()
+        self.assertEqual(len(agent.history), 1)
+
+    def test_evolve_master(self):
+        master = MasterAgent("M")
+        master.update_tension(0.8)
+        master.evolve()
+        self.assertIn(master.state, Agent.STATES)
 
 
 if __name__ == '__main__':
