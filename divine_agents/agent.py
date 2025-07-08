@@ -36,3 +36,23 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def start_monologue(self) -> str:
+        """Return an introspective monologue when emotion or tension is high.
+
+        The method is triggered when ``tension`` exceeds ``0.7`` or ``emotion``
+        exceeds ``0.5``. The returned text reflects the agent's current
+        ontological ``state`` along with its emotional context.
+        """
+        if self.tension > 0.7 or self.emotion > 0.5:
+            if self.state == "Ego":
+                truth = "Resnica je absolutna in neodvisna od drugih."
+            elif self.state == "Jaz":
+                truth = "Resnica je relativna, oblikovana z našimi odnosi."
+            else:
+                truth = "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"{self.name} razmišlja: {truth} "
+                f"(Čustva={self.emotion:.2f}, napetost={self.tension:.2f})"
+            )
+        return ""
