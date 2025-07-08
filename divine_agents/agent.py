@@ -36,3 +36,10 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def report(self) -> str:
+        """Return a string describing the agent's current status."""
+        return (
+            f"{self.name}: state={self.state}, "
+            f"tension={self.tension:.2f}, emotion={self.emotion:.2f}"
+        )
