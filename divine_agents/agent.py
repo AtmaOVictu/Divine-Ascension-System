@@ -1,27 +1,34 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotions: dict[str, float] = {}
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    # ------------------------------------------------------------------
+    # Emotion and tension handling
+    # ------------------------------------------------------------------
+    def set_emotion(self, kind: str, intensity: float) -> None:
+        """Set or update an emotion and adjust tension."""
+        self.emotions[kind] = intensity
+        self.tension += intensity
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
+        """Directly set the tension level."""
         self.tension = value
 
+    # ------------------------------------------------------------------
+    # State management
+    # ------------------------------------------------------------------
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        """Perform a state transition if thresholds are exceeded."""
+        high_emotion = any(val > 0.5 for val in self.emotions.values())
+        if self.tension > 0.7 or high_emotion:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
@@ -29,10 +36,22 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    # ------------------------------------------------------------------
+    # Philosophy-aware responses
+    # ------------------------------------------------------------------
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer that reflects the current state."""
+        prefix = ""
+        if self.emotions:
+            e = max(self.emotions, key=self.emotions.get)
+            if self.emotions[e] > 0.5:
+                prefix = f"Občutim {e}. "
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            msg = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            msg = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            msg = "Vse resnice so eno, medsebojno povezane."
+
+        return prefix + msg
