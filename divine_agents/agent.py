@@ -19,6 +19,10 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def increase_tension(self, value: float) -> None:
+        """Increase tension by a given amount."""
+        self.tension += value
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
