@@ -1,12 +1,21 @@
-from typing import List
+from typing import List, Optional
 from .agent import Agent
+from .environment import Environment
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
+def philosophical_dialogue(agent1: Agent, agent2: Agent, env: Optional[Environment] = None) -> List[str]:
+    """Simulate a short philosophical dialogue between two agents.
+
+    The optional environment influences each agent before the emotional
+    updates trigger potential state transitions.
+    """
     lines = []
     lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+
+    if env:
+        env.influence(agent1)
+        env.influence(agent2)
 
     agent1.update_emotion(0.8)
     lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
