@@ -1,3 +1,7 @@
+def _clip(value: float, min_value: float, max_value: float) -> float:
+    return max(min(value, max_value), min_value)
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -12,12 +16,12 @@ class Agent:
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = float(_clip(value, -1.0, 1.0))
+        self.tension = float(_clip(self.tension + abs(self.emotion), 0.0, 1.0))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = float(_clip(value, 0.0, 1.0))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
