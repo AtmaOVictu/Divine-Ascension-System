@@ -1,4 +1,12 @@
 import unittest
+from pathlib import Path
+import sys
+
+# Ensure package imports work when running with `pytest -q`
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
