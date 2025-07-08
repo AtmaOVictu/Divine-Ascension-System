@@ -12,8 +12,14 @@ class TestAgentTransitions(unittest.TestCase):
 
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
+        agent.update_emotion("joy", 0.4)
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_tension_decay(self):
+        agent = Agent("A", tension=1.0)
+        new_tension = agent.decay_tension(1)
+        self.assertLess(new_tension, 1.0)
 
     def test_dialogue(self):
         a1 = Agent("A1")
