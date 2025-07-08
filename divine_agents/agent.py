@@ -36,3 +36,15 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def respond_with_context(self, question: str, store) -> str:
+        """Respond using retrieved context from a vector store."""
+        context = None
+        if store is not None:
+            results = store.search(question, top_k=1)
+            if results:
+                context = results[0]
+        base = self.respond(question)
+        if context:
+            return f"{base} (glede na: '{context}')"
+        return base
