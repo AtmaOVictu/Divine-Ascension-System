@@ -1,3 +1,9 @@
+import os
+import sys
+
+# Ensure package discovery when running `pytest` directly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
@@ -10,15 +16,31 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+    def test_emotion_based_transition(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_state_progression(self):
+        agent = Agent("C")
+        agent.update_tension(0.8)
+        self.assertEqual(agent.transition(), "Jaz")
+        agent.update_emotion(0.6)
+        self.assertEqual(agent.transition(), "Enotnost")
+
     def test_responses(self):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
-    def test_dialogue(self):
+    def test_dialogue_content(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        joined = " ".join(lines)
+        self.assertIn("absolutna", joined)
+        self.assertIn("relativna", joined)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
