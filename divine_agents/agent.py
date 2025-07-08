@@ -1,3 +1,6 @@
+from .emotion import calculate_tension_decay
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -28,6 +31,11 @@ class Agent:
                 self.state = "Enotnost"
         self.history.append(self.state)
         return self.state
+
+    def decay_tension(self, emotion_state: str, time_step: float = 1.0) -> float:
+        """Decay tension over time based on emotion."""
+        self.tension = calculate_tension_decay(emotion_state, self.tension, time_step)
+        return self.tension
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
