@@ -3,12 +3,13 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, subagents: list | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.subagents = subagents or []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +37,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def interact(self, question: str = "Kaj je resnica?") -> str:
+        """Interact as a subagent returning a formatted response."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}): {answer}"
