@@ -8,16 +8,43 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = ""
         self.history = [state]
+        self.commitment = None
 
-    def update_emotion(self, value: float) -> None:
+    def update_emotion(self, value: float, label: str = "") -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
+        if label:
+            self.emotion_label = label
         self.tension += value
+        self.evaluate_commitment()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self.evaluate_commitment()
+
+    def make_commitment(self, commitment: str) -> None:
+        """Set the agent's commitment."""
+        self.commitment = commitment
+        self.history.append(f"{self.name} has committed to {commitment}.")
+
+    def evaluate_commitment(self) -> None:
+        """Update state based on current commitment and emotion label."""
+        if self.commitment == "self-preservation" and self.emotion_label == "anger":
+            self.state = "High Tension"
+            self.history.append(
+                f"{self.name} is in High Tension due to commitment to self-preservation."
+            )
+        elif self.commitment == "self-awareness" and self.emotion_label == "reflection":
+            self.state = "Jaz"
+            self.history.append(
+                f"{self.name} is in Jaz due to commitment to self-awareness."
+            )
+        elif self.commitment is not None:
+            self.state = "Neutral"
+            self.history.append(f"{self.name} is in Neutral state.")
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
