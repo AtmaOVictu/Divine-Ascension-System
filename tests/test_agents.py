@@ -1,4 +1,9 @@
+import os
+import sys
 import unittest
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -19,7 +24,21 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("po razmisleku" in line for line in lines))
+
+    def test_detect_contradictions(self):
+        agent = Agent("A")
+        agent.add_belief("Truth is absolute")
+        agent.add_belief("Truth is relative")
+        contradictions = agent.detect_contradictions()
+        self.assertEqual(len(contradictions), 1)
+
+    def test_reflection_transition(self):
+        agent = Agent("A", tension=0.6)
+        agent.add_belief("Truth is absolute")
+        agent.add_belief("Truth is relative")
+        agent.reflect()
+        self.assertEqual(agent.state, "Jaz")
 
 
 if __name__ == '__main__':
