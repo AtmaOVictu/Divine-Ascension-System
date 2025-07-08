@@ -21,6 +21,20 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_multiple_contradictions(self):
+        agent = Agent("A")
+        agent.update_emotions("anger", 0.6)
+        msg = agent.interact("I am not alive. The world is flat.")
+        self.assertIn("reconciled", msg)
+        self.assertIn("truth", agent.beliefs)
+
+    def test_self_reflection(self):
+        agent = Agent("A")
+        agent.interact("I am not alive")
+        reflection = agent.reflect_on_beliefs()
+        self.assertIn("reflects", reflection)
+        self.assertFalse(agent.self_reflection)
+
 
 if __name__ == '__main__':
     unittest.main()
