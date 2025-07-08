@@ -21,6 +21,24 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_high_emotion_triggers_transition(self):
+        """High emotion should cause a transition even with low tension."""
+        agent = Agent("A")
+        agent.update_emotion(0.8)
+        agent.update_tension(0.2)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+        self.assertEqual(agent.history, ["Ego", "Jaz"])
+
+    def test_no_transition_below_thresholds(self):
+        """Agent should not transition when both emotion and tension are low."""
+        agent = Agent("A")
+        agent.update_emotion(0.4)
+        agent.update_tension(0.3)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+        self.assertEqual(agent.history, ["Ego", "Ego"])
+
 
 if __name__ == '__main__':
     unittest.main()
