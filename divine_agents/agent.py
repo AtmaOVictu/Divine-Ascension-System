@@ -11,13 +11,17 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Update emotion intensity and adjust tension accordingly.
+
+        The emotion and tension values are clamped between 0 and 1 to
+        avoid runaway growth which would lead to unrealistic transitions.
+        """
+        self.emotion = min(1.0, max(0.0, value))
+        self.tension = min(1.0, max(0.0, self.tension + self.emotion))
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level (clamped between 0 and 1)."""
+        self.tension = min(1.0, max(0.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -32,7 +36,16 @@ class Agent:
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
+            return (
+                f"Na tvoje vprasanje '{question}' odgovarjam: "
+                "Resnica je absolutna in neodvisna od drugih."
+            )
         if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            return (
+                f"Glede '{question}', verjamem, da je resnica relativna, "
+                "oblikovana z nasimi odnosi."
+            )
+        return (
+            f"'{question}' nas spominja, da so vse resnice eno, "
+            "medsebojno povezane."
+        )
