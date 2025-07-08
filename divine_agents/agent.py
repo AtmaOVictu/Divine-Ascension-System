@@ -36,3 +36,16 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def reflect(self) -> str:
+        """Generate a short reflection used for inter-agent learning."""
+        reflection = f"{self.name} in state {self.state} feels {self.emotion:.2f}"
+        self.history.append(reflection)
+        return reflection
+
+    def learn_from_reflections(self, reflections: list[str]) -> None:
+        """Adjust tension based on others' reflections and attempt a transition."""
+        for note in reflections:
+            if self.name not in note:
+                self.tension += 0.1
+        self.transition()
