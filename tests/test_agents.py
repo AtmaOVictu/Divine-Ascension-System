@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.retrieval import build_index, search
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(any("Spomin:" in line for line in lines))
+
+    def test_retrieval(self):
+        texts = ["absolute truth", "relative truth"]
+        index = build_index(texts)
+        result = search("absolute", index, top_k=1)
+        self.assertEqual(result[0], "absolute truth")
 
 
 if __name__ == '__main__':
