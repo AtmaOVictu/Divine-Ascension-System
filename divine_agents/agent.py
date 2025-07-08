@@ -1,5 +1,13 @@
+import math
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent's **tension** and **emotion** determine state transitions. To
+    mirror Luka logic, tension naturally decays over time which can be
+    controlled via :py:meth:`decay_tension`.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -18,6 +26,19 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def decay_tension(self, decay_rate: float, dt: float = 1.0) -> None:
+        """Decay tension exponentially based on the given rate.
+
+        Parameters
+        ----------
+        decay_rate:
+            Controls how quickly tension dissipates. Higher values lead to
+            faster relaxation.
+        dt:
+            Time step to apply the decay over. Defaults to ``1.0``.
+        """
+        self.tension *= math.exp(-decay_rate * dt)
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
