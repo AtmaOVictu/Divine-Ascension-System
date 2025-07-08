@@ -21,6 +21,12 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_fame_update(self):
+        agent = Agent("A")
+        fame = agent.update_fame(2, 1, 3)
+        self.assertEqual(fame, 4)
+        self.assertIn("zmerno", agent.fame_based_behavior())
+
 
 if __name__ == '__main__':
     unittest.main()
