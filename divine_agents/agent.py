@@ -1,5 +1,8 @@
+from .memory import memory
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning ontological states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -9,15 +12,18 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        memory.store_long_term({"event": "create", "name": name, "state": state})
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        memory.store_short_term({"event": "emotion", "name": self.name, "value": value})
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        memory.store_short_term({"event": "tension", "name": self.name, "value": value})
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -27,6 +33,7 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        memory.store_long_term({"event": "transition", "name": self.name, "state": self.state})
         return self.state
 
     def respond(self, question: str) -> str:
