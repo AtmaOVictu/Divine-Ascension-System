@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.rl_agent import ReflectiveAgent, reflective_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +20,19 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestReflectiveAgent(unittest.TestCase):
+    def test_emotion_transition(self):
+        agent = ReflectiveAgent("R")
+        agent.update_emotion(0.6)
+        self.assertEqual(agent.transition(), "Jaz")
+
+    def test_reflective_dialogue(self):
+        r1 = ReflectiveAgent("R1")
+        r2 = ReflectiveAgent("R2", state="Jaz")
+        lines = reflective_dialogue(r1, r2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 
