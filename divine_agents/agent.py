@@ -19,6 +19,11 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def decay_tension(self, decay_rate: float, dt: float = 1.0) -> None:
+        """Decrease tension over time using exponential decay."""
+        from math import exp
+        self.tension *= exp(-decay_rate * dt)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:

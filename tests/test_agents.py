@@ -21,6 +21,17 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_tension_decay(self):
+        agent = Agent("A", tension=1.0)
+        agent.decay_tension(decay_rate=0.5)
+        self.assertLess(agent.tension, 1.0)
+
+    def test_decay_prevents_transition(self):
+        agent = Agent("A", tension=0.8)
+        agent.decay_tension(decay_rate=5.0)
+        state = agent.transition()
+        self.assertEqual(state, "Ego")
+
 
 if __name__ == '__main__':
     unittest.main()
