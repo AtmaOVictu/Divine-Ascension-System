@@ -1,5 +1,20 @@
+"""Ontological agents and their state logic."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name:
+        Name of the agent.
+    state:
+        Starting ontological state. One of ``Ego``, ``Jaz`` or ``Enotnost``.
+    tension:
+        Initial level of internal tension.
+    emotion:
+        Current emotional intensity which also contributes to tension.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
