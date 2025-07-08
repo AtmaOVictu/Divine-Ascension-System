@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.retrieval import SimpleVectorStore
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -10,10 +11,15 @@ class TestAgentTransitions(unittest.TestCase):
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
+        agent.update_emotion(0.6)
+        state = agent.transition()
+        self.assertEqual(state, "Enotnost")
+
     def test_responses(self):
-        agent = Agent("A", state="Enotnost")
+        store = SimpleVectorStore(["Dodaten kontekst."])
+        agent = Agent("A", state="Enotnost", retriever=store.search)
         reply = agent.respond("Kaj je resnica?")
-        self.assertIn("eno", reply)
+        self.assertIn("kontekst", reply)
 
     def test_dialogue(self):
         a1 = Agent("A1")
