@@ -1,13 +1,26 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent tracks emotional intensity, tension, ontological state and
+    fame, which accumulates based on positive actions, negative actions and
+    algorithmic participation.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        fame: float = 0.0,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.fame = fame
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -18,6 +31,22 @@ class Agent:
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+
+    def update_fame(
+        self, positive: float, negative: float, participation: float
+    ) -> float:
+        """Update fame according to actions and participation."""
+        positive_weight = 1.0
+        negative_weight = 1.0
+        participation_weight = 1.0
+
+        fame_change = (
+            positive * positive_weight
+            - negative * negative_weight
+            + participation * participation_weight
+        )
+        self.fame += fame_change
+        return self.fame
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
