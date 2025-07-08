@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .reputation import ReputationSystem
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -16,4 +17,9 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    rep = ReputationSystem()
+    rep.interact(agent1, agent2, action="help")
+    lines.append(f"{agent1.name} fama: {agent1.fame} ({agent1.fame_tier()})")
+    lines.append(f"{agent2.name} fama: {agent2.fame} ({agent2.fame_tier()})")
     return lines
