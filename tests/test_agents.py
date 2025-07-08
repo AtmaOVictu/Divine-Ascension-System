@@ -1,4 +1,10 @@
 import unittest
+import sys
+from pathlib import Path
+
+# Ensure package root is on the path for direct test execution
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -14,6 +20,14 @@ class TestAgentTransitions(unittest.TestCase):
         agent = Agent("A", state="Enotnost")
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
+
+    def test_update_emotion_accumulates(self):
+        agent = Agent("B")
+        agent.update_emotion(0.2, "fear")
+        agent.update_emotion(0.3, "joy")
+        self.assertAlmostEqual(agent.emotion, 0.5)
+        expected_tension = 0.2 * 1.2 + 0.3 * 0.5
+        self.assertAlmostEqual(agent.tension, expected_tension)
 
     def test_dialogue(self):
         a1 = Agent("A1")
