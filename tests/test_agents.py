@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, compliant_dialogue
+from divine_agents.compliance import DataCompliantRecursiveAgent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -19,6 +20,20 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestDataCompliance(unittest.TestCase):
+    def test_data_logging(self):
+        agent = DataCompliantRecursiveAgent("C")
+        agent.adapt("input")
+        agent.reflect()
+        self.assertGreaterEqual(len(agent.data_usage_log), 2)
+
+    def test_compliant_dialogue(self):
+        a1 = DataCompliantRecursiveAgent("A1")
+        a2 = DataCompliantRecursiveAgent("A2", state="Jaz")
+        lines = compliant_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
 

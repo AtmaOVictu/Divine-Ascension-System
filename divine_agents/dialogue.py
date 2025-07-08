@@ -1,5 +1,6 @@
 from typing import List
 from .agent import Agent
+from .compliance import DataCompliantRecursiveAgent
 
 
 def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
@@ -13,6 +14,30 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     agent2.update_emotion(0.6)
     lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
+    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+    return lines
+
+
+def compliant_dialogue(agent1: DataCompliantRecursiveAgent, agent2: DataCompliantRecursiveAgent) -> List[str]:
+    """Dialogue variant that logs data usage via compliant agents."""
+    lines = []
+    lines.append(
+        f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}"
+    )
+    lines.append(
+        f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}"
+    )
+
+    agent1.adapt('argument agent2')
+    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+
+    agent2.adapt('argument agent1')
+    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
+
+    agent1.reflect()
+    agent2.reflect()
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
