@@ -1,14 +1,27 @@
+import random
+from typing import List, Optional
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
+    ACTIONS = ["Help", "Hurt", "Explore", "Conquer", "Reflect"]
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(
+        self,
+        name: str,
+        state: str = "Ego",
+        tension: float = 0.0,
+        emotion: float = 0.0,
+        numerology_number: Optional[int] = None,
+    ) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.numerology_number = numerology_number
+        self.history: List[str] = [state]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -36,3 +49,19 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    # Numerology related functionality ----------------------------------
+
+    def generate_numerology_influence(self) -> str:
+        """Return an action influenced by the agent's numerology number."""
+        if self.numerology_number == 1:
+            return self.ACTIONS[0]  # Help
+        if self.numerology_number == 2:
+            return self.ACTIONS[1]  # Hurt
+        if self.numerology_number == 3:
+            return self.ACTIONS[2]  # Explore
+        return random.choice(self.ACTIONS)
+
+    def perform_action(self) -> str:
+        """Select and return an action based on numerology influence."""
+        return self.generate_numerology_influence()
