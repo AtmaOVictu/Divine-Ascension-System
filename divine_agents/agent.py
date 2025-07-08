@@ -19,6 +19,12 @@ class Agent:
         """Directly set tension level."""
         self.tension = value
 
+    def update_from_emotion_word(self, word: str, dictionary: "OntologicalDictionary") -> None:
+        """Update emotion and tension based on a word from the dictionary."""
+        meaning = dictionary.get_word_meaning(word)
+        intensity = meaning.get("emotional_intensity", 0.0)
+        self.update_emotion(intensity)
+
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
         if self.tension > 0.7 or self.emotion > 0.5:
