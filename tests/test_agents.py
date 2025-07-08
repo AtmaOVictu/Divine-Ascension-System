@@ -6,7 +6,7 @@ from divine_agents.dialogue import philosophical_dialogue
 class TestAgentTransitions(unittest.TestCase):
     def test_transition_thresholds(self):
         agent = Agent("A")
-        agent.update_tension(0.8)
+        agent.feel("fear", 0.8)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
@@ -20,6 +20,7 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertGreaterEqual(len(lines), 6)
 
 
 if __name__ == '__main__':
