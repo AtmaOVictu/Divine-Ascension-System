@@ -1,19 +1,35 @@
+"""Utilities for generating philosophical conversations between agents."""
+
 from typing import List
+
 from .agent import Agent
 
 
-def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
-    """Simulate a short philosophical dialogue between two agents."""
-    lines = []
-    lines.append(f"{agent1.name} ({agent1.state}): {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name} ({agent2.state}): {agent2.respond('Kaj je resnica?')}")
+def _increase_emotion(agent: Agent, delta: float) -> None:
+    """Increase an agent's emotion level and adjust tension."""
 
-    agent1.update_emotion(0.8)
-    lines.append(f"{agent1.name} prehaja v stanje: {agent1.transition()}")
+    agent.update_emotion(min(1.0, agent.emotion + delta))
 
-    agent2.update_emotion(0.6)
-    lines.append(f"{agent2.name} prehaja v stanje: {agent2.transition()}")
 
-    lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
-    lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+def philosophical_dialogue(agent1: Agent, agent2: Agent, turns: int = 2) -> List[str]:
+    """Generate a multi-turn dialogue where emotions and states evolve.
+
+    Each turn both agents answer the same question about truth. After every
+    answer their emotional intensity rises, potentially causing state
+    transitions. The resulting lines capture the response and any transition.
+    """
+
+    lines: List[str] = []
+    agents = [agent1, agent2]
+
+    for _ in range(turns):
+        for ag in agents:
+            lines.append(
+                f"{ag.name} ({ag.state}, e={ag.emotion:.2f}): "
+                f"{ag.respond('Kaj je resnica?')}"
+            )
+            _increase_emotion(ag, 0.3)
+            lines.append(f"{ag.name} prehaja v stanje: {ag.transition()}")
+
     return lines
+
