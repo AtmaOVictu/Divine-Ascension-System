@@ -1,19 +1,29 @@
+from __future__ import annotations
+from typing import Optional
+from .emotion import Emotion
+from .karma import Karma
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: Optional[Emotion] = None, karma: Optional[Karma] = None):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotion = emotion or Emotion()
+        self.karma = karma or Karma()
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+    def update_emotion(self, **kwargs) -> None:
+        """Update emotional values and adjust tension."""
+        for key, val in kwargs.items():
+            if hasattr(self.emotion, key):
+                setattr(self.emotion, key, val)
+        self.tension += self.emotion.intensity()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
@@ -21,7 +31,8 @@ class Agent:
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
+        self.karma.update(self.emotion)
+        if self.tension > 0.7 or self.emotion.intensity() > 0.5:
             if self.state == "Ego":
                 self.state = "Jaz"
             elif self.state == "Jaz":
