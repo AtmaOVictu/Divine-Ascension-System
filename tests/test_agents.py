@@ -21,6 +21,25 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+class TestAdvancedAgents(unittest.TestCase):
+    def test_emotion_based_transition(self):
+        agent = Agent("E1")
+        agent.update_emotion(0.6)
+        new_state = agent.transition()
+        self.assertEqual(new_state, "Jaz")
 
-if __name__ == '__main__':
+    def test_agent_dialogue(self):
+        from divine_agents.figures import PhilosopherAgent, HeroAgent, agent_dialogue
+
+        p = PhilosopherAgent("P")
+        h = HeroAgent("H")
+        convo = agent_dialogue(p, h)
+        # After dialogue both should move at least one state forward
+        self.assertIn(p.state, ("Jaz", "Enotnost"))
+        self.assertIn(h.state, ("Jaz", "Enotnost"))
+        self.assertTrue(any("Kaj je resnica" in line for line in convo))
+
+
+if __name__ == "__main__":
     unittest.main()
+
