@@ -3,16 +3,22 @@ class Agent:
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotions: dict | None = None):
         self.name = name
         self.state = state
         self.tension = tension
-        self.emotion = emotion
+        self.emotions = emotions or {"fear": 0.0, "joy": 0.0, "anger": 0.0}
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
+    @property
+    def emotion(self) -> float:
+        """Return the dominant emotion intensity."""
+        return max(self.emotions.values()) if self.emotions else 0.0
+
+    def update_emotion(self, emotion: str, value: float) -> None:
+        """Set an emotion intensity and adjust tension."""
+        self.emotions[emotion] = value
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -30,9 +36,20 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on state and emotion."""
+        base = {
+            "Ego": "Resnica je absolutna in neodvisna od drugih.",
+            "Jaz": "Resnica je relativna, oblikovana z našimi odnosi.",
+            "Enotnost": "Vse resnice so eno, medsebojno povezane.",
+        }[self.state]
+
+        dominant = max(self.emotions, key=self.emotions.get)
+        mood = ""
+        if self.emotions[dominant] > 0.5:
+            mood_word = {
+                "fear": "prestrašeno",
+                "joy": "veselo",
+                "anger": "jezno",
+            }.get(dominant, "")
+            mood = f" ({mood_word})"
+        return base + mood
