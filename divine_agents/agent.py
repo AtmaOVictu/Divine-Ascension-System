@@ -36,3 +36,13 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def express_truth(self) -> str:
+        """Return a truth statement influenced by current emotional intensity."""
+        if self.emotion > 0.7:
+            prefix = "Strastno"
+        elif self.emotion < 0.3:
+            prefix = "Mirno"
+        else:
+            prefix = "Razmišljujoče"
+        return f"{prefix} povem: {self.respond('Kaj je resnica?')}"
