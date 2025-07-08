@@ -1,5 +1,15 @@
+import math
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    The agent maintains an ontological ``state`` (``Ego``, ``Jaz`` or
+    ``Enotnost``) along with numeric ``tension`` and ``emotion`` values.
+    Transitions occur automatically when ``tension`` exceeds ``0.7`` or
+    ``emotion`` exceeds ``0.5``.  ``tension`` slowly decays over time and can
+    also be influenced by other agents via :py:meth:`influence`.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -14,6 +24,17 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+
+    def decay_tension(self, time_step: float = 1.0) -> None:
+        """Reduce tension gradually based on a simple exponential decay."""
+        self.tension *= math.exp(-0.3 * time_step)
+
+    def influence(self, other: "Agent") -> None:
+        """Influence another agent's tension based on current emotion."""
+        if self.emotion > 0.5:
+            other.tension += self.emotion * 0.5
+        else:
+            other.tension = max(0.0, other.tension - 0.1)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
