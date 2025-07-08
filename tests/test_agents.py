@@ -21,6 +21,11 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_capacitor_records(self):
+        agent = Agent("Cap")
+        agent.update_emotion(0.2)
+        self.assertTrue(agent.capacitor.invalid_operations)
+
 
 if __name__ == '__main__':
     unittest.main()
