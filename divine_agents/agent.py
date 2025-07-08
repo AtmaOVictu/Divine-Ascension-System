@@ -1,3 +1,10 @@
+"""Ontological agents capable of transitioning states and recording history."""
+
+from typing import List
+
+from .memory import memory
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
@@ -9,6 +16,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        memory.store_long_term({"agent": name, "state": state, "event": "init"})
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,6 +35,9 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        memory.store_short_term(
+            {"agent": self.name, "event": "transition", "state": self.state}
+        )
         return self.state
 
     def respond(self, question: str) -> str:
@@ -36,3 +47,11 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Generate dialogue line influenced by current emotion."""
+        answer = self.respond(question)
+        tone = "mirno" if self.emotion < 0.3 else "strastno"
+        line = f"{self.name} ({self.state}, {tone}): {answer}"
+        memory.store_short_term({"agent": self.name, "event": "speak", "line": line})
+        return line
