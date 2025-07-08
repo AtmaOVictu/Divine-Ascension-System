@@ -1,5 +1,8 @@
+from .frame import Frame
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -8,16 +11,22 @@ class Agent:
         self.state = state
         self.tension = tension
         self.emotion = emotion
-        self.history = [state]
+        self.frames = [Frame(state, emotion, tension)]
+
+    def _record_frame(self) -> None:
+        """Store the current snapshot in history."""
+        self.frames.append(Frame(self.state, self.emotion, self.tension))
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = max(0.0, min(1.0, self.tension + self.emotion))
+        self._record_frame()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = max(0.0, min(1.0, value))
+        self._record_frame()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -26,7 +35,7 @@ class Agent:
                 self.state = "Jaz"
             elif self.state == "Jaz":
                 self.state = "Enotnost"
-        self.history.append(self.state)
+        self._record_frame()
         return self.state
 
     def respond(self, question: str) -> str:
