@@ -1,9 +1,25 @@
+"""Ontological agent representation."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
+        """Initialize the agent.
+
+        Parameters
+        ----------
+        name:
+            Agent identifier.
+        state:
+            Starting ontological state.
+        tension:
+            Initial tension level.
+        emotion:
+            Initial emotion intensity.
+        """
         self.name = name
         self.state = state
         self.tension = tension
