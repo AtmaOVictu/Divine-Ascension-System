@@ -1,6 +1,7 @@
 import unittest
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.lexical import generate_anagram, create_amalgamation
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +21,23 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_transformations(self):
+        ego_agent = Agent("E")
+        jaz_agent = Agent("J", state="Jaz")
+
+        ana = ego_agent.transform_word("resnica")
+        self.assertEqual(sorted(ana), sorted("resnica"))
+
+        amal = jaz_agent.transform_word("resnica", "modrost")
+        expected = create_amalgamation("resnica", "modrost")
+        self.assertEqual(amal, expected)
+
+    def test_dialogue_contains_word_creation(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("oblikuje besedo" in line for line in lines))
 
 
 if __name__ == '__main__':

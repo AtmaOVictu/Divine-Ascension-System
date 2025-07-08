@@ -36,3 +36,14 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def transform_word(self, word: str, partner_word: str = "") -> str:
+        """Return a word transformation based on the current ontological state."""
+        from .lexical import generate_anagram, create_amalgamation
+
+        if self.state == "Ego":
+            return generate_anagram(word)
+        if self.state == "Jaz":
+            other = partner_word or word
+            return create_amalgamation(word, other)
+        return word
