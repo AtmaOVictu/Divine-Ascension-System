@@ -1,13 +1,17 @@
+from .memory import Memory
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0, memory: Memory | None = None):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.memory = memory or Memory()
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -36,3 +40,9 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def self_reflection(self) -> int:
+        """Analyze stored long-term memory for resolved emotions."""
+        records = self.memory.recall("long")
+        resolved = [r for r in records if r.get("emotion") == "resolved"]
+        return len(resolved)
