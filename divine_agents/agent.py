@@ -1,9 +1,14 @@
+from __future__ import annotations
+
+"""Core module defining the :class:`Agent` used in the system."""
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represent an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -12,12 +17,12 @@ class Agent:
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = max(0.0, min(1.0, self.tension + value))
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
-        self.tension = value
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
