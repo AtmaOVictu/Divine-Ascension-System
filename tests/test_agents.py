@@ -21,6 +21,18 @@ class TestAgentTransitions(unittest.TestCase):
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
 
+    def test_fame_boxes(self):
+        agent = Agent("F")
+        agent.update_fame(positive_actions=100, negative_actions=0, participation_score=50)
+        self.assertEqual(agent.boxes["fame"], "Legendary Fame Box")
+
+    def test_cluster(self):
+        agent = Agent("C")
+        agent.fame = 0.6
+        agent.boxes["fame"] = agent.get_fame_box()
+        agent.clusters["social_cluster"] = [agent.boxes["fame"], agent.boxes["emotional_state"]]
+        self.assertIn("Influential Fame Box", agent.get_cluster_boxes("social_cluster"))
+
 
 if __name__ == '__main__':
     unittest.main()
