@@ -1,13 +1,20 @@
+from typing import Optional
+
+from .knowledge import KnowledgeBase
+
+
 class Agent:
     """Represents an ontological agent capable of transitioning states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, knowledge_base: Optional[KnowledgeBase] = None) -> None:
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.knowledge_base = knowledge_base
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
@@ -31,8 +38,17 @@ class Agent:
 
     def respond(self, question: str) -> str:
         """Return a philosophical answer depending on the current state."""
+        context = ""
+        if self.knowledge_base:
+            search = self.knowledge_base.search(question, top_k=1)
+            if search:
+                context = f" ({search[0][0]})"
+
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            principle = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            principle = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            principle = "Vse resnice so eno, medsebojno povezane."
+
+        return principle + context
