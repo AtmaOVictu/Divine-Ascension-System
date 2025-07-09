@@ -14,6 +14,15 @@ class Agent:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        # Ensure tension stays within the 0-1 range
+        if self.tension < 0:
+            self.tension = 0.0
+        elif self.tension > 1:
+            self.tension = 1.0
+
+    def decay_tension(self, amount: float = 0.05) -> None:
+        """Gradually reduce tension over time."""
+        self.tension = max(self.tension - amount, 0.0)
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
