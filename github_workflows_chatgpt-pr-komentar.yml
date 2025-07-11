@@ -1,0 +1,36 @@
+name: ChatGPT PR komentar
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  chatgpt-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pridobi opis PR-ja
+        id: pr
+        uses: actions/github-script@v6
+        with:
+          script: |
+            return context.payload.pull_request.body
+
+      - name: Pokliči OpenAI API (GPT-3.5-turbo)
+        id: chatgpt
+        uses: dawidd6/action-openai@v2
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-3.5-turbo
+          prompt: |
+            Povzemite naslednji opis pull requesta v nekaj povedih, naj bo jasno in jedrnato:
+            ${{ steps.pr.outputs.result }}
+
+      - name: Objavi komentar na PR
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🤖 **ChatGPT povzetek PR-ja:**
+
+            ${{ steps.chatgpt.outputs.result }}
