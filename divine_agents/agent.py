@@ -1,9 +1,9 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent that can evolve through different philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0) -> None:
         self.name = name
         self.state = state
         self.tension = tension
@@ -29,10 +29,23 @@ class Agent:
         self.history.append(self.state)
         return self.state
 
+    def describe_emotion(self) -> str:
+        """Return a textual description of the current emotion level."""
+        if self.emotion > 0.7:
+            return "strah"
+        if self.emotion > 0.5:
+            return "jezo"
+        if self.emotion > 0.2:
+            return "veselje"
+        return "mir"
+
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
+        """Return a philosophical answer depending on the current state and emotion."""
         if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+            base = "Resnica je absolutna in neodvisna od drugih."
+        elif self.state == "Jaz":
+            base = "Resnica je relativna, oblikovana z našimi odnosi."
+        else:
+            base = "Vse resnice so eno, medsebojno povezane."
+        emotion_desc = self.describe_emotion()
+        return f"{base} (Čustvo: {emotion_desc})"
