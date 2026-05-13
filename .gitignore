@@ -29,3 +29,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# local assistant/editor config
+.claude/
+
+# npm lockfile ignored because pnpm is authoritative
+package-lock.json
