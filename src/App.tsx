@@ -84,6 +84,10 @@ const navigationItems: Array<{ id: ViewId; label: string; hint: string }> = [
   { id: "graph", label: text.navigation.conceptGraph, hint: text.navigationHints.conceptGraph },
 ];
 
+function displayProjectName(name: string): string {
+  return name.trim() === "Default project" ? text.hero.defaultProject : name;
+}
+
 function injectStyles(): void {
   if (typeof document === "undefined") {
     return;
@@ -714,6 +718,12 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.title = text.brand.title;
+    }
+  }, []);
+
+  useEffect(() => {
     writeProjectWorkspace(
       activeProjectId,
       {
@@ -748,6 +758,11 @@ export function App() {
     .filter((excerpt): excerpt is SourceExcerpt => Boolean(excerpt));
   const activeProject =
     projectRegistry.projects.find((project) => project.id === activeProjectId) ?? null;
+  const visibleProjects = projectRegistry.projects.map((project) => ({
+    ...project,
+    name: displayProjectName(project.name),
+  }));
+  const activeProjectName = activeProject ? displayProjectName(activeProject.name) : text.hero.defaultProject;
 
   function getCurrentWorkspace(): ProjectWorkspaceSnapshot {
     return {
@@ -1538,7 +1553,7 @@ export function App() {
           onSwitch={handleSwitchProject}
           projectTransferMessage={projectTransferState?.message ?? null}
           projectTransferTone={projectTransferState?.tone ?? "accent"}
-          projects={projectRegistry.projects}
+          projects={visibleProjects}
         />
 
         <section className="panel soft">
@@ -1579,7 +1594,7 @@ export function App() {
               {text.hero.description}
             </p>
             <p className="muted" style={{ marginTop: "0.7rem", marginBottom: 0 }}>
-              {text.hero.activeProject}: <strong>{activeProject?.name ?? text.hero.defaultProject}</strong>
+              {text.hero.activeProject}: <strong>{activeProjectName}</strong>
             </p>
           </article>
           <article className="panel soft">
