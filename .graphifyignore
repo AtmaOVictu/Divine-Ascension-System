@@ -1,0 +1,13 @@
+﻿node_modules/
+dist/
+build/
+.next/
+.venv/
+venv/
+__pycache__/
+.git/
+graphify-out/
+*.tmp
+*.bak
+*.zip
+*.7z

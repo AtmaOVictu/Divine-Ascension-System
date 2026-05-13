@@ -1,0 +1,31 @@
+node_modules
+dist
+.env
+.DS_Store
+
+# local / generated
+node_modules/
+dist/
+build/
+.vite/
+.cache/
+
+# generated analysis outputs
+artifacts/
+graphify-out/
+
+# archives / backups
+*.tar.gz
+*.zip
+*.7z
+*.bak
+*.tmp
+
+# python residue
+__pycache__/
+*.pyc
+
+# env / secrets
+.env
+.env.*
+!.env.example
