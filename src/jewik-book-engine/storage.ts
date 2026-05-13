@@ -1,10 +1,25 @@
-import { seedChapterDrafts, seedExcerpts } from "./seedData";
-import type { ChapterDraft, SourceExcerpt } from "./types";
+import {
+  seedBookProjects,
+  seedChapterDrafts,
+  seedConceptNodes,
+  seedExcerpts,
+  seedSources,
+} from "./seedData";
+import type {
+  BookProject,
+  BookSource,
+  ChapterDraft,
+  DictionaryEntry,
+  LibraryCoreState,
+  LibraryFragment,
+  SourceExcerpt,
+} from "./types";
 
 const DRAFT_STORAGE_KEY = "jewik-book-engine:draft:v1";
 const LAST_CONCEPT_STORAGE_KEY = "jewik-book-engine:last-concept:v1";
 const PROJECT_WORKSPACE_STORAGE_KEY_PREFIX = "jewik-book-engine:project-workspace:v1:";
 const DEFAULT_BOOK_MESSAGE = "Primerjava verzij je v tej fazi placeholder.";
+const DEFAULT_LIBRARY_TIMESTAMP = seedChapterDrafts[0]?.updatedAt ?? "2026-05-12T12:00:00.000Z";
 
 const memoryFallback = new Map<string, string>();
 
@@ -21,6 +36,7 @@ export type ProjectWorkspaceSnapshot = {
   conceptInput: string;
   draftState: "shranjeno" | "nespremenjeno" | "osnutek";
   excerpts: SourceExcerpt[];
+  libraryCore?: LibraryCoreState;
   lastSavedSnapshot: string;
 };
 
@@ -98,6 +114,37 @@ function cloneExcerpts(excerpts: SourceExcerpt[]): SourceExcerpt[] {
   }));
 }
 
+function cloneSources(sources: BookSource[]): BookSource[] {
+  return sources.map((source) => ({
+    ...source,
+    excerptIds: [...source.excerptIds],
+  }));
+}
+
+function cloneBooks(books: BookProject[]): BookProject[] {
+  return books.map((book) => ({
+    ...book,
+    chapterIds: [...book.chapterIds],
+    availableVariants: [...book.availableVariants],
+  }));
+}
+
+function cloneDictionaryEntries(entries: DictionaryEntry[]): DictionaryEntry[] {
+  return entries.map((entry) => ({
+    ...entry,
+    sourceExcerptIds: [...entry.sourceExcerptIds],
+    fragmentIds: [...entry.fragmentIds],
+  }));
+}
+
+function cloneFragments(fragments: LibraryFragment[]): LibraryFragment[] {
+  return fragments.map((fragment) => ({
+    ...fragment,
+    conceptIds: [...fragment.conceptIds],
+    sourceExcerptIds: [...fragment.sourceExcerptIds],
+  }));
+}
+
 function isSourceExcerpt(value: unknown): value is SourceExcerpt {
   if (!isRecord(value)) {
     return false;
@@ -115,7 +162,106 @@ function isSourceExcerpt(value: unknown): value is SourceExcerpt {
   );
 }
 
-function isProjectWorkspaceSnapshot(value: unknown): value is ProjectWorkspaceSnapshot {
+function isBookSource(value: unknown): value is BookSource {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    typeof value.title === "string" &&
+    typeof value.kind === "string" &&
+    typeof value.status === "string" &&
+    typeof value.path === "string" &&
+    typeof value.note === "string" &&
+    isStringArray(value.excerptIds)
+  );
+}
+
+function isBookProject(value: unknown): value is BookProject {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    typeof value.title === "string" &&
+    typeof value.summary === "string" &&
+    isStringArray(value.chapterIds) &&
+    isStringArray(value.availableVariants) &&
+    typeof value.canonLabel === "string"
+  );
+}
+
+function isDictionaryEntryStatus(value: unknown): value is DictionaryEntry["status"] {
+  return value === "DRAFT" || value === "REVIEW" || value === "CANON" || value === "PARKED";
+}
+
+function isFragmentStatus(value: unknown): value is LibraryFragment["status"] {
+  return value === "DRAFT" || value === "REVIEW" || value === "CANON" || value === "PARKED";
+}
+
+function isDictionaryEntry(value: unknown): value is DictionaryEntry {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    typeof value.term === "string" &&
+    typeof value.meaning === "string" &&
+    isDictionaryEntryStatus(value.status) &&
+    isStringArray(value.sourceExcerptIds) &&
+    isStringArray(value.fragmentIds) &&
+    typeof value.createdAt === "string" &&
+    typeof value.updatedAt === "string"
+  );
+}
+
+function isLibraryFragment(value: unknown): value is LibraryFragment {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === "string" &&
+    typeof value.title === "string" &&
+    typeof value.body === "string" &&
+    isStringArray(value.conceptIds) &&
+    isStringArray(value.sourceExcerptIds) &&
+    (value.chapterId === undefined || typeof value.chapterId === "string") &&
+    isFragmentStatus(value.status) &&
+    typeof value.createdAt === "string" &&
+    typeof value.updatedAt === "string"
+  );
+}
+
+function isLibraryCoreState(value: unknown): value is LibraryCoreState {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    Array.isArray(value.dictionaryEntries) &&
+    value.dictionaryEntries.every(isDictionaryEntry) &&
+    Array.isArray(value.sources) &&
+    value.sources.every(isBookSource) &&
+    Array.isArray(value.excerpts) &&
+    value.excerpts.every(isSourceExcerpt) &&
+    Array.isArray(value.fragments) &&
+    value.fragments.every(isLibraryFragment) &&
+    Array.isArray(value.chapters) &&
+    value.chapters.every(isChapterDraft) &&
+    Array.isArray(value.books) &&
+    value.books.every(isBookProject)
+  );
+}
+
+type ProjectWorkspaceSnapshotInput = Omit<ProjectWorkspaceSnapshot, "libraryCore"> & {
+  libraryCore?: unknown;
+};
+
+function isProjectWorkspaceSnapshotBase(value: unknown): value is ProjectWorkspaceSnapshotInput {
   if (!isRecord(value)) {
     return false;
   }
@@ -132,13 +278,100 @@ function isProjectWorkspaceSnapshot(value: unknown): value is ProjectWorkspaceSn
   );
 }
 
-function cloneProjectWorkspaceSnapshot(
-  snapshot: ProjectWorkspaceSnapshot,
+function normalizeTerm(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function mergeChapterDraftIntoChapters(
+  chapters: ChapterDraft[],
+  chapterDraft: ChapterDraft,
+): ChapterDraft[] {
+  const nextDraft = cloneDraft(chapterDraft);
+  const existingIndex = chapters.findIndex((chapter) => chapter.id === nextDraft.id);
+
+  if (existingIndex === -1) {
+    return [...chapters, nextDraft];
+  }
+
+  return chapters.map((chapter, index) => (index === existingIndex ? nextDraft : cloneDraft(chapter)));
+}
+
+function createDefaultDictionaryEntries(excerpts: SourceExcerpt[]): DictionaryEntry[] {
+  return seedConceptNodes.map((node) => {
+    const sourceExcerptIds = excerpts
+      .filter((excerpt) => {
+        const normalizedHints = excerpt.conceptHints.map(normalizeTerm);
+        return (
+          normalizedHints.includes(node.normalizedTerm) ||
+          normalizedHints.includes(normalizeTerm(node.term)) ||
+          node.aliases.some((alias) => normalizedHints.includes(normalizeTerm(alias)))
+        );
+      })
+      .map((excerpt) => excerpt.id);
+
+    return {
+      id: `dictionary-${node.id}`,
+      term: node.term,
+      meaning: node.draftDefinition,
+      status: "DRAFT",
+      sourceExcerptIds,
+      fragmentIds: [],
+      createdAt: DEFAULT_LIBRARY_TIMESTAMP,
+      updatedAt: DEFAULT_LIBRARY_TIMESTAMP,
+    };
+  });
+}
+
+export function createDefaultLibraryCoreState(
+  chapterDraft: ChapterDraft = cloneDraft(seedChapterDrafts[0]!),
+  excerpts: SourceExcerpt[] = cloneExcerpts(seedExcerpts),
+): LibraryCoreState {
+  return {
+    dictionaryEntries: createDefaultDictionaryEntries(excerpts),
+    sources: cloneSources(seedSources),
+    excerpts: cloneExcerpts(excerpts),
+    fragments: [],
+    chapters: mergeChapterDraftIntoChapters(
+      seedChapterDrafts.map((chapter) => cloneDraft(chapter)),
+      chapterDraft,
+    ),
+    books: cloneBooks(seedBookProjects),
+  };
+}
+
+function cloneLibraryCoreState(libraryCore: LibraryCoreState): LibraryCoreState {
+  return {
+    dictionaryEntries: cloneDictionaryEntries(libraryCore.dictionaryEntries),
+    sources: cloneSources(libraryCore.sources),
+    excerpts: cloneExcerpts(libraryCore.excerpts),
+    fragments: cloneFragments(libraryCore.fragments),
+    chapters: libraryCore.chapters.map((chapter) => cloneDraft(chapter)),
+    books: cloneBooks(libraryCore.books),
+  };
+}
+
+export function normalizeProjectWorkspaceSnapshot(
+  snapshot: ProjectWorkspaceSnapshotInput,
 ): ProjectWorkspaceSnapshot {
+  const chapterDraft = cloneDraft(snapshot.chapterDraft);
+  const excerpts = cloneExcerpts(snapshot.excerpts);
+  const nextLibraryCore = isLibraryCoreState(snapshot.libraryCore)
+    ? (() => {
+        const clonedCore = cloneLibraryCoreState(snapshot.libraryCore);
+
+        return {
+          ...clonedCore,
+          excerpts: cloneExcerpts(excerpts),
+          chapters: mergeChapterDraftIntoChapters(clonedCore.chapters, chapterDraft),
+        };
+      })()
+    : createDefaultLibraryCoreState(chapterDraft, excerpts);
+
   return {
     ...snapshot,
-    chapterDraft: cloneDraft(snapshot.chapterDraft),
-    excerpts: cloneExcerpts(snapshot.excerpts),
+    chapterDraft,
+    excerpts,
+    libraryCore: nextLibraryCore,
   };
 }
 
@@ -176,6 +409,7 @@ export function createDefaultProjectWorkspace(useLegacyFallback = false): Projec
   const fallbackConcept = useLegacyFallback ? loadLastConceptFromLocalStorage() || "ne" : "ne";
   const fallbackDraft = useLegacyFallback ? loadDraftFromLocalStorage() : null;
   const nextDraft = fallbackDraft ? cloneDraft(fallbackDraft) : cloneDraft(seedChapterDrafts[0]!);
+  const nextExcerpts = cloneExcerpts(seedExcerpts);
 
   return {
     activeConcept: fallbackConcept,
@@ -183,7 +417,8 @@ export function createDefaultProjectWorkspace(useLegacyFallback = false): Projec
     chapterDraft: nextDraft,
     conceptInput: fallbackConcept,
     draftState: fallbackDraft ? "shranjeno" : "nespremenjeno",
-    excerpts: cloneExcerpts(seedExcerpts),
+    excerpts: nextExcerpts,
+    libraryCore: createDefaultLibraryCoreState(nextDraft, nextExcerpts),
     lastSavedSnapshot: JSON.stringify(nextDraft),
   };
 }
@@ -200,11 +435,11 @@ export function readProjectWorkspace(
 
   try {
     const parsed = JSON.parse(raw) as unknown;
-    if (!isProjectWorkspaceSnapshot(parsed)) {
+    if (!isProjectWorkspaceSnapshotBase(parsed)) {
       return createDefaultProjectWorkspace(useLegacyFallback);
     }
 
-    return cloneProjectWorkspaceSnapshot(parsed);
+    return normalizeProjectWorkspaceSnapshot(parsed);
   } catch {
     return createDefaultProjectWorkspace(useLegacyFallback);
   }
@@ -215,8 +450,25 @@ export function writeProjectWorkspace(
   snapshot: ProjectWorkspaceSnapshot,
   syncLegacy = false,
 ): void {
-  const nextSnapshot = cloneProjectWorkspaceSnapshot(snapshot);
   const storage = getSafeStorage();
+  const existingRaw = storage.getItem(getProjectWorkspaceKey(projectId));
+  let existingLibraryCore: LibraryCoreState | undefined;
+
+  if (existingRaw) {
+    try {
+      const parsed = JSON.parse(existingRaw) as unknown;
+      if (isProjectWorkspaceSnapshotBase(parsed)) {
+        existingLibraryCore = normalizeProjectWorkspaceSnapshot(parsed).libraryCore;
+      }
+    } catch {
+      existingLibraryCore = undefined;
+    }
+  }
+
+  const nextSnapshot = normalizeProjectWorkspaceSnapshot({
+    ...snapshot,
+    libraryCore: snapshot.libraryCore ?? existingLibraryCore,
+  });
 
   storage.setItem(getProjectWorkspaceKey(projectId), JSON.stringify(nextSnapshot));
 

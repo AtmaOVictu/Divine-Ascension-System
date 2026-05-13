@@ -8,6 +8,8 @@ export type ExcerptStatus =
   | "CANON_CANDIDATE";
 export type ChapterStatus = "IDEA" | "DRAFT" | "REVIEW" | "CANON" | "PARKED";
 export type VariantKind = "RAW" | "CLEAN" | "BOOK" | "SYSTEM" | "READER" | "CANON";
+export type DictionaryEntryStatus = "DRAFT" | "REVIEW" | "CANON" | "PARKED";
+export type FragmentStatus = "DRAFT" | "REVIEW" | "CANON" | "PARKED";
 
 export type BookSource = {
   id: string;
@@ -69,6 +71,17 @@ export type CanonCandidate = {
   reason: string;
 };
 
+export type DictionaryEntry = {
+  id: string;
+  term: string;
+  meaning: string;
+  status: DictionaryEntryStatus;
+  sourceExcerptIds: string[];
+  fragmentIds: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type ConceptReport = {
   concept: string;
   normalizedConcept: string;
@@ -95,6 +108,18 @@ export type ChapterDraft = {
   updatedAt: string;
 };
 
+export type LibraryFragment = {
+  id: string;
+  title: string;
+  body: string;
+  conceptIds: string[];
+  sourceExcerptIds: string[];
+  chapterId?: string;
+  status: FragmentStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BookProject = {
   id: string;
   title: string;
@@ -102,4 +127,13 @@ export type BookProject = {
   chapterIds: string[];
   availableVariants: VariantKind[];
   canonLabel: string;
+};
+
+export type LibraryCoreState = {
+  dictionaryEntries: DictionaryEntry[];
+  sources: BookSource[];
+  excerpts: SourceExcerpt[];
+  fragments: LibraryFragment[];
+  chapters: ChapterDraft[];
+  books: BookProject[];
 };

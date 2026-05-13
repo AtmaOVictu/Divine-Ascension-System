@@ -1,4 +1,7 @@
-import type { ProjectWorkspaceSnapshot } from "./storage";
+import {
+  normalizeProjectWorkspaceSnapshot,
+  type ProjectWorkspaceSnapshot,
+} from "./storage";
 import type { ChapterDraft, SourceExcerpt } from "./types";
 
 export const PROJECT_PACKAGE_TYPE = "jewik.project-package";
@@ -108,28 +111,8 @@ function isProjectWorkspaceSnapshot(value: unknown): value is ProjectWorkspaceSn
   );
 }
 
-function cloneChapterDraft(draft: ChapterDraft): ChapterDraft {
-  return {
-    ...draft,
-    linkedExcerptIds: [...draft.linkedExcerptIds],
-    linkedConcepts: [...draft.linkedConcepts],
-    variants: [...draft.variants],
-  };
-}
-
-function cloneExcerpts(excerpts: SourceExcerpt[]): SourceExcerpt[] {
-  return excerpts.map((excerpt) => ({
-    ...excerpt,
-    conceptHints: [...excerpt.conceptHints],
-  }));
-}
-
 function cloneWorkspace(workspace: ProjectWorkspaceSnapshot): ProjectWorkspaceSnapshot {
-  return {
-    ...workspace,
-    chapterDraft: cloneChapterDraft(workspace.chapterDraft),
-    excerpts: cloneExcerpts(workspace.excerpts),
-  };
+  return normalizeProjectWorkspaceSnapshot(workspace);
 }
 
 function cloneProject(project: ProjectPackageProjectRef): ProjectPackageProjectRef {
