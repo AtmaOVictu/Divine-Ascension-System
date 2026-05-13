@@ -27,8 +27,19 @@ import {
   readWorkspaceFromProjectPackage,
   serializeProjectPackage,
 } from "../jewik-book-engine/projectPackage";
-import { seedExcerpts } from "../jewik-book-engine/seedData";
-import { createDefaultProjectWorkspace } from "../jewik-book-engine/storage";
+import {
+  seedBookProjects,
+  seedConceptNodes,
+  seedExcerpts,
+  seedSources,
+} from "../jewik-book-engine/seedData";
+import {
+  createDefaultProjectWorkspace,
+  getProjectWorkspaceKey,
+  normalizeProjectWorkspaceSnapshot,
+  readProjectWorkspace,
+  writeProjectWorkspace,
+} from "../jewik-book-engine/storage";
 import {
   createProject,
   deleteProject,
@@ -644,12 +655,155 @@ function main(): void {
     );
 
     const packageWorkspace = createDefaultProjectWorkspace(false);
+    const normalizedLegacyWorkspace = normalizeProjectWorkspaceSnapshot({
+      ...packageWorkspace,
+      libraryCore: undefined,
+    });
+    assert.ok(
+      normalizedLegacyWorkspace.libraryCore,
+      "Workspace without libraryCore must normalize to a safe default libraryCore.",
+    );
+    assert.equal(
+      normalizedLegacyWorkspace.libraryCore?.dictionaryEntries.length,
+      seedConceptNodes.length,
+      "Default libraryCore must seed dictionaryEntries from concept seeds.",
+    );
+    assert.equal(
+      normalizedLegacyWorkspace.libraryCore?.sources.length,
+      seedSources.length,
+      "Default libraryCore must seed sources.",
+    );
+    assert.equal(
+      normalizedLegacyWorkspace.libraryCore?.excerpts.length,
+      packageWorkspace.excerpts.length,
+      "Default libraryCore must preserve workspace excerpts.",
+    );
+    assert.equal(
+      normalizedLegacyWorkspace.libraryCore?.fragments.length,
+      0,
+      "Default libraryCore must start with zero fragments.",
+    );
+    assert.equal(
+      normalizedLegacyWorkspace.libraryCore?.books.length,
+      seedBookProjects.length,
+      "Default libraryCore must seed books.",
+    );
+    assert.ok(
+      normalizedLegacyWorkspace.libraryCore?.chapters.some(
+        (chapter) => chapter.id === packageWorkspace.chapterDraft.id,
+      ),
+      "Default libraryCore must contain the active chapter draft in chapters.",
+    );
+
+    const workspaceStorage = createStorageMock();
+    setWindowMock(workspaceStorage);
+    const customWorkspace = createDefaultProjectWorkspace(false);
+    const customLibraryCore = {
+      ...customWorkspace.libraryCore!,
+      dictionaryEntries: [
+        ...customWorkspace.libraryCore!.dictionaryEntries,
+        {
+          id: "dictionary-sled",
+          term: "sled",
+          meaning: "Minimalni dokaz za ohranitev libraryCore v workspace roundtripu.",
+          status: "DRAFT" as const,
+          sourceExcerptIds: ["excerpt-ne-word"],
+          fragmentIds: ["fragment-sled"],
+          createdAt: "2026-05-13T12:00:00.000Z",
+          updatedAt: "2026-05-13T12:00:00.000Z",
+        },
+      ],
+      fragments: [
+        {
+          id: "fragment-sled",
+          title: "Testni fragment sled",
+          body: "Fragment za preverjanje storage roundtripa.",
+          conceptIds: ["sled"],
+          sourceExcerptIds: ["excerpt-ne-word"],
+          chapterId: customWorkspace.chapterDraft.id,
+          status: "DRAFT" as const,
+          createdAt: "2026-05-13T12:00:00.000Z",
+          updatedAt: "2026-05-13T12:00:00.000Z",
+        },
+      ],
+    };
+    const workspaceWithLibraryCore = {
+      ...customWorkspace,
+      libraryCore: customLibraryCore,
+    };
+    writeProjectWorkspace("library-core-proof", workspaceWithLibraryCore);
+    const preservedWorkspace = readProjectWorkspace("library-core-proof");
+    assert.ok(
+      preservedWorkspace.libraryCore?.dictionaryEntries.some((entry) => entry.id === "dictionary-sled"),
+      "Workspace roundtrip must preserve libraryCore dictionaryEntries.",
+    );
+    assert.equal(
+      preservedWorkspace.libraryCore?.sources.length,
+      customLibraryCore.sources.length,
+      "Workspace roundtrip must preserve libraryCore sources.",
+    );
+    assert.equal(
+      preservedWorkspace.libraryCore?.excerpts.length,
+      customLibraryCore.excerpts.length,
+      "Workspace roundtrip must preserve libraryCore excerpts.",
+    );
+    assert.ok(
+      preservedWorkspace.libraryCore?.fragments.some((fragment) => fragment.id === "fragment-sled"),
+      "Workspace roundtrip must preserve libraryCore fragments.",
+    );
+    assert.ok(
+      preservedWorkspace.libraryCore?.chapters.some(
+        (chapter) => chapter.id === preservedWorkspace.chapterDraft.id,
+      ),
+      "Workspace roundtrip must preserve libraryCore chapters.",
+    );
+    assert.equal(
+      preservedWorkspace.libraryCore?.books.length,
+      customLibraryCore.books.length,
+      "Workspace roundtrip must preserve libraryCore books.",
+    );
+
+    const malformedWorkspaceStorage = createStorageMock({
+      [getProjectWorkspaceKey("library-core-malformed")]: JSON.stringify({
+        ...customWorkspace,
+        libraryCore: {
+          dictionaryEntries: "broken",
+          sources: [],
+          excerpts: [],
+          fragments: [],
+          chapters: [],
+          books: [],
+        },
+      }),
+    });
+    setWindowMock(malformedWorkspaceStorage);
+    const recoveredWorkspaceFromMalformedCore = readProjectWorkspace("library-core-malformed");
+    assert.equal(
+      recoveredWorkspaceFromMalformedCore.activeConcept,
+      customWorkspace.activeConcept,
+      "Malformed libraryCore must not break legacy workspace fields.",
+    );
+    assert.ok(
+      recoveredWorkspaceFromMalformedCore.libraryCore,
+      "Malformed libraryCore must normalize to a safe default libraryCore.",
+    );
+    assert.equal(
+      recoveredWorkspaceFromMalformedCore.libraryCore?.dictionaryEntries.length,
+      seedConceptNodes.length,
+      "Malformed libraryCore must fall back to default dictionaryEntries.",
+    );
+    assert.equal(
+      recoveredWorkspaceFromMalformedCore.libraryCore?.books.length,
+      seedBookProjects.length,
+      "Malformed libraryCore must fall back to default books.",
+    );
+
     const projectPackage = createProjectPackage(
       {
         id: "project-package-proof",
         name: "Project Package Proof",
       },
-      packageWorkspace,
+      workspaceWithLibraryCore,
       "2026-05-13T12:00:00.000Z",
     );
     assert.ok(projectPackage, "createProjectPackage must create a valid package for valid inputs.");
@@ -688,8 +842,21 @@ function main(): void {
     );
     assert.equal(
       roundtripWorkspace?.chapterDraft.title,
-      packageWorkspace.chapterDraft.title,
+      workspaceWithLibraryCore.chapterDraft.title,
       "Workspace roundtrip must preserve draft title.",
+    );
+    assert.ok(
+      roundtripWorkspace?.libraryCore?.dictionaryEntries.some((entry) => entry.id === "dictionary-sled"),
+      "ProjectPackage roundtrip must preserve libraryCore dictionaryEntries.",
+    );
+    assert.ok(
+      roundtripWorkspace?.libraryCore?.fragments.some((fragment) => fragment.id === "fragment-sled"),
+      "ProjectPackage roundtrip must preserve libraryCore fragments.",
+    );
+    assert.equal(
+      roundtripWorkspace?.libraryCore?.books.length,
+      customLibraryCore.books.length,
+      "ProjectPackage roundtrip must preserve libraryCore books.",
     );
 
     const invalidJsonPackage = parseProjectPackage("{broken-json");
@@ -781,6 +948,43 @@ function main(): void {
       }),
       null,
       "readWorkspaceFromProjectPackage must reject malformed workspace payloads.",
+    );
+
+    const malformedLibraryCorePackage = parseProjectPackage(
+      JSON.stringify({
+        ...projectPackage,
+        workspace: {
+          ...workspaceWithLibraryCore,
+          libraryCore: {
+            dictionaryEntries: "broken",
+            sources: [],
+            excerpts: [],
+            fragments: [],
+            chapters: [],
+            books: [],
+          },
+        },
+      }),
+    );
+    assert.equal(
+      malformedLibraryCorePackage.ok,
+      true,
+      "Malformed libraryCore alone must not break the legacy-compatible ProjectPackage parse path.",
+    );
+    if (!malformedLibraryCorePackage.ok) {
+      throw new Error(malformedLibraryCorePackage.message);
+    }
+    const normalizedMalformedPackageWorkspace = readWorkspaceFromProjectPackage(
+      malformedLibraryCorePackage.value,
+    );
+    assert.ok(
+      normalizedMalformedPackageWorkspace?.libraryCore,
+      "Malformed libraryCore package must normalize to a safe default libraryCore.",
+    );
+    assert.equal(
+      normalizedMalformedPackageWorkspace?.libraryCore?.dictionaryEntries.length,
+      seedConceptNodes.length,
+      "Malformed libraryCore package must fall back to default dictionaryEntries.",
     );
   } finally {
     restoreWindow(originalWindowDescriptor);
