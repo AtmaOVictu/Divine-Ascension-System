@@ -58,6 +58,21 @@ type UiText = {
     inputLabel: string;
     inputPlaceholder: string;
     analyze: string;
+    dictionaryEntriesTitle: string;
+    dictionaryEntriesDescription: string;
+    newEntryTitle: string;
+    newEntryDescription: string;
+    entryTermLabel: string;
+    entryTermPlaceholder: string;
+    entryMeaningLabel: string;
+    entryMeaningPlaceholder: string;
+    addEntry: string;
+    noDictionaryEntries: string;
+    entrySourceLinks: string;
+    entryFragmentLinks: string;
+    entryTermRequired: string;
+    entryMeaningRequired: string;
+    entryCreated: (term: string) => string;
     semanticReport: string;
     relatedConcepts: string;
     connotations: string;
@@ -172,6 +187,21 @@ export const uiText: Record<UiLanguage, UiText> = {
       inputLabel: "Vnesi pojem ...",
       inputPlaceholder: "npr. ne",
       analyze: "Analiziraj",
+      dictionaryEntriesTitle: "Slovarski vnosi",
+      dictionaryEntriesDescription: "Projektni slovarski sloj kot stabilizator pomena.",
+      newEntryTitle: "Nov slovarski vnos",
+      newEntryDescription: "Dodaj minimalen pojem in njegov delovni pomen v aktivni projekt.",
+      entryTermLabel: "Pojem",
+      entryTermPlaceholder: "npr. sled",
+      entryMeaningLabel: "Pomen",
+      entryMeaningPlaceholder: "Kratek delovni pomen pojma",
+      addEntry: "Dodaj vnos",
+      noDictionaryEntries: "V aktivnem projektu še ni slovarskih vnosov.",
+      entrySourceLinks: "povezanih izsekov",
+      entryFragmentLinks: "povezanih fragmentov",
+      entryTermRequired: "Praznega pojma ni mogoče shraniti v SLOVAR.",
+      entryMeaningRequired: "Praznega pomena ni mogoče shraniti v SLOVAR.",
+      entryCreated: (term) => `Vnos za pojem \"${term}\" je dodan v aktivni projekt.`,
       semanticReport: "Semantično poročilo",
       relatedConcepts: "Povezani pojmi",
       connotations: "Konotacije",
@@ -310,6 +340,21 @@ export const uiText: Record<UiLanguage, UiText> = {
       inputLabel: "Enter concept ...",
       inputPlaceholder: "e.g. ne",
       analyze: "Analyze",
+      dictionaryEntriesTitle: "Dictionary Entries",
+      dictionaryEntriesDescription: "Project dictionary layer as a meaning stabilizer.",
+      newEntryTitle: "New dictionary entry",
+      newEntryDescription: "Add a minimal concept and its working meaning to the active project.",
+      entryTermLabel: "Concept",
+      entryTermPlaceholder: "e.g. trace",
+      entryMeaningLabel: "Meaning",
+      entryMeaningPlaceholder: "Short working meaning of the concept",
+      addEntry: "Add entry",
+      noDictionaryEntries: "There are no dictionary entries in the active project yet.",
+      entrySourceLinks: "linked excerpts",
+      entryFragmentLinks: "linked fragments",
+      entryTermRequired: "An empty concept cannot be saved into the DICTIONARY.",
+      entryMeaningRequired: "An empty meaning cannot be saved into the DICTIONARY.",
+      entryCreated: (term) => `Entry for concept \"${term}\" was added to the active project.`,
       semanticReport: "Semantic report",
       relatedConcepts: "Related concepts",
       connotations: "Connotations",

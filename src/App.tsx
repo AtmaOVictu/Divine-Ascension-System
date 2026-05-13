@@ -17,6 +17,7 @@ import {
   seedSources,
 } from "./jewik-book-engine/seedData";
 import {
+  createDefaultLibraryCoreState,
   createDefaultProjectWorkspace,
   type ProjectWorkspaceSnapshot,
   readProjectWorkspace,
@@ -37,7 +38,9 @@ import type {
   BookProject,
   ChapterDraft,
   ChapterStatus,
+  DictionaryEntry,
   ExcerptStatus,
+  LibraryCoreState,
   SourceExcerpt,
   VariantKind,
 } from "./jewik-book-engine/types";
@@ -483,6 +486,38 @@ function cloneExcerpts(excerpts: SourceExcerpt[]): SourceExcerpt[] {
   }));
 }
 
+function cloneLibraryCore(libraryCore: LibraryCoreState): LibraryCoreState {
+  return {
+    dictionaryEntries: libraryCore.dictionaryEntries.map((entry) => ({
+      ...entry,
+      sourceExcerptIds: [...entry.sourceExcerptIds],
+      fragmentIds: [...entry.fragmentIds],
+    })),
+    sources: libraryCore.sources.map((source) => ({
+      ...source,
+      excerptIds: [...source.excerptIds],
+    })),
+    excerpts: cloneExcerpts(libraryCore.excerpts),
+    fragments: libraryCore.fragments.map((fragment) => ({
+      ...fragment,
+      conceptIds: [...fragment.conceptIds],
+      sourceExcerptIds: [...fragment.sourceExcerptIds],
+    })),
+    chapters: libraryCore.chapters.map((chapter) => cloneDraft(chapter)),
+    books: libraryCore.books.map((book) => ({
+      ...book,
+      chapterIds: [...book.chapterIds],
+      availableVariants: [...book.availableVariants],
+    })),
+  };
+}
+
+function getWorkspaceLibraryCore(workspace: ProjectWorkspaceSnapshot): LibraryCoreState {
+  return cloneLibraryCore(
+    workspace.libraryCore ?? createDefaultLibraryCoreState(workspace.chapterDraft, workspace.excerpts),
+  );
+}
+
 function stamp(): string {
   return new Date().toISOString();
 }
@@ -591,6 +626,19 @@ function workspacesMatch(
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function feedbackLabelForTone(tone: ProjectTransferTone): string {
+  switch (tone) {
+    case "good":
+      return text.projectSwitcher.success;
+    case "warn":
+      return text.projectSwitcher.warning;
+    case "danger":
+      return text.projectSwitcher.error;
+    default:
+      return text.projectSwitcher.info;
+  }
+}
+
 function countAllMatches(excerpts: SourceExcerpt[], concept: string): number {
   return buildConceptReport(concept, excerpts, conceptAliases).exactMatches.length +
     buildConceptReport(concept, excerpts, conceptAliases).aliasMatches.length;
@@ -652,10 +700,14 @@ export function App() {
   const [conceptInput, setConceptInput] = useState(initialWorkspace.conceptInput);
   const [activeConcept, setActiveConcept] = useState(initialWorkspace.activeConcept);
   const [chapterDraft, setChapterDraft] = useState<ChapterDraft>(initialWorkspace.chapterDraft);
+  const [libraryCore, setLibraryCore] = useState<LibraryCoreState>(getWorkspaceLibraryCore(initialWorkspace));
   const [draftState, setDraftState] = useState<DraftState>(initialWorkspace.draftState);
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState(initialWorkspace.lastSavedSnapshot);
   const [bookMessage, setBookMessage] = useState(initialWorkspace.bookMessage);
   const [projectTransferState, setProjectTransferState] = useState<ProjectTransferState | null>(null);
+  const [dictionaryTerm, setDictionaryTerm] = useState("");
+  const [dictionaryMeaning, setDictionaryMeaning] = useState("");
+  const [dictionaryEntryState, setDictionaryEntryState] = useState<ProjectTransferState | null>(null);
 
   useEffect(() => {
     injectStyles();
@@ -671,6 +723,7 @@ export function App() {
         conceptInput,
         draftState,
         excerpts,
+        libraryCore,
         lastSavedSnapshot,
       },
       true,
@@ -683,11 +736,13 @@ export function App() {
     conceptInput,
     draftState,
     excerpts,
+    libraryCore,
     lastSavedSnapshot,
   ]);
 
   const report = buildConceptReport(activeConcept, excerpts, conceptAliases);
   const reportMatches = [...report.exactMatches, ...report.aliasMatches];
+  const dictionaryEntries = libraryCore.dictionaryEntries;
   const linkedExcerpts = chapterDraft.linkedExcerptIds
     .map((excerptId) => excerpts.find((excerpt) => excerpt.id === excerptId))
     .filter((excerpt): excerpt is SourceExcerpt => Boolean(excerpt));
@@ -702,6 +757,7 @@ export function App() {
       conceptInput,
       draftState,
       excerpts,
+      libraryCore,
       lastSavedSnapshot,
     };
   }
@@ -711,9 +767,13 @@ export function App() {
     setConceptInput(workspace.conceptInput);
     setActiveConcept(workspace.activeConcept);
     setChapterDraft(cloneDraft(workspace.chapterDraft));
+    setLibraryCore(getWorkspaceLibraryCore(workspace));
     setDraftState(workspace.draftState);
     setLastSavedSnapshot(workspace.lastSavedSnapshot);
     setBookMessage(workspace.bookMessage);
+    setDictionaryTerm("");
+    setDictionaryMeaning("");
+    setDictionaryEntryState(null);
   }
 
   function refreshProjectRegistry(): StudioProjectRegistry {
@@ -923,6 +983,50 @@ export function App() {
     saveLastConceptToLocalStorage(nextConcept);
   }
 
+  function handleAddDictionaryEntry(): void {
+    const nextTerm = dictionaryTerm.trim();
+    const nextMeaning = dictionaryMeaning.trim();
+
+    if (!nextTerm) {
+      setDictionaryEntryState({
+        tone: "warn",
+        message: text.conceptDesk.entryTermRequired,
+      });
+      return;
+    }
+
+    if (!nextMeaning) {
+      setDictionaryEntryState({
+        tone: "warn",
+        message: text.conceptDesk.entryMeaningRequired,
+      });
+      return;
+    }
+
+    const timestamp = stamp();
+    const nextEntry: DictionaryEntry = {
+      id: `dictionary-${sanitizeProjectFileSegment(nextTerm)}-${Date.now().toString(36)}`,
+      term: nextTerm,
+      meaning: nextMeaning,
+      status: "DRAFT",
+      sourceExcerptIds: [],
+      fragmentIds: [],
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+
+    setLibraryCore((current) => ({
+      ...current,
+      dictionaryEntries: [nextEntry, ...current.dictionaryEntries],
+    }));
+    setDictionaryTerm("");
+    setDictionaryMeaning("");
+    setDictionaryEntryState({
+      tone: "good",
+      message: text.conceptDesk.entryCreated(nextTerm),
+    });
+  }
+
   function handleExcerptStatusChange(excerptId: string, status: ExcerptStatus): void {
     setExcerpts((current) =>
       current.map((excerpt) => (excerpt.id === excerptId ? { ...excerpt, status } : excerpt)),
@@ -1047,6 +1151,85 @@ export function App() {
         </section>
 
         <section className="grid two">
+          <article className="panel soft">
+            <div className="row">
+              <div>
+                <h3>{text.conceptDesk.newEntryTitle}</h3>
+                <p className="muted">{text.conceptDesk.newEntryDescription}</p>
+              </div>
+              <Badge value={`${dictionaryEntries.length}`} />
+            </div>
+            <div className="stack" style={{ marginTop: "1rem" }}>
+              <div className="field">
+                <label htmlFor="dictionary-term">{text.conceptDesk.entryTermLabel}</label>
+                <input
+                  id="dictionary-term"
+                  value={dictionaryTerm}
+                  onChange={(event) => setDictionaryTerm(event.target.value)}
+                  placeholder={text.conceptDesk.entryTermPlaceholder}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="dictionary-meaning">{text.conceptDesk.entryMeaningLabel}</label>
+                <textarea
+                  id="dictionary-meaning"
+                  value={dictionaryMeaning}
+                  onChange={(event) => setDictionaryMeaning(event.target.value)}
+                  placeholder={text.conceptDesk.entryMeaningPlaceholder}
+                />
+              </div>
+              <div className="row">
+                <button className="primary" onClick={handleAddDictionaryEntry}>
+                  {text.conceptDesk.addEntry}
+                </button>
+              </div>
+              {dictionaryEntryState ? (
+                <div className="badge-row">
+                  <Badge
+                    value={feedbackLabelForTone(dictionaryEntryState.tone)}
+                    toneValue={dictionaryEntryState.tone}
+                  />
+                  <span className="muted">{dictionaryEntryState.message}</span>
+                </div>
+              ) : null}
+            </div>
+          </article>
+
+          <article className="panel">
+            <div className="row">
+              <div>
+                <h3>{text.conceptDesk.dictionaryEntriesTitle}</h3>
+                <p className="muted">{text.conceptDesk.dictionaryEntriesDescription}</p>
+              </div>
+              <Badge value={`${dictionaryEntries.length}`} />
+            </div>
+            {dictionaryEntries.length > 0 ? (
+              <div className="card-list" style={{ marginTop: "0.8rem" }}>
+                {dictionaryEntries.map((entry) => (
+                  <div key={entry.id} className="card">
+                    <div className="row">
+                      <strong>{entry.term}</strong>
+                      <Badge value={labelForStatus(entry.status)} toneValue={entry.status} />
+                    </div>
+                    <p>{entry.meaning}</p>
+                    <div className="badge-row">
+                      <span className="badge">
+                        {entry.sourceExcerptIds.length} {text.conceptDesk.entrySourceLinks}
+                      </span>
+                      <span className="badge">
+                        {entry.fragmentIds.length} {text.conceptDesk.entryFragmentLinks}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="pill-note" style={{ marginTop: "0.8rem" }}>
+                {text.conceptDesk.noDictionaryEntries}
+              </p>
+            )}
+          </article>
+
           <article className="panel">
             <h3>{text.conceptDesk.semanticReport}</h3>
             <p>{report.definition}</p>
