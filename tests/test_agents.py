@@ -1,4 +1,9 @@
+import os
+import sys
 import unittest
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
 
@@ -20,6 +25,28 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+
+class TestAgentCluster(unittest.TestCase):
+    def test_cluster_unification(self):
+        from divine_agents.cluster import AgentCluster
+
+        cluster = AgentCluster()
+        a1 = Agent("C1")
+        a2 = Agent("C2")
+        cluster.add_agent(a1)
+        cluster.add_agent(a2)
+        cluster.synchronize_emotions()
+        cluster.transition_agents()
+        cluster.update_cluster_state()
+        self.assertEqual(cluster.cluster_state, "In Progress")
+
+        for agent in cluster.agents:
+            agent.update_tension(1.0)
+            agent.transition()
+            agent.transition()
+        cluster.update_cluster_state()
+        self.assertEqual(cluster.cluster_state, "Unified")
 
 
 if __name__ == '__main__':
