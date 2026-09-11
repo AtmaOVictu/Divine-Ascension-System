@@ -1,6 +1,6 @@
 import unittest
 from divine_agents.agent import Agent
-from divine_agents.dialogue import philosophical_dialogue
+from divine_agents.dialogue import philosophical_dialogue, influence_in_cluster
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +20,20 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_fame_boxes(self):
+        agent = Agent("F")
+        agent.update_fame(positive_actions=5.0, negative_actions=0.0, participation_score=1.0)
+        self.assertIn(
+            agent.boxes["fame"],
+            ["Influential Fame Box", "Legendary Fame Box", "Moderate Fame Box"],
+        )
+
+    def test_influence_in_cluster(self):
+        agent = Agent("I")
+        agent.update_fame(positive_actions=5.0, negative_actions=0.0, participation_score=0.8)
+        influence = influence_in_cluster(agent, "social_cluster")
+        self.assertGreaterEqual(influence, 0)
 
 
 if __name__ == '__main__':
