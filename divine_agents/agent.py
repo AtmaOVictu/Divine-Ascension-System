@@ -11,13 +11,20 @@ class Agent:
         self.history = [state]
 
     def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
-        self.emotion = value
-        self.tension += value
+        """Update emotion intensity and adjust tension accordingly.
+
+        Emotion and tension are clamped to the range 0.0 - 1.0 to
+        avoid unrealistic values.
+        """
+        self.emotion = max(0.0, min(1.0, value))
+        self.tension = max(0.0, min(1.0, self.tension + self.emotion))
 
     def update_tension(self, value: float) -> None:
-        """Directly set tension level."""
-        self.tension = value
+        """Directly set tension level.
+
+        Tension is clamped between 0.0 and 1.0.
+        """
+        self.tension = max(0.0, min(1.0, value))
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -30,9 +37,22 @@ class Agent:
         return self.state
 
     def respond(self, question: str) -> str:
-        """Return a philosophical answer depending on the current state."""
-        if self.state == "Ego":
-            return "Resnica je absolutna in neodvisna od drugih."
-        if self.state == "Jaz":
-            return "Resnica je relativna, oblikovana z našimi odnosi."
-        return "Vse resnice so eno, medsebojno povezane."
+        """Return a philosophical answer depending on the current state.
+
+        The provided question influences the response when it concerns truth.
+        """
+        prompt = question.lower()
+        if "resnica" in prompt or "truth" in prompt:
+            if self.state == "Ego":
+                return (
+                    f"{self.name} (Ego): Resnica je absolutna in neodvisna od drugih."
+                )
+            if self.state == "Jaz":
+                return (
+                    f"{self.name} (Jaz): Resnica je relativna, oblikovana z našimi odnosi."
+                )
+            return (
+                f"{self.name} (Enotnost): Vse resnice so eno, medsebojno povezane."
+            )
+        # Non-truth questions yield a generic response
+        return f"{self.name}: Nimam odgovora na to."
