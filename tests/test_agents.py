@@ -15,11 +15,19 @@ class TestAgentTransitions(unittest.TestCase):
         reply = agent.respond("Kaj je resnica?")
         self.assertIn("eno", reply)
 
-    def test_dialogue(self):
+    def test_dialogue_with_transitions(self):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
-        lines = philosophical_dialogue(a1, a2)
+        lines = philosophical_dialogue(a1, a2, emotion1=0.9, emotion2=0.7)
+        # Agent2 should transition to Enotnost when transitions are enabled
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_dialogue_without_transitions(self):
+        a1 = Agent("A1")
+        a2 = Agent("A2", state="Jaz")
+        lines = philosophical_dialogue(a1, a2, transitions=False)
+        # No state changes should be announced in the dialogue
+        self.assertFalse(any("prehaja v stanje" in line for line in lines))
 
 
 if __name__ == '__main__':
