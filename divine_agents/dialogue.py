@@ -16,4 +16,9 @@ def philosophical_dialogue(agent1: Agent, agent2: Agent) -> List[str]:
 
     lines.append(f"{agent1.name}: {agent1.respond('Kaj je resnica?')}")
     lines.append(f"{agent2.name}: {agent2.respond('Kaj je resnica?')}")
+
+    a1_action = agent1.perform_action()
+    a2_action = agent2.perform_action()
+    lines.append(f"{agent1.name} izvede dejanje: {a1_action}")
+    lines.append(f"{agent2.name} izvede dejanje: {a2_action}")
     return lines
