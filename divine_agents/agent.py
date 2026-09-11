@@ -1,5 +1,8 @@
+from .boxes import EgoBox, JazBox, EnotnostBox
+
+
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Ontological agent capable of transitioning between philosophical states."""
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
@@ -20,12 +23,13 @@ class Agent:
         self.tension = value
 
     def transition(self) -> str:
-        """Perform state transition if thresholds are exceeded."""
-        if self.tension > 0.7 or self.emotion > 0.5:
-            if self.state == "Ego":
-                self.state = "Jaz"
-            elif self.state == "Jaz":
-                self.state = "Enotnost"
+        """Perform state transition using box-specific logic."""
+        if self.state == "Ego":
+            EgoBox(self).update_state()
+        elif self.state == "Jaz":
+            JazBox(self).update_state()
+        else:
+            EnotnostBox(self).update_state()
         self.history.append(self.state)
         return self.state
 
