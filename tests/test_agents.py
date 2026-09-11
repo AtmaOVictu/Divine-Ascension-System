@@ -1,6 +1,13 @@
 import unittest
+import os
+import sys
+
+# Ensure package root is on path for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from divine_agents.agent import Agent
 from divine_agents.dialogue import philosophical_dialogue
+from divine_agents import get_global_agent
 
 
 class TestAgentTransitions(unittest.TestCase):
@@ -20,6 +27,13 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+
+    def test_global_agent_loaded(self):
+        agent = get_global_agent()
+        self.assertIsNotNone(agent)
+        # configuration file sets agent name to "ConfiguredAgent"
+        self.assertEqual(agent.name, "ConfiguredAgent")
+        self.assertEqual(agent.state, "Jaz")
 
 
 if __name__ == '__main__':
