@@ -9,6 +9,7 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.frames = [{"state": state, "emotion": emotion, "tension": tension}]
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
@@ -27,6 +28,8 @@ class Agent:
             elif self.state == "Jaz":
                 self.state = "Enotnost"
         self.history.append(self.state)
+        frame = {"state": self.state, "emotion": self.emotion, "tension": self.tension}
+        self.frames.append(frame)
         return self.state
 
     def respond(self, question: str) -> str:
@@ -36,3 +39,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def get_frames(self):
+        """Return the recorded frames tracking state, emotion and tension."""
+        return self.frames
+
