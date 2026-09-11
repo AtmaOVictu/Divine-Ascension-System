@@ -9,15 +9,18 @@ class Agent:
         self.tension = tension
         self.emotion = emotion
         self.history = [state]
+        self.boxes = []
 
     def update_emotion(self, value: float) -> None:
         """Update emotion intensity and adjust tension accordingly."""
         self.emotion = value
         self.tension += value
+        self._check_extremes()
 
     def update_tension(self, value: float) -> None:
         """Directly set tension level."""
         self.tension = value
+        self._check_extremes()
 
     def transition(self) -> str:
         """Perform state transition if thresholds are exceeded."""
@@ -36,3 +39,19 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def create_box(self, name: str) -> None:
+        """Record entry into a new ontological/emotional box."""
+        self.boxes.append(name)
+
+    def _check_extremes(self) -> None:
+        """Create boxes when extreme emotion or tension values are reached."""
+        if self.tension > 0.8:
+            self.create_box("High Tension Box")
+        elif self.tension < 0.2:
+            self.create_box("Low Tension Box")
+
+        if self.emotion > 0.8:
+            self.create_box("High Emotion Box")
+        elif self.emotion < 0.2:
+            self.create_box("Low Emotion Box")
