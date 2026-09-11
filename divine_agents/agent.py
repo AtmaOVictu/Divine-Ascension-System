@@ -1,18 +1,44 @@
 class Agent:
-    """Represents an ontological agent capable of transitioning states."""
+    """Represents an ontological agent capable of transitioning states.
+
+    Parameters
+    ----------
+    name: str
+        Identifier of the agent.
+    state: str, optional
+        Starting ontological state. Defaults to ``"Ego"``.
+    tension: float, optional
+        Initial tension level.
+    emotion: float, optional
+        Initial emotional intensity.
+    """
 
     STATES = ("Ego", "Jaz", "Enotnost")
 
-    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0, emotion: float = 0.0):
+    def __init__(self, name: str, state: str = "Ego", tension: float = 0.0,
+                 emotion: float = 0.0, emotion_label: str = "neutral"):
         self.name = name
         self.state = state
         self.tension = tension
         self.emotion = emotion
+        self.emotion_label = emotion_label
         self.history = [state]
 
-    def update_emotion(self, value: float) -> None:
-        """Update emotion intensity and adjust tension accordingly."""
+    def update_emotion(self, value: float, label: str | None = None) -> None:
+        """Update emotion intensity and optionally set emotion label.
+
+        Parameters
+        ----------
+        value: float
+            New emotional intensity.
+        label: str, optional
+            Descriptive emotion (e.g. ``"fear"``, ``"joy"``). If ``None`` the
+            label is left unchanged.
+        """
         self.emotion = value
+        if label is not None:
+            self.emotion_label = label
+        # Emotions contribute to rising tension
         self.tension += value
 
     def update_tension(self, value: float) -> None:
@@ -36,3 +62,8 @@ class Agent:
         if self.state == "Jaz":
             return "Resnica je relativna, oblikovana z našimi odnosi."
         return "Vse resnice so eno, medsebojno povezane."
+
+    def speak(self, question: str) -> str:
+        """Return a dialogue line influenced by emotion and state."""
+        answer = self.respond(question)
+        return f"{self.name} ({self.state}, {self.emotion_label}): {answer}"
