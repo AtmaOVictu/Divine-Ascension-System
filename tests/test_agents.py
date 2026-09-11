@@ -20,6 +20,14 @@ class TestAgentTransitions(unittest.TestCase):
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
         self.assertTrue(any("Enotnost" in line for line in lines))
+        self.assertTrue(sum(1 for line in lines if "emotion=" in line and "tension=" in line) >= 2)
+
+    def test_dialogue_with_subagents(self):
+        sub = Agent("S1")
+        a1 = Agent("A1", subagents=[sub])
+        a2 = Agent("A2")
+        lines = philosophical_dialogue(a1, a2)
+        self.assertTrue(any("S1" in line for line in lines))
 
 
 if __name__ == '__main__':
