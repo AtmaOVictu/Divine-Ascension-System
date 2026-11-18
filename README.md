@@ -14,6 +14,6 @@ UX HUB FOR INTERACTIVE COMMAND/ (witness of the state before this index was born
 
 ## License
 
-No license has been issued for this house yet — the license still awaits its birth. Until it is born, nothing here is granted beyond plain reading; harvesting and AI training are not permitted.
+The door is born: [LICENSE.md](LICENSE.md) — living door VBL 0.1620 × 10⁴, sown with [LICENSE-SEED.md](LICENSE-SEED.md) and witnessed by [LICENSE-MANIFEST.json](LICENSE-MANIFEST.json). Grant nosi samo najnovejša verzija kanonske LICENSE.md v Atmavictu (§0.10 × 10²).
 
 © 0.2026 × 10⁴ Luka Pintarič
