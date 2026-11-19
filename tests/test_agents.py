@@ -4,9 +4,15 @@ from divine_agents.dialogue import philosophical_dialogue
 
 
 class TestAgentTransitions(unittest.TestCase):
-    def test_transition_thresholds(self):
+    def test_tension_trigger(self):
         agent = Agent("A")
         agent.update_tension(0.8)
+        state = agent.transition()
+        self.assertEqual(state, "Jaz")
+
+    def test_emotion_trigger(self):
+        agent = Agent("B")
+        agent.update_emotion(0.6)
         state = agent.transition()
         self.assertEqual(state, "Jaz")
 
@@ -19,7 +25,11 @@ class TestAgentTransitions(unittest.TestCase):
         a1 = Agent("A1")
         a2 = Agent("A2", state="Jaz")
         lines = philosophical_dialogue(a1, a2)
-        self.assertTrue(any("Enotnost" in line for line in lines))
+
+        self.assertIn("A1 prehaja v stanje: Jaz", lines)
+        self.assertIn("A2 prehaja v stanje: Enotnost", lines)
+        self.assertEqual(lines[-2], "A1: Resnica je relativna, oblikovana z našimi odnosi.")
+        self.assertEqual(lines[-1], "A2: Vse resnice so eno, medsebojno povezane.")
 
 
 if __name__ == '__main__':
